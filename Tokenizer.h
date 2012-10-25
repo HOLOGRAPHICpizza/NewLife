@@ -11,17 +11,17 @@ enum TokenType {
 	WHITE_SPACE,
 	COMMENT,
 	ERROR
-}
+};
 
 struct Token {
-	std::string text,
-	TokenType type
-}
+	std::string text;
+	TokenType type;
+};
 
 class Tokenizer {
 public:
-	virtual Tokenizer(istream ins);
+	virtual Tokenizer(istream);
 	virtual Token GetToken() = 0;
-}
+};
 
 #endif

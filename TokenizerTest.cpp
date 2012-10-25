@@ -5,8 +5,10 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	Identifier x;
-	x.text = "taco";
+	Tokenizer tokenizer = new Tokenizer(cin);
+	Token token;
+
+	token = tokenizer.GetToken();
 	
-	cout << x.text << '\n';
+	cout << token.text << '\n';
 }
