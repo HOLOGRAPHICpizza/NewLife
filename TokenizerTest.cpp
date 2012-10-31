@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "Token.h"
+#include "Tokenizer.h"
 
 using namespace std;
 
 int main(int argc, char** argv) {
-	Tokenizer tokenizer = new Tokenizer(cin);
+	Tokenizer tokenizer = Tokenizer(cin);
 	Token token;
 
-	token = tokenizer.GetToken();
+	token = tokenizer.getNonSeparatorToken();
 	
 	cout << token.text << '\n';
 }
