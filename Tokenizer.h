@@ -20,8 +20,8 @@ struct Token {
 
 class Tokenizer {
 public:
-	virtual Tokenizer(istream);
-	virtual Token GetToken() = 0;
+	Tokenizer(istream& ins);
+	Token GetToken(Token& token);
 };
 
 #endif
