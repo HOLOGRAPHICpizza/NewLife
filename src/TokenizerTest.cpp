@@ -10,5 +10,5 @@ int main(int argc, char** argv) {
 
 	token = tokenizer.getNonSeparatorToken();
 	
-	cout << token.text << '\n';
+	cout << '"' << token.text << "\"\n";
 }

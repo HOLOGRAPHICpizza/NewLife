@@ -8,7 +8,7 @@ enum TokenType {
 	KEYWORD,
 	IDENTIFIER,
 	CONDITION,
-	WHITE_SPACE,
+	WHITESPACE,
 	COMMENT,
 	ERROR,
 	EOF_TOKEN
@@ -27,7 +27,7 @@ private:
 	
 	enum BufferState {
 		EMPTY_BS,
-		ID_KEYWORD_COND_BS,
+		ID_KW_COND_BS,
 		WHITESPACE_BS,
 		COMMENT_BS,
 		ERROR_BS,
@@ -44,6 +44,8 @@ private:
 	
 	
 	static TokenType tokenType(BufferState bufferState, const std::string& tokenText);
+	static BufferState newBufferState(char c);
+	static bool isIdKwCondChar(char c);
 public:
 	Tokenizer(std::istream& ins);
 	

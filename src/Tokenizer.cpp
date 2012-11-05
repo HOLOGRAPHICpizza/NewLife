@@ -16,15 +16,24 @@ TokenType Tokenizer::tokenType(
 			return COMMENT;
 			break;
 
-		case EMPTY_BS:
-		case ERROR_BS:
-			return ERROR;
-			break;
-		
 		case EOF_BS:
 			return EOF_TOKEN;
 			break;
+
+		case EMPTY_BS:
+		case ERROR_BS:
+		default:
+			return ERROR;
+			break;
 	}
+}
+
+Tokenizer::BufferState Tokenizer::newBufferState(char c) {
+	return ID_KW_COND_BS;
+}
+
+bool Tokenizer::isIdKwCondChar(char c) {
+	return true;
 }
 
 void Tokenizer::nextChar() {
@@ -34,12 +43,21 @@ void Tokenizer::nextChar() {
 	
 	// Have we reached EOF?
 	if(ins.good()) {
-		bufferState = COMMENT_BS;
-		//debug << '"' << buffer << "\"\n";
+		switch(bufferState) {
+			case EMPTY_BS:
+				// identify which new buffer type to assume
+				bufferState = newBufferState(c);
+				break;
+			
+			case ID_KW_COND_BS:
+			default:
+				if(!isIdKwCondChar(c))
+					tokenReady = true;
+				break;
+		}
 	}
 	else
 	{
-		//debug << "EOF" << '\n';
 		if(buffer.length() > 0) {
 			tokenReady = true;
 		}
@@ -60,10 +78,20 @@ Token Tokenizer::getToken() {
 	Token t;
 	t.text = buffer.substr(0, buffer.length() - 1);
 	t.type = tokenType(bufferState, t.text);
+	
+	// Set the new buffer and buffer state
+	buffer = buffer.substr(buffer.length() - 1);
+	bufferState = newBufferState(buffer[0]);
+	
 	return t;
 }
 	
 Token Tokenizer::getNonSeparatorToken() {
-	return getToken();
+	Token token;
+	do {
+		token = getToken();
+	} while(token.type == WHITESPACE);
+	
+	return token;
 }
 
