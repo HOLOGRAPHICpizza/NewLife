@@ -17,4 +17,4 @@ bin/Tokenizer.o: $(addprefix src/,Tokenizer.cpp Tokenizer.h debug.h)
 
 clean:
 	rm -f bin/*
-
+	

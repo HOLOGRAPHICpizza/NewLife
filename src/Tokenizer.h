@@ -42,10 +42,29 @@ private:
 	// process the next char from ins
 	void nextChar();
 	
-	
+	// Given a buffer state and a string, identify the token type
 	static TokenType tokenType(BufferState bufferState, const std::string& tokenText);
+	
+	// Choose the new buffer state for a character
 	static BufferState newBufferState(char c);
-	static bool isIdKwCondChar(char c);
+
+	// alphapetic character?
+	static bool isAlphaChar(char c);
+
+	// digit character?
+	static bool isDigitChar(char c);
+
+	// whitespace character?
+	static bool isWhitespaceChar(char c);
+
+	// Is a valid identifier character?
+	static bool isIdentifierChar(char c);
+
+	// valid token start char?
+	static bool canStartToken(char c);
+
+	// Is this string (which must be valid chars) an id, keyword, or condition?
+	static TokenType idKwOrCond(const std::string& tokenText);
 public:
 	Tokenizer(std::istream& ins);
 	
