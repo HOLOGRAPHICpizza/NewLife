@@ -19,6 +19,9 @@ struct Token {
 	TokenType type;
 };
 
+/**
+ * The tokenizer takes an input stream and produces tagged tokens.
+ */
 class Tokenizer {
 private:
 	std::istream& ins;
