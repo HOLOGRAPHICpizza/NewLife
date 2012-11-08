@@ -5,6 +5,7 @@
 Tokenizer::Tokenizer(std::istream& inputStream) :
 		ins(inputStream) {
 	tokenReady = false;
+	EOFReached = false;
 	bufferState = EMPTY_BS;
 }
 
@@ -54,10 +55,6 @@ TokenType Tokenizer::tokenType(BufferState bufferState,
 	case COMMENT_BS:
 		ret = COMMENT;
 		break;
-
-	case EOF_BS:
-		ret = EOF_TOKEN;
-		break;
 	}
 
 	return ret;
@@ -83,40 +80,46 @@ bool Tokenizer::canStartToken(char c) {
 	return isAlphaChar(c) || isWhitespaceChar(c) || c == '#';
 }
 
-Tokenizer::BufferState Tokenizer::newBufferState(char c) {
+Tokenizer::BufferState Tokenizer::newBufferState(const std::string& buffer) {
+	BufferState ret;
+
 	// alphabetic character?
-	if(isAlphaChar(c)) {
-		return ID_KW_COND_BS;
+	if(isAlphaChar(buffer[0])) {
+		ret = ID_KW_COND_BS;
 	}
 
 	// whitespace?
-	else if(isWhitespaceChar(c)) {
-		return WHITESPACE_BS;
+	else if(isWhitespaceChar(buffer[0])) {
+		ret = WHITESPACE_BS;
 	}
 
 	// comment?
-	else if(c == '#') {
-		return COMMENT_BS;
+	else if(buffer[0] == '#') {
+		ret = COMMENT_BS;
 	}
 
 	// other crap
 	else {
-		return ERROR_BS;
+		ret = ERROR_BS;
 	}
+
+	return ret;
 }
 
 void Tokenizer::nextChar() {
 	char c;
 	ins.get(c);
-	buffer.push_back(c);
 
 	// Have we not reached EOF?
 	if (ins.good()) {
+
+		buffer.push_back(c);
+
 		switch (bufferState) {
 
 		case EMPTY_BS:
 			// identify which new buffer type to assume
-			bufferState = newBufferState(c);
+			bufferState = newBufferState(buffer);
 			break;
 
 		case ID_KW_COND_BS:
@@ -142,35 +145,41 @@ void Tokenizer::nextChar() {
 			if(canStartToken(c))
 				tokenReady = true;
 			break;
-
-		case EOF_BS:
-			tokenReady = true;
-			break;
 		}
 	} else {
-		if (buffer.length() > 0) {
-			tokenReady = true;
-		} else {
-			bufferState = EOF_BS;
-		}
+		EOFReached = true;
 	}
 }
 
 Token Tokenizer::getToken() {
 	// get characters until the token is ready
-	while (not tokenReady) {
+	while (not tokenReady && not EOFReached) {
 		nextChar();
 	}
 
-	// The token is now all but the last char of buffer
 	Token t;
-	t.text = buffer.substr(0, buffer.length() - 1);
-	t.type = tokenType(bufferState, t.text);
 
-	// Set the new buffer and buffer state
-	buffer = buffer.substr(buffer.length() - 1);
-	bufferState = newBufferState(buffer[0]);
+	if(EOFReached) {
+		// does the buffer still have crap in it?
+		if(buffer.length() > 0) {
+			// swapping will set the buffer to ""
+			t.text.swap(buffer);
+			t.type = tokenType(bufferState, t.text);
+		}
+		else {
+			t.type = EOF_TOKEN;
+		}
+	}
+	else {
+		// The token is now all but the last char of buffer
+		t.text = buffer.substr(0, buffer.length() - 1);
+		t.type = tokenType(bufferState, t.text);
 
+		// Set the new buffer and buffer state
+		buffer = std::string(1, buffer[buffer.length() - 1]);
+		bufferState = newBufferState(buffer);
+		tokenReady = false;
+	}
 	return t;
 }
 

@@ -30,23 +30,33 @@ private:
 		ID_KW_COND_BS,
 		WHITESPACE_BS,
 		COMMENT_BS,
-		ERROR_BS,
-		EOF_BS
+		ERROR_BS
 	};
 	
 	BufferState bufferState;
 	
-	bool tokenReady;
+	bool tokenReady, EOFReached;
 
-
-	// process the next char from ins
+	/**
+	 * Process the next input char
+	 *
+	 * ensures: if not at EOF:
+	 * 				buffer += [next character]
+	 *
+	 * 				if bufferState == EMPTY_BS:
+	 * 					bufferState == newBufferState(buffer)
+	 * 				else:
+	 * 					tokenReady == [does the new char begin the next token?]
+	 * 			else:
+	 * 				EOFReached == true
+	 */
 	void nextChar();
 	
 	// Given a buffer state and a string, identify the token type
 	static TokenType tokenType(BufferState bufferState, const std::string& tokenText);
 	
 	// Choose the new buffer state for a character
-	static BufferState newBufferState(char c);
+	static BufferState newBufferState(const std::string& buffer);
 
 	// alphapetic character?
 	static bool isAlphaChar(char c);

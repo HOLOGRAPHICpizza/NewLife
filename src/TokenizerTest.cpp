@@ -12,18 +12,10 @@ int main(int argc, char** argv) {
 	Tokenizer tokenizer = Tokenizer(in);
 	Token token;
 
-	token = tokenizer.getNonSeparatorToken();
-	cout << '"' << token.text << "\"\n";
-	token = tokenizer.getNonSeparatorToken();
-	cout << '"' << token.text << "\"\n";
-	token = tokenizer.getNonSeparatorToken();
-	cout << '"' << token.text << "\"\n";
-	token = tokenizer.getNonSeparatorToken();
-	cout << '"' << token.text << "\"\n";
-	token = tokenizer.getNonSeparatorToken();
-	cout << '"' << token.text << "\"\n";
-	token = tokenizer.getNonSeparatorToken();
-	cout << '"' << token.text << "\"\n";
+	while(token.type != EOF_TOKEN) {
+		token = tokenizer.getToken();
+		cout << '"' << token.text << "\"\n";
+	}
 
 	in.close();
 }

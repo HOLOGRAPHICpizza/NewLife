@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -c
+CFLAGS = -Wall -g -O0 -c
 LFLAGS = -Wall
 
 all: $(addprefix bin/,TokenizerTest)
