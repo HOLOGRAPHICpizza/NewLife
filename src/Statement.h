@@ -23,6 +23,9 @@ enum Condition {
 	TRUE
 };
 
+/**
+ * Default type is BLOCK, becomes BLOCK after decompose.
+ */
 class Statement {
 private:
 	StatementType type;	
