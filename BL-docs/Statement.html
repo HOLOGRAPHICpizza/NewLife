@@ -1,0 +1,331 @@
+<HTML>
+<HEAD>
+<TITLE>AT/Statement/Kernel.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../Statement_A.html"><FONT SIZE=5><B>AT/Statement/Kernel.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*-------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Template : Statement_Kernel</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*-------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AT_STATEMENT_KERNEL</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AT_STATEMENT_KERNEL</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>enumeration</B> Kind
+{
+    BLOCK,
+    IF,
+    IF_ELSE,
+    WHILE,
+    CALL
+};
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>enumeration</B> Condition
+{
+    NEXT_IS_EMPTY,
+    NEXT_IS_NOT_EMPTY,
+    NEXT_IS_WALL,
+    NEXT_IS_NOT_WALL,
+    NEXT_IS_FRIEND,
+    NEXT_IS_NOT_FRIEND,
+    NEXT_IS_ENEMY,
+    NEXT_IS_NOT_ENEMY,
+    RANDOM,
+    TRUE
+};
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_template</B> &lt;
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Nested_Statement_Type</FONT></I></B>
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> Statement_Kernel &lt;
+                        Nested_Statement_Type
+                    &gt;
+        !*/</I></FONT>
+    &gt;
+<B>class</B> <B><I><FONT COLOR="blue">Statement_Kernel</FONT></I></B>
+{
+<B>public</B>:
+
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>math</B> <B>definition</B> IS_IDENTIFIER (
+                i: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+	    i = <B>empty_string</B> <B>or</B>
+	    (<B>there</B> <B>exists</B> c: <B>character</B>, s: <B>string</B> <B>of</B> <B>character</B>
+		 (i = &lt;c&gt; * s <B>and</B>
+		  c <B>is</B> <B>in</B> {'a'..'z', 'A'..'Z'} <B>and</B>
+		  <B>for</B> <B>all</B> x: <B>character</B> <B>where</B> (x <B>is</B> <B>in</B> <B>elements</B> (s))
+		      (x <B>is</B> <B>in</B> {'a'..'z', 'A'..'Z', '0'..'9', '-'})) <B>and</B>
+	     i <B>is</B> <B>not</B> <B>in</B> {"PROGRAM", "IS", "INSTRUCTION", "WHILE", "DO",
+			  "IF", "THEN", "ELSE", "BEGIN", "END",
+			  "next-is-empty", "next-is-not-empty",
+			  "next-is-wall", "next-is-not-wall",
+			  "next-is-friend", "next-is-not-friend",
+			  "next-is-enemy", "next-is-not-enemy",
+			  "random", "true"})
+
+        <B>math</B> <B>subtype</B> IDENTIFIER <B>is</B> <B>string</B> <B>of</B> <B>character</B>
+            <B>exemplar</B> i
+            <B>constraint</B>
+                IS_IDENTIFIER (i)
+
+        <B>math</B> <B>definition</B> IS_CONDITION (
+                c: <B>integer</B>
+            ): <B>boolean</B> <B>is</B>
+	    c <B>is</B> <B>in</B> Condition
+
+        <B>math</B> <B>definition</B> IS_STATEMENT_LABEL (
+                kind: <B>integer</B>
+                test: <B>integer</B>
+                instruction: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+	    (kind = BLOCK <B>and</B>
+	     test = TRUE <B>and</B>
+	     instruction = <B>empty_string</B>) <B>or</B>
+	    ((kind = IF <B>or</B> kind = IF_ELSE <B>or</B> kind = WHILE) <B>and</B>
+	     instruction = <B>empty_string</B>) <B>or</B>
+	    (kind = CALL <B>and</B>
+	     test = TRUE <B>and</B>
+	     instruction /= <B>empty_string</B>)
+
+        <B>math</B> <B>subtype</B> STATEMENT_LABEL <B>is</B> (
+                kind: Kind
+                test: Condition
+                instruction: IDENTIFIER
+            )
+            <B>exemplar</B> n
+            <B>constraint</B>
+                IS_STATEMENT_LABEL (n.kind, n.test, n.instruction)
+
+        <B>math</B> <B>subtype</B> STATEMENT <B>is</B> <B>tree</B> <B>of</B> STATEMENT_LABEL
+            <B>exemplar</B> s
+            <B>constraint</B>
+                IS_LEGAL_STATEMENT (s)
+
+        <B>math</B> <B>definition</B> IS_LEGAL_STATEMENT (
+                t: <B>tree</B> <B>of</B> STATEMENT_LABEL
+            ): <B>boolean</B> <B>satisfies</B>
+	    <B>there</B> <B>exists</B> label: STATEMENT_LABEL,
+			 nested_stmts: <B>string</B> <B>of</B> <B>tree</B> <B>of</B> STATEMENT_LABEL
+		(t = <B>compose</B> (label, nested_stmts) <B>and</B>
+		 <B>for</B> <B>all</B> x: <B>tree</B> <B>of</B> STATEMENT_LABEL
+		 <B>where</B> (x <B>is</B> <B>in</B> <B>elements</B> (nested_stmts))
+		     (IS_LEGAL_STATEMENT (x)) <B>and</B>
+		 <B>if</B> label.kind = BLOCK
+		 <B>then</B>
+		     <B>for</B> <B>all</B> x: <B>tree</B> <B>of</B> STATEMENT_LABEL
+		     <B>where</B> (x <B>is</B> <B>in</B> <B>elements</B> (nested_stmts))
+			 (<B>root</B> (x).kind /= BLOCK)
+		 <B>else</B> <B>if</B> label.kind = IF <B>or</B> label.kind = WHILE
+		 <B>then</B>
+		     |nested_stmts| = 1 <B>and</B>
+		     <B>root</B>(<B>first</B> (nested_stmts)).kind = BLOCK
+		 <B>else</B> <B>if</B> label.kind = IF_ELSE
+		 <B>then</B>
+		     |nested_stmts| = 2 <B>and</B>
+		     <B>root</B>(<B>first</B> (nested_stmts)).kind = BLOCK <B>and</B>
+		     <B>root</B>(<B>last</B> (nested_stmts)).kind = BLOCK
+		 <B>else</B> <B>if</B> label.kind = CALL
+		 <B>then</B>
+		     |nested_stmts| = 0)
+
+        <B>math</B> <B>definition</B> IS_INITIAL_STATEMENT (
+                s: STATEMENT
+            ): <B>boolean</B> <B>is</B>
+            <B>root</B> (s).kind = BLOCK <B>and</B>
+            <B>children</B> (s) = <B>empty_string</B>
+    !*/</I></FONT>
+
+    <B>standard_abstract_operations</B> (Statement_Kernel);
+    <FONT COLOR="SaddleBrown"><I>/*!
+        Statement_Kernel <B>is</B> <B>modeled</B> <B>by</B> STATEMENT
+        <B>initialization</B>
+            <B>ensures</B> IS_INITIAL_STATEMENT (<B>self</B>)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Add_To_Block</FONT> (
+	    <B>preserves</B> Integer pos,
+	    <B>consumes</B> Nested_Statement_Type&amp; statement
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = BLOCK <B>and</B>
+	    <B>root</B> (statement).kind /= BLOCK <B>and</B>
+	    0 &lt;= pos <B>and</B> pos &lt;= |<B>children</B> (<B>self</B>)|
+	<B>ensures</B>
+	    <B>there</B> <B>exists</B> x, y: <B>string</B> <B>of</B> STATEMENT
+		(|x| = pos <B>and</B>
+		 <B>children</B> (#<B>self</B>) = x * y <B>and</B>
+		 <B>self</B> = <B>compose</B> (<B>root</B> (#<B>self</B>), x * &lt;#statement&gt; * y))
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Remove_From_Block</FONT> (
+	    <B>preserves</B> Integer pos,
+	    <B>produces</B> Nested_Statement_Type&amp; statement
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = BLOCK <B>and</B>
+	    0 &lt;= pos <B>and</B> pos &lt; |<B>children</B> (<B>self</B>)|
+	<B>ensures</B>
+	    <B>there</B> <B>exists</B> x, y: <B>string</B> <B>of</B> STATEMENT
+		(|x| = pos <B>and</B>
+		 <B>children</B> (#<B>self</B>) = x * &lt;statement&gt; * y <B>and</B>
+		 <B>self</B> = <B>compose</B> (<B>root</B> (#<B>self</B>), x * y))
+    !*/</I></FONT>
+
+    <B>function</B> Integer <FONT COLOR="blue">Length_Of_Block</FONT> () <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = BLOCK
+	<B>ensures</B>
+	    Length_Of_Block = |<B>children</B> (<B>self</B>)|
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Compose_If</FONT> (
+	    <B>consumes</B> Integer&amp; cond,
+	    <B>consumes</B> Nested_Statement_Type&amp; block
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>produces</B> <B>self</B>
+	<B>requires</B>
+	    IS_CONDITION (cond) <B>and</B>
+	    <B>root</B> (block).kind = BLOCK
+	<B>ensures</B>
+	    <B>self</B> = <B>compose</B> ((IF, #cond, <B>empty_string</B>), &lt;#block&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Decompose_If</FONT> (
+	    <B>produces</B> Integer&amp; cond,
+	    <B>produces</B> Nested_Statement_Type&amp; block
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>consumes</B> <B>self</B>
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = IF
+	<B>ensures</B>
+	    #<B>self</B> = <B>compose</B> ((IF, cond, <B>empty_string</B>), &lt;block&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Compose_If_Else</FONT> (
+	    <B>consumes</B> Integer&amp; cond,
+	    <B>consumes</B> Nested_Statement_Type&amp; if_block,
+	    <B>consumes</B> Nested_Statement_Type&amp; else_block
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>produces</B> <B>self</B>
+	<B>requires</B>
+	    IS_CONDITION (cond) <B>and</B>
+	    <B>root</B> (if_block).kind = BLOCK <B>and</B>
+	    <B>root</B> (else_block).kind = BLOCK
+	<B>ensures</B>
+	    <B>self</B> = <B>compose</B> ((IF_ELSE, #cond, <B>empty_string</B>),
+			    &lt;#if_block&gt; * &lt;#else_block&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Decompose_If_Else</FONT> (
+	    <B>produces</B> Integer&amp; cond,
+	    <B>produces</B> Nested_Statement_Type&amp; if_block,
+	    <B>produces</B> Nested_Statement_Type&amp; else_block
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>consumes</B> <B>self</B>
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = IF_ELSE
+	<B>ensures</B>
+	    #<B>self</B> = <B>compose</B> ((IF_ELSE, cond, <B>empty_string</B>),
+			     &lt;if_block&gt; * &lt;else_block&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Compose_While</FONT> (
+	    <B>consumes</B> Integer&amp; cond,
+	    <B>consumes</B> Nested_Statement_Type&amp; block
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>produces</B> <B>self</B>
+	<B>requires</B>
+	    IS_CONDITION (cond) <B>and</B>
+	    <B>root</B> (block).kind = BLOCK
+	<B>ensures</B>
+	    <B>self</B> = <B>compose</B> ((WHILE, #cond, <B>empty_string</B>), &lt;#block&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Decompose_While</FONT> (
+	    <B>produces</B> Integer&amp; cond,
+	    <B>produces</B> Nested_Statement_Type&amp; block
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>consumes</B> <B>self</B>
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = WHILE
+	<B>ensures</B>
+	    #<B>self</B> = <B>compose</B> ((WHILE, cond, <B>empty_string</B>), &lt;block&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Compose_Call</FONT> (
+	    <B>consumes</B> Text&amp; inst
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>produces</B> <B>self</B>
+	<B>requires</B>
+	    IS_IDENTIFIER (inst) <B>and</B> inst /= <B>empty_string</B>
+	<B>ensures</B>
+	    <B>root</B> (<B>self</B>) = (CALL, TRUE, #inst) <B>and</B>
+	    <B>children</B> (<B>self</B>) = <B>empty_string</B>
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Decompose_Call</FONT> (
+	    <B>produces</B> Text&amp; inst
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>consumes</B> <B>self</B>
+	<B>requires</B>
+	    <B>root</B> (<B>self</B>).kind = CALL
+	<B>ensures</B>
+	    #<B>self</B> = <B>compose</B> ((CALL, TRUE, inst), <B>empty_string</B>)
+    !*/</I></FONT>
+
+    <B>function</B> Integer <FONT COLOR="blue">Kind</FONT> () <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>ensures</B>
+	    Kind = <B>root</B> (<B>self</B>).kind
+    !*/</I></FONT>
+
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AT_STATEMENT_KERNEL</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Fri Sep 02 15:34:31 EDT 2011
+</BODY>
+</HTML>

@@ -1,0 +1,221 @@
+<HTML>
+<HEAD>
+<TITLE>AT/Statement/Parse.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../Statement_A.html"><FONT SIZE=5><B>AT/Statement/Parse.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*-------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Template : Statement_Parse</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*-------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AT_STATEMENT_PARSE</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AT_STATEMENT_PARSE</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Global Context --------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#include</FONT></B> "<A HREF="../../AT/Statement/Kernel.html">AT/Statement/Kernel.h</A>"
+<FONT COLOR="SaddleBrown"><I>/*!
+    <B>#include</B> "<A HREF="../../AI/BL_Tokenizing_Machine/Kernel.html">AI/BL_Tokenizing_Machine/Kernel.h</A>"
+!*/</I></FONT>
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_template</B> &lt;
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Statement_Base</FONT></I></B>,
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> Statement_Kernel &lt;
+                        Statement_Base
+                    &gt;
+        !*/</I></FONT>
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Tokenizing_Machine</FONT></I></B>
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> BL_Tokenizing_Machine_Type
+        !*/</I></FONT>
+    &gt;
+<B>class</B> <B><I><FONT COLOR="blue">Statement_Parse</FONT></I></B> :
+    <B>extends</B>
+        <B>abstract_instance</B> Statement_Base
+{
+<B>public</B>:
+
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>math</B> <B>definition</B> CONDITION_TO_TOKEN (
+                i: <B>integer</B>
+            ): <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+	    <B>if</B> i = NEXT_IS_EMPTY
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-empty"
+	    <B>else</B> <B>if</B> i = NEXT_IS_NOT_EMPTY
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-not-empty"
+	    <B>else</B> <B>if</B> i = NEXT_IS_WALL
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-wall"
+	    <B>else</B> <B>if</B> i = NEXT_IS_NOT_WALL
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-not-wall"
+	    <B>else</B> <B>if</B> i = NEXT_IS_FRIEND
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-friend"
+	    <B>else</B> <B>if</B> i = NEXT_IS_NOT_FRIEND
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-not-friend"
+	    <B>else</B> <B>if</B> i = NEXT_IS_ENEMY
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-enemy"
+	    <B>else</B> <B>if</B> i = NEXT_IS_NOT_ENEMY
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "next-is-not-enemy"
+	    <B>else</B> <B>if</B> i = RANDOM
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "random"
+	    <B>else</B> <B>if</B> i = TRUE
+	    <B>then</B> CONDITION_TO_TOKEN (i) = "true"
+
+        <B>math</B> <B>definition</B> BLOCK_TO_STRING_OF_TOKENS (
+                block: <B>string</B> <B>of</B> STATEMENT
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+	    <B>if</B> block = <B>empty_string</B>
+	    <B>then</B>
+		BLOCK_TO_STRING_OF_TOKENS (block) = <B>empty_string</B>
+	    <B>else</B>
+		<B>there</B> <B>exists</B> s: STATEMENT, rest: <B>string</B> <B>of</B> STATEMENT
+		    (block = &lt;s&gt; * rest <B>and</B>
+		     BLOCK_TO_STRING_OF_TOKENS (block) =
+			 STATEMENT_TO_STRING_OF_TOKENS (s) *
+			 BLOCK_TO_STRING_OF_TOKENS (rest))
+
+        <B>math</B> <B>definition</B> STATEMENT_TO_STRING_OF_TOKENS (
+                s: STATEMENT
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+	    <B>there</B> <B>exists</B> label: STATEMENT_LABEL,
+			 nested_stmts: <B>string</B> <B>of</B> STATEMENT
+		(s = <B>compose</B> (label, nested_stmts) <B>and</B>
+		 <B>if</B> label.kind = BLOCK
+		 <B>then</B>
+		     STATEMENT_TO_STRING_OF_TOKENS (s) =
+			 BLOCK_TO_STRING_OF_TOKENS (nested_stmts)
+		 <B>else</B> <B>if</B> label.kind = IF
+		 <B>then</B>
+		     STATEMENT_TO_STRING_OF_TOKENS (s) =
+			 &lt;"IF"&gt; * &lt;CONDITION_TO_TOKEN (label.test)&gt; *
+			 &lt;"THEN"&gt; *
+			 STATEMENT_TO_STRING_OF_TOKENS (
+						    <B>first</B> (nested_stmts)) *
+			 &lt;"END"&gt; * &lt;"IF"&gt;
+		 <B>else</B> <B>if</B> label.kind = IF_ELSE
+		 <B>then</B>
+		     STATEMENT_TO_STRING_OF_TOKENS (s) =
+			 &lt;"IF"&gt; * &lt;CONDITION_TO_TOKEN (label.test)&gt; *
+			 &lt;"THEN"&gt; *
+			 STATEMENT_TO_STRING_OF_TOKENS (
+						    <B>first</B> (nested_stmts)) *
+			 &lt;"ELSE"&gt; *
+			 STATEMENT_TO_STRING_OF_TOKENS (
+						    <B>last</B> (nested_stmts)) *
+			 &lt;"END"&gt; * &lt;"IF"&gt;
+		 <B>else</B> <B>if</B> label.kind = WHILE
+		 <B>then</B>
+		     STATEMENT_TO_STRING_OF_TOKENS (s) =
+			 &lt;"WHILE"&gt; * &lt;CONDITION_TO_TOKEN (label.test)&gt; *
+			 &lt;"DO"&gt; *
+			 STATEMENT_TO_STRING_OF_TOKENS (
+						    <B>first</B> (nested_stmts)) *
+			 &lt;"END"&gt; * &lt;"WHILE"&gt;
+		 <B>else</B> <B>if</B> label.kind = CALL
+		 <B>then</B>
+		     STATEMENT_TO_STRING_OF_TOKENS (s) =
+						      &lt;label.instruction&gt;)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Parse</FONT> (
+            <B>alters</B> Character_IStream&amp; str,
+            <B>alters</B> Tokenizing_Machine&amp; m,
+            <B>alters</B> Text&amp; token_text,
+            <B>alters</B> Integer&amp; token_kind
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>produces</B> <B>self</B>
+	<B>requires</B>
+	    str.is_open = <B>true</B> <B>and</B>
+	    token_kind = WHICH_KIND (token_text) <B>and</B>
+	    m.ready_to_dispense = <B>false</B>
+	<B>ensures</B>
+	    <B>if</B> <B>there</B> <B>exists</B> s: STATEMENT, x, y: <B>string</B> <B>of</B> <B>character</B>
+		(<B>root</B> (s).kind /= BLOCK <B>and</B>
+		 #token_text * #m.buffer * #str.content = x * y <B>and</B>
+		 STATEMENT_TO_STRING_OF_TOKENS (s) =
+		     REMOVE_SEPARATORS (TOKENIZE_PROGRAM_TEXT (x)))
+	    <B>then</B>
+		str.is_open = <B>true</B> <B>and</B>
+		str.ext_name = #str.ext_name <B>and</B>
+		<B>there</B> <B>exists</B> z: <B>string</B> <B>of</B> <B>character</B>
+		    (#token_text * #m.buffer * #str.content =
+			 z * token_text * m.buffer * str.content <B>and</B>
+		     STATEMENT_TO_STRING_OF_TOKENS (<B>self</B>) =
+			 REMOVE_SEPARATORS (TOKENIZE_PROGRAM_TEXT (z)) <B>and</B>
+		     <B>root</B> (<B>self</B>).kind /= BLOCK <B>and</B>
+		     token_kind = WHICH_KIND (token_text) <B>and</B>
+		     m.ready_to_dispense = <B>false</B>)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Parse_Block</FONT> (
+            <B>alters</B> Character_IStream&amp; str,
+            <B>alters</B> Tokenizing_Machine&amp; m,
+            <B>alters</B> Text&amp; token_text,
+            <B>alters</B> Integer&amp; token_kind
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>produces</B> <B>self</B>
+	<B>requires</B>
+	    str.is_open = <B>true</B> <B>and</B>
+	    token_kind = WHICH_KIND (token_text) <B>and</B>
+	    m.ready_to_dispense = <B>false</B>
+	<B>ensures</B>
+	    <B>if</B> <B>there</B> <B>exists</B> x, y: <B>string</B> <B>of</B> <B>character</B>,
+			    s: <B>string</B> <B>of</B> STATEMENT 
+		   (#token_text * #m.buffer * #str.content = x * y <B>and</B>
+		    BLOCK_TO_STRING_OF_TOKENS (s) =
+			REMOVE_SEPARATORS (TOKENIZE_PROGRAM_TEXT (x)))
+	    <B>then</B>
+		str.is_open = <B>true</B> <B>and</B>
+		str.ext_name = #str.ext_name <B>and</B>
+		<B>there</B> <B>exists</B> z: <B>string</B> <B>of</B> <B>character</B>
+		    (#token_text * #m.buffer * #str.content =
+			 z * token_text * m.buffer * str.content <B>and</B>
+		     BLOCK_TO_STRING_OF_TOKENS (<B>children</B> (<B>self</B>)) =
+			 REMOVE_SEPARATORS (TOKENIZE_PROGRAM_TEXT (z)) <B>and</B>
+		     <B>root</B> (<B>self</B>).kind = BLOCK <B>and</B>
+		     token_text <B>is</B> <B>not</B> <B>in</B> {"IF", "WHILE"} <B>and</B>
+		     <B>not</B> IS_IDENTIFIER (token_text) <B>and</B>
+		     <B>not</B> IS_WHITE_SPACE (token_text) <B>and</B>
+		     <B>not</B> IS_COMMENT (token_text) <B>and</B>
+		     token_kind = WHICH_KIND (token_text) <B>and</B>
+		     m.ready_to_dispense = <B>false</B>)
+    !*/</I></FONT>
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AT_STATEMENT_PARSE</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Mon Apr 02 10:04:51 EDT 2007
+</BODY>
+</HTML>

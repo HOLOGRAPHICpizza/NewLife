@@ -1,0 +1,169 @@
+<HTML>
+<HEAD>
+<TITLE>AI/BL_Tokenizing_Machine/Get.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../BL_Tokenizing_Machine_A.html"><FONT SIZE=5><B>AI/BL_Tokenizing_Machine/Get.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*----------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Instance : BL_Tokenizing_Machine_Get</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*----------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AI_BL_TOKENIZING_MACHINE_GET</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AI_BL_TOKENIZING_MACHINE_GET</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Global Context --------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#include</FONT></B> "<A HREF="../../AI/BL_Tokenizing_Machine/Kernel.html">AI/BL_Tokenizing_Machine/Kernel.h</A>"
+	
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_instance</B>
+<B>class</B> <B><I><FONT COLOR="blue">BL_Tokenizing_Machine_Get</FONT></I></B> :
+    <B>extends</B>
+	<B>abstract_instance</B> BL_Tokenizing_Machine_Kernel
+{
+<B>public</B>:
+    
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>math</B> <B>definition</B> IS_NEXT_TOKEN_AND_REMAINDER (
+                in_str: <B>string</B> <B>of</B> <B>character</B>
+                token_text: <B>string</B> <B>of</B> <B>character</B>
+                c: <B>character</B>
+                out_str: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>satisfies</B>
+	    IS_NEXT_TOKEN_AND_REMAINDER (in_str, token_text, c, out_str) =
+	    (in_str = token_text * &lt;c&gt; * out_str <B>and</B>
+	     IS_COMPLETE_TOKEN_TEXT (token_text, c) <B>and</B>
+	     <B>for</B> <B>all</B> t2, out_str2: <B>string</B> <B>of</B> <B>character</B>, c2: <B>character</B>
+		 (<B>if</B> IS_NEXT_TOKEN_AND_REMAINDER (in_str, t2, c2, out_str2)
+		  <B>then</B> |token_text| &lt;= |t2|))
+
+        <B>math</B> <B>definition</B> IS_NEXT_NON_SEPARATOR_TOKEN_AND_REMAINDER (
+                in_str: <B>string</B> <B>of</B> <B>character</B>
+                token_text: <B>string</B> <B>of</B> <B>character</B>
+                c: <B>character</B>
+                out_str: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>satisfies</B>
+	    (IS_NEXT_TOKEN_AND_REMAINDER (in_str, token_text, c, out_str) <B>and</B>
+	     WHICH_KIND (token_text) /= WHITE_SPACE <B>and</B>
+	     WHICH_KIND (token_text) /= COMMENT) <B>or</B>
+	    (<B>there</B> <B>exists</B> t1, out_str1: <B>string</B> <B>of</B> <B>character</B>,
+			  c1: <B>character</B>
+		 (IS_NEXT_TOKEN_AND_REMAINDER (in_str, t1, c1, out_str1) <B>and</B>
+		  IS_NEXT_NON_SEPARATOR_TOKEN_AND_REMAINDER (
+			       &lt;c1&gt; * out_str1, token_text, c, out_str) <B>and</B>
+		  (WHICH_KIND (t1) = WHITE_SPACE <B>or</B>
+		   WHICH_KIND (t1) = COMMENT)))
+		       
+        <B>math</B> <B>definition</B> IS_REMAINDER_AFTER_LEADING_SEPARATORS (
+                in_str: <B>string</B> <B>of</B> <B>character</B>
+                out_str: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>satisfies</B>
+	    <B>if</B> <B>there</B> <B>exists</B> t, o: <B>string</B> <B>of</B> <B>character</B>, c: <B>character</B>
+		(IS_NEXT_TOKEN_AND_REMAINDER (in_str, t, c, o)  <B>and</B>
+		 (WHICH_KIND (t) = WHITE_SPACE  <B>or</B>
+		  WHICH_KIND (t) = COMMENT))
+	    <B>then</B>
+		<B>there</B> <B>exists</B> t, o: <B>string</B> <B>of</B> <B>character</B>, c: <B>character</B>
+		(IS_NEXT_TOKEN_AND_REMAINDER (in_str, t, c, o)  <B>and</B>
+		 (WHICH_KIND (t) = WHITE_SPACE  <B>or</B>
+		  WHICH_KIND (t) = COMMENT) <B>and</B>
+		  IS_REMAINDER_AFTER_LEADING_SEPARATORS (in_str, out_str) =
+		      IS_REMAINDER_AFTER_LEADING_SEPARATORS
+			  (&lt;c&gt; * o, out_str))
+	    <B>else</B>
+		IS_REMAINDER_AFTER_LEADING_SEPARATORS (in_str, out_str) =
+		    (in_str = out_str)
+		    
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Get_Next_Token</FONT> (
+            <B>alters</B>   Character_IStream&amp; str,
+            <B>produces</B> Text&amp; token_text,
+            <B>produces</B> Integer&amp; token_kind
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    str.is_open = <B>true</B>
+	<B>ensures</B>
+	    str.is_open = <B>true</B> <B>and</B>
+	    str.ext_name = #str.ext_name <B>and</B>
+	    (<B>if</B> <B>there</B> <B>exists</B> t, x: <B>string</B> <B>of</B> <B>character</B>, c: <B>character</B>
+		(IS_NEXT_TOKEN_AND_REMAINDER (
+		     #<B>self</B>.buffer * #str.content, t, c, x))
+	     <B>then</B>
+		 <B>there</B> <B>exists</B> c: <B>character</B>
+		     (<B>self</B>.buffer = &lt;c&gt; <B>and</B>
+		      IS_NEXT_TOKEN_AND_REMAINDER (
+			  #<B>self</B>.buffer * #str.content,
+			  token_text, c, str.content))
+	     <B>else</B>
+		 token_text = #<B>self</B>.buffer * #str.content <B>and</B>
+		 str.content = <B>empty_string</B> <B>and</B>
+		 <B>self</B>.buffer = <B>empty_string</B>) <B>and</B>
+	    <B>self</B>.ready_to_dispense = <B>false</B> <B>and</B>
+	    token_kind = WHICH_KIND (token_text)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Get_Next_Non_Separator_Token</FONT> (
+            <B>alters</B>   Character_IStream&amp; str,
+            <B>produces</B> Text&amp; token_text,
+            <B>produces</B> Integer&amp; token_kind
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    str.is_open = <B>true</B>
+	<B>ensures</B>
+	    str.is_open = <B>true</B> <B>and</B>
+	    str.ext_name = #str.ext_name <B>and</B>
+	    (<B>if</B> <B>there</B> <B>exists</B> t, x: <B>string</B> <B>of</B> <B>character</B>, c: <B>character</B> 
+		(IS_NEXT_NON_SEPARATOR_TOKEN_AND_REMAINDER (
+		     #<B>self</B>.buffer * #str.content, t, c, x))
+	     <B>then</B>
+		 <B>there</B> <B>exists</B> c: <B>character</B>
+		     (<B>self</B>.buffer = &lt;c&gt; <B>and</B>
+		      IS_NEXT_NON_SEPARATOR_TOKEN_AND_REMAINDER (
+			  #<B>self</B>.buffer * #str.content,
+			  token_text, c, str.content))
+	     <B>else</B>
+		 <B>self</B>.buffer = <B>empty_string</B>  <B>and</B>
+		 str.content = <B>empty_string</B>  <B>and</B>
+		 IS_REMAINDER_AFTER_LEADING_SEPARATORS
+		     (#<B>self</B>.buffer * #str.content, token_text))
+	    <B>self</B>.ready_to_dispense = <B>false</B>  <B>and</B>
+	    token_kind = WHICH_KIND (token_text)
+    !*/</I></FONT>
+
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AI_BL_TOKENIZING_MACHINE_GET</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Sat Aug 23 09:00:55 EDT 2008
+</BODY>
+</HTML>

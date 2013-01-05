@@ -1,0 +1,71 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.51 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#0000EE" alink="#FE0000">
+
+<h3>CSE 2231.01: BL Context-free Grammar</h3>
+
+<hr WIDTH="100%" noshade color="#000000">
+<pre>
+          ---------------------------------------------------------------
+          --- Program Parse ---------------------------------------------
+          ---------------------------------------------------------------
+          
+          &lt;program&gt; -&gt; PROGRAM &lt;identifier&gt; IS
+                           { &lt;new_instruction&gt; }
+                       BEGIN
+                           &lt;block&gt;
+                       END &lt;identifier&gt;
+          
+          &lt;new_instruction&gt; -&gt; INSTRUCTION &lt;identifier&gt; IS
+                                   &lt;block&gt;
+                               END &lt;identifier&gt;
+          
+          ---------------------------------------------------------------
+          --- Statement Parse -------------------------------------------
+          ---------------------------------------------------------------
+          
+          &lt;block&gt; -&gt; { &lt;statement&gt; }
+          
+          &lt;statement&gt; -&gt; &lt;if&gt; | &lt;while&gt; | &lt;call&gt;
+          
+          &lt;if&gt; -&gt; &lt;if_only&gt; | &lt;if_else&gt;
+
+          &lt;if_only&gt; -&gt; IF &lt;condition&gt; THEN
+                           &lt;block&gt;
+                       END IF
+
+          &lt;if_else&gt; -&gt; IF &lt;condition&gt; THEN
+                           &lt;block&gt;
+                       ELSE
+                           &lt;block&gt;
+                       END IF
+          
+          &lt;while&gt; -&gt; WHILE &lt;condition&gt; DO
+                         &lt;block&gt;
+                     END WHILE
+          
+          &lt;call&gt; -&gt; &lt;identifier&gt;
+          
+          &lt;condition&gt; -&gt; next-is-empty  | next-is-not-empty  |
+                         next-is-wall   | next-is-not-wall   |
+                         next-is-enemy  | next-is-not-enemy  |
+                         next-is-friend | next-is-not-friend |
+                         random         | true
+          
+          ---------------------------------------------------------------
+          --- Tokenizer -------------------------------------------------
+          ---------------------------------------------------------------
+          
+          &lt;identifier&gt; -&gt; &lt;letter&gt; { &lt;letter&gt; | &lt;digit&gt; | - }
+          
+          &lt;letter&gt; -&gt; a | b | ... | z | A | B | ...  | Z
+          
+          &lt;digit&gt; -&gt; 0 | 1 | ... | 9
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+<TITLE>AT/Program/Kernel.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../Program_A.html"><FONT SIZE=5><B>AT/Program/Kernel.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*-------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Template : Program_Kernel</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*-------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AT_PROGRAM_KERNEL</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AT_PROGRAM_KERNEL</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Global Context --------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<FONT COLOR="SaddleBrown"><I>/*!
+    <B>#include</B> "<A HREF="../../AT/Statement/Kernel.html">AT/Statement/Kernel.h</A>"
+!*/</I></FONT>
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_template</B> &lt;
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Statement</FONT></I></B>
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> Statement_Kernel &lt;Statement&gt;
+        !*/</I></FONT>
+    &gt;
+<B>class</B> <B><I><FONT COLOR="blue">Program_Kernel</FONT></I></B>
+{
+<B>public</B>:
+
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>math</B> <B>definition</B> IS_PRIMITIVE_INSTRUCTION (
+                name: IDENTIFIER
+            ): <B>boolean</B> <B>is</B>
+            name <B>is</B> <B>in</B> {"move", "turnleft", "turnright", "infect", "skip"}
+
+        <B>math</B> <B>definition</B> IS_LEGAL_USER_DEFINED_IDENTIFIER (
+                name: IDENTIFIER
+            ): <B>boolean</B> <B>is</B>
+            name /= <B>empty_string</B> <B>and</B>
+            <B>not</B> IS_PRIMITIVE_INSTRUCTION (name)
+
+        <B>math</B> <B>subtype</B> CONTEXT <B>is</B> <B>finite</B> <B>set</B> <B>of</B> (
+                name: IDENTIFIER
+                body: STATEMENT
+            )
+            <B>exemplar</B> c
+            <B>constraint</B>
+                <B>for</B> <B>all</B> name1, name2: IDENTIFIER, body1, body2: STATEMENT
+                <B>where</B> ((name1, body1) <B>is</B> <B>in</B> c <B>and</B> (name2, body2) <B>is</B> <B>in</B> c)
+                    (<B>if</B> name1= name2 <B>then</B> body1 = body2) <B>and</B>
+                <B>for</B> <B>all</B> name: IDENTIFIER, body: STATEMENT
+                <B>where</B> ((name, body) <B>is</B> <B>in</B> c)
+                    (IS_LEGAL_USER_DEFINED_IDENTIFIER (name) <B>and</B>
+                     <B>root</B> (body).kind = BLOCK)
+
+        <B>math</B> <B>definition</B> IS_DEFINED_IN (
+                c: CONTEXT
+                name: IDENTIFIER
+            ): <B>boolean</B> <B>is</B>
+            <B>there</B> <B>exists</B> body: STATEMENT
+                ((name, body) <B>is</B> <B>in</B> c)
+
+        <B>math</B> <B>subtype</B> PROGRAM <B>is</B> (
+                name: IDENTIFIER
+                context: CONTEXT
+                body: STATEMENT
+            )
+            <B>exemplar</B> p
+            <B>constraint</B>
+                <B>root</B> (p.body).kind = BLOCK
+
+        <B>math</B> <B>definition</B> IS_INITIAL_PROGRAM (
+                p: PROGRAM
+            ): <B>boolean</B> <B>is</B>
+            p.name = <B>empty_string</B> <B>and</B>
+            p.context = <B>empty_set</B> <B>and</B>
+            IS_INITIAL_STATEMENT (p.body)
+    !*/</I></FONT>
+
+    <B>standard_abstract_operations</B> (Program_Kernel);
+    <FONT COLOR="SaddleBrown"><I>/*!
+        Program_Kernel <B>is</B> <B>modeled</B> <B>by</B> PROGRAM
+        <B>initialization</B>
+            <B>ensures</B> IS_INITIAL_PROGRAM (<B>self</B>)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Swap_Name</FONT> (
+            <B>alters</B> Text&amp; n
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>requires</B>
+            IS_IDENTIFIER (n)
+        <B>ensures</B>
+            <B>self</B>.name = #n <B>and</B>
+            n = #<B>self</B>.name <B>and</B>
+            <B>self</B>.context = #<B>self</B>.context <B>and</B>
+            <B>self</B>.body = #<B>self</B>.body
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Swap_Body</FONT> (
+            <B>alters</B> Statement&amp; statement
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>requires</B>
+            <B>root</B> (statement).kind = BLOCK
+        <B>ensures</B>
+            <B>self</B>.name = #<B>self</B>.name <B>and</B>
+            <B>self</B>.context = #<B>self</B>.context <B>and</B>
+            <B>self</B>.body = #statement <B>and</B>
+            statement = #<B>self</B>.body
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Add_To_Context</FONT> (
+            <B>consumes</B> Text&amp; n,
+            <B>consumes</B> Statement&amp; statement
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>requires</B>
+            IS_LEGAL_USER_DEFINED_IDENTIFIER (n) <B>and</B>
+            <B>not</B> IS_DEFINED_IN (<B>self</B>.context, n) <B>and</B>
+            <B>root</B> (statement).kind = BLOCK
+        <B>ensures</B>
+            <B>self</B>.name = #<B>self</B>.name <B>and</B>
+            <B>self</B>.context = #<B>self</B>.context <B>union</B> {(#n, #statement)} <B>and</B>
+            <B>self</B>.body = #<B>self</B>.body
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Remove_From_Context</FONT> (
+            <B>preserves</B> Text n,
+            <B>produces</B> Text&amp; n_copy,
+            <B>produces</B> Statement&amp; statement
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>requires</B>
+            IS_DEFINED_IN (<B>self</B>.context, n)
+        <B>ensures</B>
+            n_copy = n <B>and</B>
+            <B>self</B>.name = #<B>self</B>.name <B>and</B>
+            <B>self</B>.context = #<B>self</B>.context - {(n_copy, statement)} <B>and</B>
+            <B>self</B>.body = #<B>self</B>.body
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Remove_Any_From_Context</FONT> (
+            <B>produces</B> Text&amp; n,
+            <B>produces</B> Statement&amp; statement
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>requires</B>
+            <B>self</B>.context /= <B>empty_set</B>
+        <B>ensures</B>
+            <B>self</B>.name = #<B>self</B>.name <B>and</B>
+            <B>self</B>.context = #<B>self</B>.context - {(n, statement)} <B>and</B>
+            <B>self</B>.body = #<B>self</B>.body
+    !*/</I></FONT>
+
+    <B>function</B> Boolean <FONT COLOR="blue">Is_In_Context</FONT> (
+            <B>preserves</B> Text n
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>ensures</B>
+            Is_In_Context = IS_DEFINED_IN (<B>self</B>.context, n)
+    !*/</I></FONT>
+
+    <B>function</B> Integer <FONT COLOR="blue">Size_Of_Context</FONT> () <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>ensures</B>
+            Size_Of_Context = |<B>self</B>.context|
+    !*/</I></FONT>
+
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AT_PROGRAM_KERNEL</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Mon Feb 26 17:03:05 EST 2007
+</BODY>
+</HTML>

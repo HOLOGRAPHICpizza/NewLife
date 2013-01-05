@@ -1,0 +1,347 @@
+<HTML>
+<HEAD>
+<TITLE>AT/Program/Generate_Code.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../Program_A.html"><FONT SIZE=5><B>AT/Program/Generate_Code.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*-------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Template : Program_Generate_Code</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*-------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AT_PROGRAM_GENERATE_CODE</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AT_PROGRAM_GENERATE_CODE</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Global Context --------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#include</FONT></B> "<A HREF="../../AT/Program/Kernel.html">AT/Program/Kernel.h</A>"
+<FONT COLOR="SaddleBrown"><I>/*!
+    <B>#include</B> "<A HREF="../../AT/Sequence/Kernel.html">AT/Sequence/Kernel.h</A>"
+!*/</I></FONT>
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>enumeration</B> Instruction_Codes
+{
+    MOVE,
+    TURNLEFT,
+    TURNRIGHT,
+    INFECT,
+    SKIP,
+    HALT,
+    JUMP,
+    JUMP_IF_NOT_NEXT_IS_EMPTY,
+    JUMP_IF_NOT_NEXT_IS_NOT_EMPTY,
+    JUMP_IF_NOT_NEXT_IS_WALL,
+    JUMP_IF_NOT_NEXT_IS_NOT_WALL,
+    JUMP_IF_NOT_NEXT_IS_FRIEND,
+    JUMP_IF_NOT_NEXT_IS_NOT_FRIEND,
+    JUMP_IF_NOT_NEXT_IS_ENEMY,
+    JUMP_IF_NOT_NEXT_IS_NOT_ENEMY,
+    JUMP_IF_NOT_RANDOM,
+    JUMP_IF_NOT_TRUE
+};
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_template</B> &lt;
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Statement</FONT></I></B>,
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> Statement_Kernel &lt;Statement&gt;
+        !*/</I></FONT>
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Compiled_Program</FONT></I></B>
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> Sequence_Kernel &lt;Integer&gt;
+        !*/</I></FONT>
+    &gt;
+<B>class</B> <B><I><FONT COLOR="blue">Program_Generate_Code</FONT></I></B> :
+    <B>extends</B>
+        <B>abstract_instance</B> Program_Kernel &lt;Statement&gt;
+{
+<B>public</B>:
+    
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>math</B> <B>definition</B> CALLS_INSTRUCTION (
+                s: STATEMENT
+                n: IDENTIFIER
+            ): <B>boolean</B> <B>satisfies</B>
+            <B>there</B> <B>exists</B> x: STATEMENT_LABEL
+                (x = <B>root</B> (s) <B>and</B>
+                 <B>if</B> x.kind = CALL
+                 <B>then</B>
+                     CALLS_INSTRUCTION (s, n) =
+                         (n = x.instruction)
+                 <B>else</B>
+                     CALLS_INSTRUCTION (s, n) =
+                         <B>there</B> <B>exists</B> y: STATEMENT
+                         <B>where</B> (y <B>is</B> <B>in</B> <B>elements</B> (<B>children</B> (s)))
+                             (CALLS_INSTRUCTION (y, n)))
+
+        <B>math</B> <B>subtype</B> NEW_INSTRUCTION <B>is</B> (
+                name: IDENTIFIER
+                body: STATEMENT
+            )
+
+        <B>math</B> <B>definition</B> HAS_A_CALLING_CYCLE (
+                c: CONTEXT
+            ): <B>boolean</B> <B>is</B>
+            <B>there</B> <B>exists</B> v: NEW_INSTRUCTION, s: <B>string</B> <B>of</B> NEW_INSTRUCTION
+                (<B>for</B> <B>all</B> i, j: NEW_INSTRUCTION
+                         <B>where</B> (&lt;i&gt; * &lt;j&gt; <B>is</B> <B>substring</B> <B>of</B> &lt;v&gt; * s * &lt;v&gt;)
+                     ({i, j} <B>is</B> <B>subset</B> <B>of</B> c  <B>and</B>
+                      CALLS_INSTRUCTION (i.body, j.name)))
+
+        <B>math</B> <B>definition</B> IS_CONSISTENT_WITH_CONTEXT (
+                s: STATEMENT
+                c: CONTEXT
+            ): <B>boolean</B> <B>satisfies</B>
+            <B>there</B> <B>exists</B> x: STATEMENT_LABEL
+                (x = <B>root</B> (s) <B>and</B>
+                 <B>if</B> x.kind = CALL
+                 <B>then</B>
+                     IS_CONSISTENT_WITH_CONTEXT (s, c) =
+                         IS_PRIMITIVE_INSTRUCTION (x.instruction) <B>or</B>
+                         IS_DEFINED_IN (c, x.instruction)
+                 <B>else</B>
+                     IS_CONSISTENT_WITH_CONTEXT (s, c) =
+                         <B>for</B> <B>all</B> y: STATEMENT
+                         <B>where</B> (y <B>is</B> <B>in</B> <B>elements</B> (<B>children</B> (s)))
+                             (IS_CONSISTENT_WITH_CONTEXT (y, c)))
+
+        <B>math</B> <B>definition</B> IS_CONSISTENT (
+                p: PROGRAM
+            ): <B>boolean</B> <B>satisfies</B>
+            IS_CONSISTENT_WITH_CONTEXT (p.body, p.context)  <B>and</B>
+            <B>for</B> <B>all</B> ni: NEW_INSTRUCTION
+                    <B>where</B> (ni <B>is</B> <B>in</B> p.context)
+                (IS_CONSISTENT_WITH_CONTEXT (ni.body, p.context))  <B>and</B>
+            <B>not</B> HAS_A_CALLING_CYCLE (p.context)
+
+        <B>math</B> <B>definition</B> GENERATE_CODE (
+                p: PROGRAM
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>if</B> IS_CONSISTENT (p)
+            <B>then</B>
+                GENERATE_CODE (p) =
+                    GENERATE_CODE_FOR_BLOCK (
+                        0, <B>children</B> (p.body), p.context) * &lt;HALT&gt;
+            <B>else</B>
+                GENERATE_CODE (p) = <B>empty_string</B>
+
+        <B>math</B> <B>definition</B> GENERATE_CODE_FOR_BLOCK (
+                start: <B>integer</B>
+                body: <B>string</B> <B>of</B> STATEMENT
+                context: CONTEXT
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>if</B> body = <B>empty_string</B>
+            <B>then</B>
+                GENERATE_CODE_FOR_BLOCK (
+                    start, body, context) = <B>empty_string</B>
+            <B>else</B>
+                <B>there</B> <B>exists</B> s: STATEMENT, rest: <B>string</B> <B>of</B> STATEMENT
+                    (body = &lt;s&gt; * rest <B>and</B>
+                     GENERATE_CODE_FOR_BLOCK (start, body, context) =
+                         GENERATE_CODE_FOR_STATEMENT (start, s, context) *
+                         GENERATE_CODE_FOR_BLOCK (
+                             start + |GENERATE_CODE_FOR_STATEMENT (
+                                          start, s, context)|,
+                             rest, context))
+
+        <B>math</B> <B>definition</B> GENERATE_CODE_FOR_STATEMENT (
+                start: <B>integer</B>
+                stmt: STATEMENT
+                context: CONTEXT
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>there</B> <B>exists</B> x: STATEMENT_LABEL
+                (x = <B>root</B> (stmt) <B>and</B>
+                 <B>if</B> x.kind = BLOCK
+                 <B>then</B>
+                     GENERATE_CODE_FOR_STATEMENT (start, stmt, context) =
+                         GENERATE_CODE_FOR_BLOCK (
+                             start, <B>children</B> (stmt), context)
+                 <B>else</B> <B>if</B> x.kind = IF
+                 <B>then</B>
+                     GENERATE_CODE_FOR_STATEMENT (start, stmt, context) =
+                         GENERATE_CODE_FOR_IF (
+                             start, x.test,
+                             <B>first</B> (<B>children</B> (stmt)),
+                             context)
+                 <B>else</B> <B>if</B> x.kind = IF_ELSE
+                 <B>then</B>
+                     GENERATE_CODE_FOR_STATEMENT (start, stmt, context) =
+                         GENERATE_CODE_FOR_IF_ELSE (
+                             start, x.test,
+                             <B>first</B> (<B>children</B> (stmt)),
+                             <B>last</B> (<B>children</B> (stmt)), context)
+                 <B>else</B> <B>if</B> x.kind = WHILE
+                 <B>then</B>
+                     GENERATE_CODE_FOR_STATEMENT (start, stmt, context) =
+                         GENERATE_CODE_FOR_WHILE (
+                             start, x.test,
+                             <B>first</B> (<B>children</B> (stmt)),
+                             context)
+                 <B>else</B> <B>if</B> x.kind = CALL
+                 <B>then</B>
+                     GENERATE_CODE_FOR_STATEMENT (start, stmt, context) =
+                         GENERATE_CODE_FOR_CALL (
+                             start, x.instruction, context))
+
+        <B>math</B> <B>definition</B> GENERATE_CODE_FOR_IF (
+                start: <B>integer</B>
+                test: <B>integer</B>
+                body: STATEMENT
+                context: CONTEXT
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>there</B> <B>exists</B> str: <B>string</B> <B>of</B> <B>integer</B>
+                (str = GENERATE_CODE_FOR_BLOCK (
+                           start + 2, <B>children</B> (body), context) <B>and</B>
+                 GENERATE_CODE_FOR_IF (start, test, body, context) =
+                     &lt;GENERATE_TEST_CODE (test)&gt; * &lt;start + |str| + 2&gt; *
+                     str)
+
+        <B>math</B> <B>definition</B> GENERATE_CODE_FOR_IF_ELSE (
+                start: <B>integer</B>
+                test: <B>integer</B>
+                if_body: STATEMENT
+                else_body: STATEMENT
+                context: CONTEXT
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>there</B> <B>exists</B> str1, str2: <B>string</B> <B>of</B> <B>integer</B>
+                (str1 = GENERATE_CODE_FOR_BLOCK (
+                            start + 2, <B>children</B> (if_body), context) <B>and</B>
+                 str2 = GENERATE_CODE_FOR_BLOCK (
+                            start + |str1| + 4,
+                            <B>children</B> (else_body), context) <B>and</B>
+                 GENERATE_CODE_FOR_IF_ELSE (
+                         start, test, if_body, else_body, context) =
+                     &lt;GENERATE_TEST_CODE (test)&gt; * &lt;start + |str1| + 4&gt; *
+                     str1 * &lt;JUMP&gt; * &lt;start + |str1| + |str2| + 4&gt; * str2)
+
+        <B>math</B> <B>definition</B> GENERATE_CODE_FOR_WHILE (
+                start: <B>integer</B>
+                test: <B>integer</B>
+                body: STATEMENT
+                context: CONTEXT
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>there</B> <B>exists</B> str: <B>string</B> <B>of</B> <B>integer</B>
+                (str = GENERATE_CODE_FOR_BLOCK (
+                           start + 2, <B>children</B> (body), context) <B>and</B>
+                 GENERATE_CODE_FOR_WHILE (start, test, body, context) =
+                     &lt;GENERATE_TEST_CODE (test)&gt; * &lt;start + |str| + 4&gt; *
+                     str * &lt;JUMP&gt; * &lt;start&gt;)
+
+        <B>math</B> <B>definition</B> GENERATE_CODE_FOR_CALL (
+                start: <B>integer</B>
+                inst: IDENTIFIER
+                context: CONTEXT
+            ): <B>string</B> <B>of</B> <B>integer</B> <B>satisfies</B>
+            <B>if</B> IS_PRIMITIVE_INSTRUCTION (inst)
+            <B>then</B>
+                GENERATE_CODE_FOR_CALL (start, inst, context) =
+                    &lt;GENERATE_INSTRUCTION_CODE (inst)&gt;
+            <B>else</B>
+                <B>there</B> <B>exists</B> body: STATEMENT
+                    ((inst, body) <B>is</B> <B>in</B> context <B>and</B>
+                     GENERATE_CODE_FOR_CALL (start, inst, context) =
+                         GENERATE_CODE_FOR_BLOCK (
+                               start, <B>children</B> (body), context))
+
+        <B>math</B> <B>definition</B> GENERATE_INSTRUCTION_CODE (
+                inst: IDENTIFIER
+            ): <B>integer</B> <B>satisfies</B>
+            <B>if</B> inst = "move"
+            <B>then</B>
+                GENERATE_INSTRUCTION_CODE (inst) = MOVE
+            <B>else</B> <B>if</B> inst = "turnleft"
+            <B>then</B>
+                GENERATE_INSTRUCTION_CODE (inst) = TURNLEFT
+            <B>else</B> <B>if</B> inst = "turnright"
+            <B>then</B>
+                GENERATE_INSTRUCTION_CODE (inst) = TURNRIGHT
+            <B>else</B> <B>if</B> inst = "infect"
+            <B>then</B>
+                GENERATE_INSTRUCTION_CODE (inst) = INFECT
+            <B>else</B> <B>if</B> inst = "skip"
+            <B>then</B>
+                GENERATE_INSTRUCTION_CODE (inst) = SKIP
+
+        <B>math</B> <B>definition</B> GENERATE_TEST_CODE (
+                test: <B>integer</B>
+            ): <B>integer</B> <B>satisfies</B>
+            <B>if</B> test = NEXT_IS_EMPTY
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_EMPTY
+            <B>else</B> <B>if</B> test = NEXT_IS_NOT_EMPTY
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_NOT_EMPTY
+            <B>else</B> <B>if</B> test = NEXT_IS_WALL
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_WALL
+            <B>else</B> <B>if</B> test = NEXT_IS_NOT_WALL
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_NOT_WALL
+            <B>else</B> <B>if</B> test = NEXT_IS_FRIEND
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_FRIEND
+            <B>else</B> <B>if</B> test = NEXT_IS_NOT_FRIEND
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_NOT_FRIEND
+            <B>else</B> <B>if</B> test = NEXT_IS_ENEMY
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_ENEMY
+            <B>else</B> <B>if</B> test = NEXT_IS_NOT_ENEMY
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_NEXT_IS_NOT_ENEMY
+            <B>else</B> <B>if</B> test = RANDOM
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_RANDOM
+            <B>else</B> <B>if</B> test = TRUE
+            <B>then</B>
+                GENERATE_TEST_CODE (test) = JUMP_IF_NOT_TRUE
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Generate_Code</FONT> (
+            <B>produces</B> Compiled_Program&amp; cp
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>preserves</B> <B>self</B>
+        <B>ensures</B>
+            <B>if</B> IS_CONSISTENT (<B>self</B>)
+            <B>then</B>
+                cp = GENERATE_CODE (<B>self</B>)
+    !*/</I></FONT>
+
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AT_PROGRAM_GENERATE_CODE</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Mon Feb 26 17:03:05 EST 2007
+</BODY>
+</HTML>

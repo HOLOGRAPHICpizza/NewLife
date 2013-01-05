@@ -1,0 +1,289 @@
+<HTML>
+<HEAD>
+<TITLE>AI/BL_Tokenizing_Machine/Kernel.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../BL_Tokenizing_Machine_A.html"><FONT SIZE=5><B>AI/BL_Tokenizing_Machine/Kernel.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*----------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Instance : BL_Tokenizing_Machine_Kernel</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*----------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AI_BL_TOKENIZING_MACHINE_KERNEL</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AI_BL_TOKENIZING_MACHINE_KERNEL</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>enumeration</B> Token_Types
+{
+    KEYWORD,
+    IDENTIFIER,
+    CONDITION,
+    WHITE_SPACE,
+    COMMENT,
+    ERROR
+};
+    
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_instance</B>
+<B>class</B> <B><I><FONT COLOR="blue">BL_Tokenizing_Machine_Kernel</FONT></I></B>
+{
+<B>public</B>:
+    
+    <FONT COLOR="SaddleBrown"><I>/*!
+        //  some general operations on strings
+        
+        <B>math</B> <B>definition</B> LAST_OF (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+            <B>if</B> s = <B>empty_string</B>
+                <B>then</B> LAST_OF (s) = <B>empty_string</B>
+            <B>else</B> <B>there</B> <B>exists</B> c: <B>character</B>, rest_of_s: <B>string</B> <B>of</B> <B>character</B>
+                     (s = rest_of_s * &lt;c&gt; <B>and</B>
+                      LAST_OF (s) = &lt;c&gt;)
+
+        <B>math</B> <B>definition</B> ALL_BUT_LAST_OF (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+            s = ALL_BUT_LAST_OF (s) * LAST_OF (s)
+
+        <B>math</B> <B>definition</B> PREFIX (
+                s_set: <B>set</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B>
+            ): <B>set</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>is</B>
+            {x: <B>string</B> <B>of</B> <B>character</B> <B>where</B>
+                 (<B>there</B> <B>exists</B> y: <B>string</B> <B>of</B> <B>character</B>
+                      (x * y <B>is</B> <B>in</B> s_set))}
+
+        // domain specific definitions
+
+        <B>math</B> <B>definition</B> IS_KEYWORD (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            s <B>is</B> <B>in</B> {"BEGIN", "DO", "ELSE", "END", "INSTRUCTION",
+                     "IF", "IS", "PROGRAM", "THEN", "WHILE"}
+
+        <B>math</B> <B>definition</B> IS_CONDITION_NAME (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            s <B>is</B> <B>in</B> {"next-is-empty", "next-is-not-empty",
+                     "next-is-enemy", "next-is-not-enemy",
+                     "next-is-friend", "next-is-not-friend",
+                     "next-is-wall", "next-is-not-wall",
+                     "random", "true"}
+
+        <B>math</B> <B>definition</B> IS_LETTER (
+                c: <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            c <B>is</B> <B>in</B> {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+                     'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                     's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
+                     'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+                     'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}
+
+        <B>math</B> <B>definition</B> IS_DIGIT (
+                c: <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            c <B>is</B> <B>in</B> {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+
+        <B>math</B> <B>definition</B> IS_IDENTIFIER (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            <B>there</B> <B>exists</B> c: <B>character</B>, rest: <B>string</B> <B>of</B> <B>character</B>
+                (s = &lt;c&gt; * rest <B>and</B>
+                 IS_LETTER (c) <B>and</B>
+                 <B>for</B> <B>all</B> x: <B>character</B> <B>where</B> (x <B>is</B> <B>in</B> <B>elements</B> (rest))
+                     (IS_LETTER (x) <B>or</B> IS_DIGIT (x) <B>or</B> x = '-')) <B>and</B>
+            <B>not</B> IS_KEYWORD (s) <B>and</B>
+            <B>not</B> IS_CONDITION_NAME (s)
+
+        <B>math</B> <B>definition</B> IS_WHITE_SPACE (
+                s : <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            s /= <B>empty_string</B>  <B>and</B>
+            <B>elements</B> (s) <B>is</B> <B>subset</B> <B>of</B> {'\n', '\t', ' '}
+                
+        <B>math</B> <B>definition</B> IS_COMMENT (
+                s : <B>string</B> <B>of</B> <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            <B>first</B> (s) = '#' <B>and</B>
+            '\n' <B>is</B> <B>not</B> <B>in</B> <B>elements</B> (s)
+                
+        <B>math</B> <B>definition</B> OK_STRINGS: <B>set</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>is</B>
+            {s: <B>string</B> <B>of</B> <B>character</B> <B>where</B> (IS_KEYWORD (s))} <B>union</B>
+            {s: <B>string</B> <B>of</B> <B>character</B> <B>where</B> (IS_IDENTIFIER (s))} <B>union</B>
+            {s: <B>string</B> <B>of</B> <B>character</B> <B>where</B> (IS_CONDITION_NAME (s))} <B>union</B>
+            {s: <B>string</B> <B>of</B> <B>character</B> <B>where</B> (IS_WHITE_SPACE (s))} <B>union</B>
+            {s: <B>string</B> <B>of</B> <B>character</B> <B>where</B> (IS_COMMENT (s))}
+
+        <B>math</B> <B>definition</B> IS_COMPLETE_TOKEN_TEXT (
+                s: <B>string</B> <B>of</B> <B>character</B>
+                c: <B>character</B>
+            ): <B>boolean</B> <B>is</B>
+            (s <B>is</B> <B>in</B> OK_STRINGS <B>and</B> s * &lt;c&gt; <B>is</B> <B>not</B> <B>in</B> OK_STRINGS) <B>or</B>
+            (&lt;c&gt; <B>is</B> <B>in</B> PREFIX (OK_STRINGS) <B>and</B>
+             s * &lt;c&gt; <B>is</B> <B>not</B> <B>in</B> PREFIX (OK_STRINGS))
+
+        <B>math</B> <B>definition</B> WHICH_KIND (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>integer</B> <B>satisfies</B>
+            <B>if</B> IS_KEYWORD (s)
+            <B>then</B>
+                WHICH_KIND (s) = KEYWORD
+            <B>else</B> <B>if</B> IS_IDENTIFIER (s)
+            <B>then</B>
+                WHICH_KIND (s) = IDENTIFIER
+            <B>else</B> <B>if</B> IS_CONDITION_NAME (s)
+            <B>then</B>
+                WHICH_KIND (s) = CONDITION
+            <B>else</B> <B>if</B> IS_WHITE_SPACE (s)
+            <B>then</B>
+                WHICH_KIND (s) = WHITE_SPACE
+            <B>else</B> <B>if</B> IS_COMMENT (s)
+            <B>then</B>
+                WHICH_KIND (s) = COMMENT
+            <B>else</B>
+                WHICH_KIND (s) = ERROR
+
+        <B>math</B> <B>definition</B> REMOVE_SEPARATORS (
+                s: <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B>
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+            <B>if</B> s = <B>empty_string</B>
+            <B>then</B>
+                REMOVE_SEPARATORS (s) = <B>empty_string</B>
+            <B>else</B>
+                <B>there</B> <B>exists</B> t: <B>string</B> <B>of</B> <B>character</B>,
+                             rest: <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B>
+                    (s = &lt;t&gt; * rest <B>and</B>
+                     <B>if</B> IS_WHITE_SPACE (t) <B>or</B> IS_COMMENT (t)
+                     <B>then</B>
+                         REMOVE_SEPARATORS (s) = REMOVE_SEPARATORS (rest)
+                     <B>else</B>
+                         REMOVE_SEPARATORS (s) =
+                             &lt;t&gt; * REMOVE_SEPARATORS (rest))
+
+        <B>math</B> <B>definition</B> TOKENIZE_PROGRAM_TEXT (
+                s: <B>string</B> <B>of</B> <B>character</B>
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+            <B>if</B> s = <B>empty_string</B>
+            <B>then</B>
+                TOKENIZE_PROGRAM_TEXT (s) = <B>empty_string</B>
+            <B>else</B>
+                <B>there</B> <B>exists</B> t, rest: <B>string</B> <B>of</B> <B>character</B>
+                    (s = t * rest <B>and</B>
+                     t /= <B>empty_string</B> <B>and</B>
+                     (<B>if</B> rest /= <B>empty_string</B>
+                      <B>then</B>
+                          <B>there</B> <B>exists</B> c: <B>character</B>,
+                                       rest_of_rest: <B>string</B> <B>of</B> <B>character</B>
+                              (rest = &lt;c&gt; * rest_of_rest <B>and</B>
+                               IS_COMPLETE_TOKEN_TEXT (t, c))) <B>and</B>
+                     (<B>for</B> <B>all</B> p, q: <B>string</B> <B>of</B> <B>character</B>, c: <B>character</B>
+                      <B>where</B> (t = p * &lt;c&gt; * q)
+                          (<B>not</B> IS_COMPLETE_TOKEN_TEXT (p, c))) <B>and</B>
+                     TOKENIZE_PROGRAM_TEXT (s) =
+                         &lt;t&gt; * TOKENIZE_PROGRAM_TEXT (rest))
+
+        <B>math</B> <B>subtype</B> BL_TOKENIZING_MACHINE_MODEL <B>is</B> (
+                buffer: <B>string</B> <B>of</B> <B>character</B>
+                ready_to_dispense: <B>boolean</B>
+            )
+            <B>exemplar</B> m
+            <B>constraint</B>
+                m.ready_to_dispense =
+                    <B>there</B> <B>exists</B> c: <B>character</B>
+                       (LAST_OF (m.buffer) = &lt;c&gt; <B>and</B>
+                        IS_COMPLETE_TOKEN_TEXT (ALL_BUT_LAST_OF (m.buffer), c))
+    !*/</I></FONT>
+
+    <B>standard_abstract_operations</B> (BL_Tokenizing_Machine_Kernel);
+    <FONT COLOR="SaddleBrown"><I>/*!
+        BL_Tokenizing_Machine_Kernel <B>is</B> <B>modeled</B> <B>by</B> BL_TOKENIZING_MACHINE_MODEL
+        <B>initialization</B> <B>ensures</B>
+            <B>self</B>.buffer = <B>empty_string</B> <B>and</B>
+            <B>self</B>.ready_to_dispense = <B>false</B>
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Insert</FONT> (
+            <B>preserves</B> Character ch
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    <B>self</B>.ready_to_dispense = <B>false</B>
+	<B>ensures</B>
+	    <B>self</B>.buffer = #<B>self</B>.buffer * &lt;ch&gt; <B>and</B>
+	    <B>self</B>.ready_to_dispense =
+			IS_COMPLETE_TOKEN_TEXT (#<B>self</B>.buffer, ch)
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Dispense</FONT> (
+            <B>produces</B> Text&amp; token_text,
+            <B>produces</B> Integer&amp; token_kind
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    <B>self</B>.ready_to_dispense = <B>true</B>
+	<B>ensures</B>
+	    token_text = ALL_BUT_LAST_OF (#<B>self</B>.buffer) <B>and</B>
+	    token_kind = WHICH_KIND (token_text) <B>and</B>
+	    <B>self</B>.buffer = LAST_OF (#<B>self</B>.buffer) <B>and</B>
+	    <B>self</B>.ready_to_dispense = <B>false</B>
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Flush_A_Token</FONT> (
+            <B>produces</B> Text&amp; token_text,
+            <B>produces</B> Integer&amp; token_kind
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>requires</B>
+	    <B>self</B>.ready_to_dispense = <B>false</B>
+	<B>ensures</B>
+	    token_text = #<B>self</B>.buffer <B>and</B>
+	    token_kind = WHICH_KIND (token_text) <B>and</B>
+	    <B>self</B>.buffer = <B>empty_string</B> <B>and</B>
+	    <B>self</B>.ready_to_dispense = <B>false</B>
+    !*/</I></FONT>
+
+    <B>function</B> Boolean <FONT COLOR="blue">Is_Ready_To_Dispense</FONT> ( ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>ensures</B>
+	    Is_Ready_To_Dispense = <B>self</B>.ready_to_dispense
+    !*/</I></FONT>
+
+    <B>function</B> Integer <FONT COLOR="blue">Size</FONT> ( ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+	<B>ensures</B>
+	    Size = |<B>self</B>.buffer|
+    !*/</I></FONT>
+
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AI_BL_TOKENIZING_MACHINE_KERNEL</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Wed Feb 16 12:17:11 EST 2011
+</BODY>
+</HTML>

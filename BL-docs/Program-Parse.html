@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<TITLE>AT/Program/Parse.h</TITLE>
+</HEAD>
+<BODY BGCOLOR="white" LINK="CD0000" VLINK="CD0000" ALINK="red">
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%">
+<TR>
+<TD ALIGN=left>
+<A HREF="../../index.html"><FONT SIZE=6><B>Bugs Catalog</B></FONT></A>
+</TD>
+<TD ROWSPAN=3 ALIGN=right VALIGN=top>
+<A HREF="http://www.cse.ohio-state.edu/rsrg/"><IMG SRC="../../rsrg-logo.gif" WIDTH=120 HEIGHT=120 BORDER=0></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<A HREF="../../Program_A.html"><FONT SIZE=5><B>AT/Program/Parse.h</B></FONT></A>
+</TD>
+</TR>
+<TR>
+<TD ALIGN=left>
+<FONT SIZE=2>Copyright &copy; 2011, Reusable Software Research Group, The Ohio State University</FONT>
+</TD>
+</TR>
+</TABLE>
+<HR SIZE=1 NOSHADE>
+<PRE>
+<FONT COLOR="SaddleBrown"><I>//  /*-------------------------------------------------------------------*\</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  |   Abstract Template : Program_Parse</I></FONT>
+<FONT COLOR="SaddleBrown"><I>//  \*-------------------------------------------------------------------*/</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#ifndef</FONT></B> <FONT COLOR="blue">AT_PROGRAM_PARSE</FONT>
+<B><FONT COLOR="ForestGreen">#define</FONT></B> <FONT COLOR="blue">AT_PROGRAM_PARSE</FONT> 1
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Global Context --------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B><FONT COLOR="ForestGreen">#include</FONT></B> "<A HREF="../../AT/Program/Kernel.html">AT/Program/Kernel.h</A>"
+<FONT COLOR="SaddleBrown"><I>/*!
+    <B>#include</B> "<A HREF="../../AT/Statement/Parse.html">AT/Statement/Parse.h</A>"
+!*/</I></FONT>
+
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>/// Interface -------------------------------------------------------------</I></FONT>
+<FONT COLOR="SaddleBrown"><I>///------------------------------------------------------------------------</I></FONT>
+
+<B>abstract_template</B> &lt;
+        <B>concrete_instance</B> <B>class</B> <B><I><FONT COLOR="blue">Statement</FONT></I></B>
+        <FONT COLOR="SaddleBrown"><I>/*!
+            <B>implements</B>
+                <B>abstract_instance</B> Statement_Kernel &lt;Statement&gt;
+        !*/</I></FONT>
+    &gt;
+<B>class</B> <B><I><FONT COLOR="blue">Program_Parse</FONT></I></B> :
+    <B>extends</B>
+        <B>abstract_instance</B> Program_Kernel &lt;Statement&gt;
+{
+<B>public</B>:
+
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>math</B> <B>definition</B> INSTRUCTION_TO_STRING_OF_TOKENS (
+                name: IDENTIFIER
+                body: STATEMENT
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>is</B>
+            &lt;"INSTRUCTION"&gt; * &lt;name&gt; * &lt;"IS"&gt; *
+            STATEMENT_TO_STRING_OF_TOKENS (body) *
+            &lt;"END"&gt; * &lt;name&gt;
+
+        <B>math</B> <B>definition</B> CONTEXT_TO_STRING_OF_TOKENS (
+                c: CONTEXT
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>satisfies</B>
+            <B>if</B> c = <B>empty_set</B>
+            <B>then</B>
+                CONTEXT_TO_STRING_OF_TOKENS (c) = <B>empty_string</B>
+            <B>else</B>
+                <B>there</B> <B>exists</B> name: IDENTIFIER, body: STATEMENT
+                    ((name, body) <B>is</B> <B>in</B> c  <B>and</B>
+                     CONTEXT_TO_STRING_OF_TOKENS (c) =
+                         INSTRUCTION_TO_STRING_OF_TOKENS (name, body) *
+                         CONTEXT_TO_STRING_OF_TOKENS (c - {(name, body)}))
+
+        <B>math</B> <B>definition</B> PROGRAM_TO_STRING_OF_TOKENS (
+                p: PROGRAM
+            ): <B>string</B> <B>of</B> <B>string</B> <B>of</B> <B>character</B> <B>is</B>
+            &lt;"PROGRAM"&gt; * &lt;p.name&gt; * &lt;"IS"&gt; *
+            CONTEXT_TO_STRING_OF_TOKENS (p.context) *
+            &lt;"BEGIN"&gt; * STATEMENT_TO_STRING_OF_TOKENS (p.body) *
+            &lt;"END"&gt; * &lt;p.name&gt;
+
+        <B>math</B> <B>definition</B> IS_AN_INPUT_REP (
+                s: <B>string</B> <B>of</B> <B>character</B>
+                p: PROGRAM
+            ): <B>boolean</B> <B>is</B>
+            PROGRAM_TO_STRING_OF_TOKENS (p) =
+                REMOVE_SEPARATORS (TOKENIZE_PROGRAM_TEXT (s))
+    !*/</I></FONT>
+
+    <B>procedure</B> <FONT COLOR="blue">Parse</FONT> (
+            <B>alters</B> Character_IStream&amp; str
+        ) <B>is_abstract</B>;
+    <FONT COLOR="SaddleBrown"><I>/*!
+        <B>produces</B> <B>self</B>
+        <B>requires</B>
+            str.is_open = <B>true</B>
+        <B>ensures</B>
+            <B>if</B> <B>there</B> <B>exists</B> p: PROGRAM, s, t: <B>string</B> <B>of</B> <B>character</B>
+                   (#str.content = s * t <B>and</B>
+                    IS_AN_INPUT_REP (s, p))
+            <B>then</B>
+                str.is_open = <B>true</B> <B>and</B>
+                str.ext_name = #str.ext_name <B>and</B>
+                <B>there</B> <B>exists</B> u: <B>string</B> <B>of</B> <B>character</B>
+                    (#str.content = u * str.content <B>and</B>
+                     IS_AN_INPUT_REP (u, <B>self</B>))
+    !*/</I></FONT>
+
+};
+
+<B><FONT COLOR="ForestGreen">#endif</FONT></B> <FONT COLOR="SaddleBrown"><I>// AT_PROGRAM_PARSE</I></FONT>
+</PRE>
+<HR SIZE=1 NOSHADE>
+Last modified: Sat Aug 23 09:00:20 EDT 2008
+</BODY>
+</HTML>

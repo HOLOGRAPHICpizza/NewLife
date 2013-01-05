@@ -1,0 +1,401 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.51 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#0000EE" alink="#FE0000">
+
+<h2>
+CSE 2231.01: BugsWorld Project Description</h2>
+
+<hr WIDTH="100%" noshade color="#000000">
+<p>This quarter you will implement a translator (compiler) for a simple
+programming language used to control the behavior of agents in a distributed
+simulation (<i>BugsWorld game</i>). Although this language may be a simplified
+version of a real programming language, the translation process involves
+all the main phases usually found in compilers for full-fledged languages
+such as C++ and Java. This project will give you a chance to apply the
+ideas and use the components that you have studied so far while learning
+the fundamental concepts and techniques used in language processing applications
+and implementing several components in this domain.
+<h3>
+The Game</h3>
+<i>BugsWorld</i> is a game derived from the <i>Darwin</i> game invented
+by Nick Parlante at Stanford University. It consists of a two-dimensional
+rectangular world divided into square cells and populated by bugs. Each
+bug belongs to a particular
+<i>species</i> and that determines how the
+bug behaves. Here is an example of the world.
+<center>
+<p><img SRC="world.gif" ></center>
+
+<p>Each bug resides in one of the world cells and faces one of the four
+compass directions (north, east, south, or west). The basic steps that
+a bug can take are: move, turnleft, turnright, infect, and skip.
+<i>Move</i>
+results in the bug moving to the next cell in the direction it is facing
+(unless it is facing a wall or another bug, in which case it does nothing).
+<i>Turnleft</i> and <i>turnright</i>, as you might imagine, result in the
+bug turning by 90&deg; left (counter-clockwise) or 90&deg; right (clockwise)
+respectively. If the bug is facing a cell containing a bug of a different
+species, <i>infect</i> results in the other bug being converted to the
+species of the infecting bug (otherwise it does nothing). Finally, <i>skip</i>
+allows a bug to do nothing for one time step (one turn).
+<p>Essentially the BugsWorld game is a simulation of this world and of
+the critters in it. You can think of it as a competition among species
+where each species represented in the world (by one or more bugs) tries
+to survive by avoiding and/or by infecting the bugs of the other species.
+<h3>
+The Language</h3>
+The behavior of (bugs of) a certain species is expressed by a program written
+in a simple programming language called BL (Bugs Language). In addition
+to the five primitive instructions (move, turnleft, turnright, infect,
+and skip), the language provides a couple of selection control structures
+(IF-THEN and IF-THEN-ELSE), an iterative control structure (WHILE-DO),
+and the ability to define new instructions (INSTRUCTION-IS). Here is a
+sample BL program (try to figure out the behavior that creatures of this
+species would display).
+<pre>&nbsp;&nbsp;&nbsp; PROGRAM TryToGuess IS
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSTRUCTION FindObstacle IS
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHILE next-is-empty DO
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; move
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END WHILE
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END FindObstacle
+
+&nbsp;&nbsp;&nbsp; BEGIN&nbsp;&nbsp; # TryToGuess
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHILE true DO
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FindObstacle
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF next-is-enemy THEN
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; infect
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF next-is-wall THEN
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; turnleft
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE&nbsp;&nbsp; # next-is-friend
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; skip
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END WHILE
+&nbsp;&nbsp;&nbsp; END TryToGuess</pre>
+Since you are already familiar with the syntax of a much more complicated
+programming language, we won't spend much time describing the details of
+the BL language. Here are some of the salient features of the language:
+<ul>
+<li>
+Like all programming languages it has a precise syntax that must be followed
+(e.g., all keywords are completely capitalized, and conditions such as
+"next-is-wall" use a '-' as word separator and not a '_').</li>
+
+<li>
+It is case sensitive (e.g., "PROGRAM" is <i>not</i> the same as "program").</li>
+
+<li>
+Control structures (IF and WHILE) must have matching ENDs, and similarly
+new instructions must be terminated by END followed by the name of the
+instruction (see <i>FindObstacle</i> above).</li>
+
+<li>
+White space (i.e., any sequence of spaces, tabs, and newlines) can be used
+to format the source program, but it cannot be eliminated completely as
+a separator (in part due to the absence of punctuation).</li>
+
+<li>
+Comments can be inserted anywhere white space can appear. They start with
+the special character '#' and they cover the rest of the line.</li>
+
+<li>
+There are 10 conditions that can be tested in IFs and WHILEs, and they
+should be self-explanatory. They are: <i>next-is-empty</i>, <i>next-is-not-empty</i>,
+<i>next-is-enemy</i>,
+<i>next-is-not-enemy</i>,
+<i>next-is-friend</i>,
+<i>next-is-not-friend</i>,
+<i>next-is-wall</i>,
+<i>next-is-not-wall</i>,
+<i>true
+</i>(which,
+of course, is always true) and <i>random</i> (which is true 50% of the
+time and false the rest).</li>
+
+<li>
+Finally, valid identifiers (i.e., the names of the program and of new instructions)
+start with a letter ('a'..'z', 'A'..'Z') and can include only letters,
+digits ('0'..'9'), and '-' (no '_'). And, of course, you cannot use as
+new identifier any keyword, condition, or primitive instruction of the
+language.</li>
+</ul>
+
+<h3>
+The Simulator</h3>
+The simulator for the Bugs world is made up of three distinct applications:
+server, client, and display (see figure below).
+<center>
+<p><img SRC="client-server.gif" ></center>
+
+<p>For each simulation there is exactly one server, but there can be multiple
+clients (usually at least two) and displays (whenever users want to view
+the simulation from different terminals). The <i>server</i> is responsible
+for keeping track of the state of the world, for making sure that each
+bug gets a fair chance to make progress, and for resolving conflicts when
+two or more bugs make conflicting requests (e.g., two bugs that try to
+move into the same cell). Each <i>client</i> handles all the bugs of one
+particular species (so there will be one client for each species involved
+in the simulation). Every time the server tells a client that a certain
+bug should get a turn in the simulation, the client executes the corresponding
+species' program to determine what that bug's next step should be, and
+then sends a request to the server to perform the chosen step on behalf
+of the bug. Since neither server nor clients show what's happening in the
+world, the <i>display</i> application can be used to view the world during
+the simulation.
+<p>Note that the server, each of the clients, and each of the displays
+can be running on different machines. More details on running these applications
+are provided in a separate handout.
+<h3>
+The Translator</h3>
+Since each client handles exactly one species, the client application is
+responsible for executing the BL program that determines the behavior of
+the corresponding species. However, the client does not execute the species
+program in its source form. We first translate the source program into
+a more convenient form, and then have the client execute the program in
+this "compiled" form. This has several advantages:
+<ul>
+<li>
+The translator can perform all syntactic checks on the source program to
+make sure it adheres to the language syntax, and when it does not, the
+translator can display useful error messages to facilitate the correction
+of the errors.</li>
+
+<li>
+It is much more efficient to compile a program once, and then execute it
+in its compiled form.</li>
+
+<li>
+It is a lot simpler to separate the translation and the execution phases
+than directly trying to interpret the source code (especially in this application
+where the execution occurs on step at a time).</li>
+</ul>
+So how does the translator work and what is this "more convenient" form
+into which we want to convert the source code? Here is the compiled version
+of the sample program <i>TryToGuess</i>: 20 15 20 6 7 0 5 2 12 12 3 5 18
+8 17 1 5 18 4 5 0. It is simply a sequence of integers that encodes the
+original program in a form that makes execution very simple and fast (though
+it makes it very difficult to read!).
+<p>The translation process is not a one step process. There are actually
+three distinct transformations that we need to perform (see picture below).
+<center>
+<p><img SRC="translator.gif" width="100%"></center>
+
+<p>The source code can be viewed as a string of characters. The first phase
+(<i>tokenizing</i>) breaks up this string of characters into "chunks" called
+<i>tokens</i>.
+The resulting string of tokens is fed to the parser in the second phase
+(<i>parsing</i>). This produces an abstract representation of the original
+program. Finally, in the third phase (<i>code generation</i>), the abstract
+program is traversed and the string of integers that represents the object
+code is generated. The following table shows the results of each transformation.
+White space and comment tokens were omitted from the list of tokens since
+they are not needed by the following phases. The abstract program probably
+will not make much sense at this time. However, it is important to note
+that it still contains enough information about the original program for
+the code generator to produce the object code and for the program to be
+executed.
+<br><br><br>
+<table BORDER=2 CELLPADDING=10 WIDTH="100%" bordercolor="#000000" >
+<tr>
+<td WIDTH="50%">
+<pre>&nbsp;&nbsp;&nbsp; PROGRAM TryToGuess IS
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; INSTRUCTION FindObstacle IS
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHILE next-is-empty DO
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; move
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END WHILE
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END FindObstacle
+
+&nbsp;&nbsp;&nbsp; BEGIN&nbsp;&nbsp; # TryToGuess
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHILE true DO
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FindObstacle
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF next-is-enemy THEN
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; infect
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IF next-is-wall THEN
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; turnleft
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ELSE&nbsp;&nbsp; # next-is-friend
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; skip
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END WHILE
+&nbsp;&nbsp;&nbsp; END TryToGuess</pre>
+</td>
+
+<td WIDTH="50%">PROGRAM, TryToGuess, IS, INSTRUCTION, FindObstacle, IS,
+WHILE, next-is-empty, DO, move, END, WHILE, END, FindObstacle, BEGIN, WHILE,
+true, DO, FindObstacle, IF, next-is-enemy, THEN, infect, ELSE, IF, next-is-wall,
+THEN, turnleft, ELSE, skip, END, IF, END, IF, END, WHILE, END, TryToGuess</td>
+</tr>
+
+<tr>
+<td WIDTH="50%">
+<center>1. Source Code</center>
+</td>
+
+<td WIDTH="50%">
+<center>2. Tokens</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="50%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="100%">
+<center>TryToGuess</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="100%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="50%">
+<center>FindObstacle</center>
+</td>
+
+<td WIDTH="50%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="100%">
+<center>WHILE
+<br>next-is-empty</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="100%">
+<center>move</center>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="100%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="100%">
+<center>WHILE
+<br>true</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="100%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="50%">
+<center>FindObstacle</center>
+</td>
+
+<td WIDTH="50%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="100%">
+<center>IF-ELSE
+<br>next-is-enemy</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="100%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="50%">
+<center>infect</center>
+</td>
+
+<td WIDTH="50%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="100%">
+<center>IF-ELSE
+<br>next-is-wall</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="100%">
+<table BORDER WIDTH="100%" >
+<tr>
+<td WIDTH="50%">
+<center>turnleft</center>
+</td>
+
+<td WIDTH="50%">
+<center>skip</center>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+
+<td WIDTH="50%">
+<center>21
+16
+20
+7
+7
+0
+6
+2
+13
+12
+3
+6
+18
+9
+17
+1
+6
+18
+4
+6
+0
+5
+</center>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="50%">
+<center>3. Abstract Program</center>
+</td>
+
+<td WIDTH="50%">
+<center>4. Object Code</center>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
