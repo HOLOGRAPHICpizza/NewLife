@@ -9,7 +9,6 @@ public final class Token {
 		KEYWORD,
 		IDENTIFIER,
 		CONDITION,
-		WHITESPACE,
 		COMMENT,
 		ERROR,
 		EOF_TOKEN
