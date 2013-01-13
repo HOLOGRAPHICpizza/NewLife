@@ -11,21 +11,35 @@ import org.peak15.newlife.Token.TokenType;
 
 public class TokenizerTest {
 	
-	private static final String TEST_STRING = "blarg blarg\ntaco";
+	private static final String TEST_STRING = "PROGRAM test IS\n"
+			+ "\tINSTRUCTION blarg IS\n"
+			+ "\t\tIF random THEN turnright END IF\n"
+			+ "!!&^%%%\n"
+			+ "# comment\n"
+			+ "\tEND blarg\n"
+			+ "BEGIN"
+			+ "\tblarg"
+			+ "END test";
+	private static final int TOKEN_COUNT = 20;
 	
 	private final Tokenizer tokenizer = new Tokenizer(new StringReader(TEST_STRING));
 	
 	@Test
 	public void testNextToken() throws IOException {
-		Token[] tokens = new Token[4];
+		Token[] tokens = new Token[TOKEN_COUNT];
 		for(int i=0; i < tokens.length; i++) {
 			tokens[i] = tokenizer.nextToken();
 		}
 		
-		assertEquals("1:", "blarg", tokens[0].getText());
-		assertEquals("2:", "blarg", tokens[1].getText());
-		assertEquals("3:", "taco", tokens[2].getText());
-		assertEquals("EOF:", TokenType.EOF_TOKEN, tokens[3].getType());
+		assertEquals("1:", TokenType.KEYWORD, tokens[0].getType());
+		assertEquals("2:", TokenType.IDENTIFIER, tokens[1].getType());
+		assertEquals("3:", TokenType.KEYWORD, tokens[2].getType());
+		assertEquals("4 type:", TokenType.KEYWORD, tokens[3].getType());
+		assertEquals("4 text:", "INSTRUCTION", tokens[3].getText());
+		assertEquals("8:", TokenType.CONDITION, tokens[7].getType());
+		assertEquals("13:", TokenType.ERROR, tokens[12].getType());
+		assertEquals("14:", TokenType.COMMENT, tokens[13].getType());
+		assertEquals("EOF:", TokenType.EOF_TOKEN, tokens[TOKEN_COUNT - 1].getType());
 	}
 
 }
