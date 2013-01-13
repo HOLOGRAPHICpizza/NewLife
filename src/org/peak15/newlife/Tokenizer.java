@@ -40,6 +40,16 @@ public class Tokenizer {
 	}
 	
 	/**
+	 * The given reader is not buffered,
+	 * you should buffer it yourself if you want that.
+	 * 
+	 * @param ins reader to read from
+	 */
+	public Tokenizer(Reader ins) {
+		this.reader = ins;
+	}
+	
+	/**
 	 * Returns the next token from the input stream,
 	 * whitespace is ignored, returns EOF_TOKEN on end of stream.
 	 * 
@@ -66,13 +76,11 @@ public class Tokenizer {
 		}
 		else {
 			// the token is now all but the last char in the buffer
-			//TODO: Test this math.
-			String tokenText = buffer.substring(0, buffer.length() - 2);
+			String tokenText = buffer.substring(0, buffer.length() - 1);
 			t = new Token(tokenType(bufferState, tokenText), tokenText);
 			
 			// set the new buffer and buffer state
-			//TODO: Test this math.
-			buffer.delete(0, buffer.length() - 2);
+			buffer.delete(0, buffer.length() - 1);
 			bufferState = newBufferState(buffer.toString());
 			tokenReady = false;
 		}
@@ -108,7 +116,7 @@ public class Tokenizer {
 					// flush the buffer, we kill all whitespace!!
 					// set the new buffer and buffer state
 					//TODO: Test this math.
-					buffer.delete(0, buffer.length() - 2);
+					buffer.delete(0, buffer.length() - 1);
 					bufferState = newBufferState(buffer.toString());
 				}
 				break;
