@@ -2,6 +2,8 @@ package org.peak15.newlife;
 
 /**
  * One nicely packaged unit of source code!
+ * 
+ * Immutable.
  */
 public final class Token {
 
