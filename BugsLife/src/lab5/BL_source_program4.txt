@@ -1,0 +1,9 @@
+2231_Tokenizing_Machine_Demo < BL_source_program.txt !> THEIR_OUT
+Tokenizing_Machine_Test < BL_source_program.txt >! OUR_OUT
+2231_Tokenizing_Machine_Demo < BL_source_program2.txt !> THEIR_OUT2
+Tokenizing_Machine_Test < BL_source_program2.txt >! OUR_OUT2
+2231_Tokenizing_Machine_Demo < BL_source_program3.txt !> THEIR_OUT3
+Tokenizing_Machine_Test < BL_source_program3.txt >! OUR_OUT3
+2231_Tokenizing_Machine_Demo < BL_source_program4.txt !> THEIR_OUT4
+Tokenizing_Machine_Test < BL_source_program4.txt >! OUR_OUT4
+

@@ -1,0 +1,49 @@
+n
+//compose infect
+c
+0
+infect
+//add to BLOCK
+a
+1
+0
+0
+//compose turnleft
+c
+2
+turnleft
+//add to BLOCK
+a
+3
+0
+2
+//compose IF_ELSE with cond NEXT_IS_ENEMY
+e
+4
+g
+1
+3
+//add to BLOCK
+a
+5
+0
+4
+//compose WHILE with cond TRUE
+w
+6
+j
+5
+//Pretty_Print
+p
+6
+0
+//Check Kind of object 6
+k
+6
+//Decompose WHILE
+
+//Remove from BLOCK
+
+
+
+q

@@ -1,0 +1,23 @@
+Running the test case . . .
+
+TOKEN KIND      TOKEN TEXT
+----------      ----------
+KEYWORD         <PROGRAM>
+WHITE_SPACE     < >
+IDENTIFIER      <SteerClear>
+WHITE_SPACE     < >
+KEYWORD         <IS>
+WHITE_SPACE     < >
+COMMENT         <#comment>
+WHITE_SPACE     <
+>
+KEYWORD         <BEGIN>
+WHITE_SPACE     <
+>
+KEYWORD         <END>
+WHITE_SPACE     < >
+IDENTIFIER      <SteerClear>
+WHITE_SPACE     <
+>
+
+Test case completed.

@@ -1,0 +1,520 @@
+//  /*--------------------------------------------------------*\
+//  |   Main Program: BugsWorld Species Client
+//  |*--------------------------------------------------------*|
+//  |   Date:    July 13, 1999
+//  |   Author:  Scott M. Pike
+//  |            Modified by Paolo Bucci (August 25, 1999)
+//  |            Modified by Paolo Bucci (November 16, 1999)
+//  |
+//  |   Brief User's Manual:
+//  |   
+//  |   
+//  |   
+//  |
+//  \*--------------------------------------------------------*/
+
+
+///-------------------------------------------------------------
+/// Global Context ---------------------------------------------
+///-------------------------------------------------------------
+
+#include "RESOLVE_Foundation.h"
+
+#include "CT/Partial_Map/Kernel_2.h"
+#include "CI/Integer/Hash_1.h"
+#include "CT/Array/Kernel_1.h"
+#include "CI/Random/Uniform_Generator_1.h"
+    
+///-------------------------------------------------------------
+/// Local Context ----------------------------------------------
+///-------------------------------------------------------------
+
+enumeration What_A_Bug_Can_See_In_Front_Of_It
+{
+    EMPTY,
+    WALL, 
+    FRIEND,
+    ENEMY
+};
+    
+///------------------------------------------------------------------------
+
+enumeration Status
+{
+    ACTIVE,
+    BIRTH,
+    DEATH
+};
+
+///------------------------------------------------------------------------
+
+enumeration Instruction_Code
+{
+    MOVE,
+    TURNLEFT,
+    TURNRIGHT,
+    INFECT,
+    SKIP,
+    HALT,
+    JUMP,
+    JUMP_IF_NOT_NEXT_IS_EMPTY,
+    JUMP_IF_NOT_NEXT_IS_NOT_EMPTY,
+    JUMP_IF_NOT_NEXT_IS_WALL,
+    JUMP_IF_NOT_NEXT_IS_NOT_WALL,
+    JUMP_IF_NOT_NEXT_IS_FRIEND,
+    JUMP_IF_NOT_NEXT_IS_NOT_FRIEND,
+    JUMP_IF_NOT_NEXT_IS_ENEMY,
+    JUMP_IF_NOT_NEXT_IS_NOT_ENEMY,
+    JUMP_IF_NOT_RANDOM,
+    JUMP_IF_NOT_TRUE
+};
+
+///------------------------------------------------------------------------
+
+concrete_instance
+class Compiled_Program :
+    instantiates
+	Array_Kernel_1 <Integer>
+{};
+
+///-------------------------------------------------------------
+
+concrete_instance
+class Bug_Id_To_Program_Counter_Map :
+    instantiates
+	Partial_Map_Kernel_2 <
+		Integer,            // Bug Id
+		Integer,            // Program Counter
+		Integer_Hash_1,
+		50
+	    >
+{};
+
+///-------------------------------------------------------------
+/// Global objects ---------------------------------------------
+///-------------------------------------------------------------
+
+object Random_Uniform_Generator_1 test_gen;
+
+///-------------------------------------------------------------
+/// Global operations ------------------------------------------
+///-------------------------------------------------------------
+
+global_procedure Connect_To_Server (
+	alters Character_IStream& ins,
+	alters Character_OStream& outs,
+	produces Character_IStream& ichannel,
+	produces Character_OStream& ochannel
+    );
+
+///-------------------------------------------------------------
+
+global_function Boolean Evaluate_Jump_Condition (
+	preserves Integer what_bug_sees,
+	preserves Integer jump_instr
+    );
+
+//--------------------------------------------------------------
+
+global_procedure Get_Message_From_Server (
+        alters Character_IStream& ichannel,
+	produces Integer& bug,
+	produces Integer& view,
+	produces Integer& status,
+	produces Boolean& ok_msg,
+	produces Boolean& at_eos
+    );
+
+//--------------------------------------------------------------
+
+global_function Boolean Is_Primitive_Instruction_Code (
+	preserves Integer instr
+    );
+
+//--------------------------------------------------------------
+
+global_procedure Load_Program (
+	alters Character_IStream& ins,
+	alters Character_OStream& outs,
+        produces Compiled_Program& cp
+    );
+
+//--------------------------------------------------------------
+
+global_procedure Read_Line (
+        alters Character_IStream& is,
+	produces Text& line,
+	produces Boolean& eol,
+	produces Boolean& eos
+    );
+
+///-------------------------------------------------------------
+
+global_procedure Next_Primitive_Instruction (
+	preserves Compiled_Program& prog,
+	preserves Integer what_bug_sees,
+	alters Integer& pc,
+	produces Integer& primitive_instruction
+    );
+
+//--------------------------------------------------------------
+/// Global operation bodies ------------------------------------
+///-------------------------------------------------------------
+
+procedure_body Connect_To_Server (
+	alters Character_IStream& ins,
+	alters Character_OStream& outs,
+	produces Character_IStream& ichannel,
+	produces Character_OStream& ochannel
+    )
+{
+    object Text hs, hc;
+    object Integer ps, pc, id, msg, ack;
+
+    ichannel.Clear();
+    ochannel.Clear();
+    
+    // Read in host and port of server
+    
+    outs << "Host to connect to: ";
+    ins >> hs;
+    outs << "Port to connect to: ";
+    ins >> ps;
+
+    // Connect to server and tell server this client's host and port    
+
+    ichannel.Get_Host_And_Port (hc, pc);
+    
+    while (not ochannel.Is_Open ())
+    {
+	outs << "Trying to connect to " << hs << ":" << ps << "\n";
+	ochannel.Open_External (hs, ps);
+    }
+    
+    outs << "Sending local host and port info " << hc << ":" << pc << "\n";
+    ochannel << hc << "\n" << pc << "\n" << false << "\n";
+    ochannel.Flush ();
+
+    // Wait for reverse connection from server and get client id
+    
+    while (not ichannel.Is_Open ())
+    {
+	outs << "Waiting for reverse connection\n";
+	ichannel.Open_External ();
+    }
+}
+	
+///-------------------------------------------------------------
+
+function_body Boolean Evaluate_Jump_Condition (
+	preserves Integer what_bug_sees,
+	preserves Integer jump_instr
+    )
+{
+    object Boolean answer;
+    
+    case_select (jump_instr)
+    {
+        case JUMP_IF_NOT_NEXT_IS_EMPTY:
+	{
+	    answer = (what_bug_sees == EMPTY);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_NOT_EMPTY:
+	{
+	    answer = (what_bug_sees != EMPTY);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_WALL:
+	{
+	    answer = (what_bug_sees == WALL);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_NOT_WALL:
+	{
+	    answer = (what_bug_sees != WALL);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_FRIEND:
+	{
+	    answer = (what_bug_sees == FRIEND);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_NOT_FRIEND:
+	{
+	    answer = (what_bug_sees != FRIEND);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_ENEMY:
+	{
+	    answer = (what_bug_sees == ENEMY);
+	}
+	break;
+
+        case JUMP_IF_NOT_NEXT_IS_NOT_ENEMY:
+	{
+	    answer = (what_bug_sees != ENEMY);
+	}
+	break;
+
+        case JUMP_IF_NOT_RANDOM:
+	{
+	    test_gen.Generate_Next ();
+	    answer = (test_gen.Uniform_Integer (0, 1) == 0);
+	}
+	break;
+
+        case JUMP_IF_NOT_TRUE:
+	{
+	    answer = true;
+	}
+	break;
+    }
+
+    return answer;
+}
+
+//--------------------------------------------------------------
+
+procedure_body Get_Message_From_Server (
+        alters Character_IStream& ichannel,
+	produces Integer& bug,
+	produces Integer& view,
+	produces Integer& status,
+	produces Boolean& ok_msg,
+	produces Boolean& at_eos
+    )
+{
+    object Text bug_text, view_text, status_text;
+    object Boolean at_eol;
+
+    ok_msg = false;
+
+    Read_Line (ichannel, bug_text, at_eol, at_eos);
+    Read_Line (ichannel, view_text, at_eol, at_eos);
+    Read_Line (ichannel, status_text, at_eol, at_eos);
+
+    if (at_eol)
+    {
+	// process message
+	if (Can_Convert_To_Integer (bug_text) and
+	    Can_Convert_To_Integer (view_text) and
+	    Can_Convert_To_Integer (status_text))
+	{
+	    bug = To_Integer (bug_text);
+	    view = To_Integer (view_text);
+	    status = To_Integer (status_text);
+	    ok_msg = true;
+	}
+    }
+}
+
+///-------------------------------------------------------------
+
+function_body Boolean Is_Primitive_Instruction_Code (
+	preserves Integer instr
+    )
+{
+    return (instr == MOVE) or (instr == TURNLEFT) or
+	   (instr == TURNRIGHT) or (instr == INFECT) or
+	   (instr == SKIP) or (instr == HALT);
+}
+
+///-------------------------------------------------------------
+
+procedure_body Load_Program (
+	alters Character_IStream& ins,
+	alters Character_OStream& outs,
+        produces Compiled_Program& cp
+    )
+{
+    object Integer index, length;
+    object Text filename;
+    object Character_IStream pfile;
+
+    outs << "Enter Program Filename: ";
+    ins >> filename;
+
+    // read program and parse it
+
+    pfile.Open_External (filename);
+    
+    outs << "Loading " << filename << "...";
+
+    pfile >> length;
+    cp.Set_Bounds (0, length - 1);
+    while (index < length)
+    {
+	pfile >> cp[index];
+	index++;
+    }
+
+    outs << "done!\n";
+    
+    pfile.Close_External ();
+}
+
+///-------------------------------------------------------------
+
+procedure_body Read_Line (
+        alters Character_IStream& is,
+	produces Text& line,
+	produces Boolean& eol,
+	produces Boolean& eos
+    )
+{
+    object Character ch;
+
+    line.Clear ();
+    eol = false;
+    while (not is.At_EOS () and not eol)
+    {
+	is.Read (ch);
+	if (ch != '\n')
+	{
+	    line.Add (line.Length (), ch);
+	}
+	else
+	{
+	    eol = true;
+	}
+    }
+
+    eos = is.At_EOS ();
+}
+
+///-------------------------------------------------------------
+
+procedure_body Next_Primitive_Instruction (
+	preserves Compiled_Program& prog,
+	preserves Integer what_bug_sees,
+	alters Integer& pc,
+	produces Integer& primitive_instruction
+    )
+{
+    // Students to fill this in
+}
+
+///-------------------------------------------------------------
+/// Interface --------------------------------------------------
+///-------------------------------------------------------------
+
+program_body main ()
+{
+    object Integer species_id, bug, view, status, pc, action;
+    object Boolean ok_msg, at_eos, done;
+    object Compiled_Program program;
+    object Character_IStream ins, ichannel;
+    object Character_OStream outs, ochannel;
+    object Bug_Id_To_Program_Counter_Map map;
+
+    // Seed random number generator
+    
+    test_gen.Set_Value (1234);
+ 
+    // Open input and output streams
+    
+    ins.Open_External ("");
+    outs.Open_External ("");
+
+    Load_Program (ins, outs, program);
+
+    Connect_To_Server (ins, outs, ichannel, ochannel);
+
+    // input species_id
+
+    ichannel >> species_id;
+
+    if (species_id == -1)
+    {
+	done = true;
+	outs << "Connection refused: too many connections\n";
+    }
+    else if (species_id == -2)
+    {
+	done = true;
+	outs << "Connection refused: tournament in progress\n";
+    }
+    else
+    {
+	outs << "Connection established: joining game\n";
+	outs << "Your species id is: " << species_id << "\n";
+    }
+
+    // Execute interactive testing loop until finished
+    
+    while (not done)
+    {
+	Get_Message_From_Server (
+	    ichannel, bug, view, status, ok_msg, at_eos);
+
+	if (ok_msg)
+	{
+	    // Process msg according to bug status
+
+	    if (status == DEATH)         // and map.Is_Defined(bug)
+	    {
+		object Integer bug_id;
+
+		map.Undefine(bug, bug_id, pc);
+
+		outs << "Species " << species_id
+		     << ": Bug " << bug << " has been infected\n";
+
+		if (map.Size () == 0)
+		{
+		    done = true;
+		    outs << "Species " << species_id
+			 << " extinct: all bugs have been infected\n";
+		}
+	    }
+	    else
+	    {   
+		if (status == BIRTH)     // and not map.Is_Defined(bug)
+		{
+		    object Integer bug_id = bug;
+
+		    map.Define (bug_id, pc);
+
+		    outs << "Species " << species_id
+			 << ": Bug " << bug << " has been born\n";
+		}
+		else                     // status is ACTIVE so get pc value
+		{
+		    pc = map[bug];
+		}
+
+		Next_Primitive_Instruction (program, view, pc, action);
+
+		if (action != HALT)
+		{
+		    map[bug] = pc;
+
+		    ochannel << bug << "\n" << action << "\n";
+		}
+	    }
+	}
+	else if (at_eos)
+	{
+	    done = true;
+	    outs << "Server has closed the connection\n";
+	}
+	else // should not happen, but...
+	{
+	    outs << "Invalid message from server\n";
+	}
+    }
+
+    // Close streams
+
+    ins.Close_External ();
+    outs.Close_External ();
+    ichannel.Close_External ();
+    ochannel.Close_External ();
+}

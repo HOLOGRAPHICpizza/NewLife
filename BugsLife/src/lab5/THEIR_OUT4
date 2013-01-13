@@ -1,0 +1,195 @@
+Running the test case . . .
+
+TOKEN KIND      TOKEN TEXT
+----------      ----------
+ERROR           <2231_>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Demo>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <!>>
+WHITE_SPACE     < >
+IDENTIFIER      <THEIR>
+ERROR           <_>
+IDENTIFIER      <OUT>
+WHITE_SPACE     <
+>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Test>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <>!>
+WHITE_SPACE     < >
+IDENTIFIER      <OUR>
+ERROR           <_>
+IDENTIFIER      <OUT>
+WHITE_SPACE     <
+>
+ERROR           <2231_>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Demo>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program2>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <!>>
+WHITE_SPACE     < >
+IDENTIFIER      <THEIR>
+ERROR           <_>
+IDENTIFIER      <OUT2>
+WHITE_SPACE     <
+>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Test>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program2>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <>!>
+WHITE_SPACE     < >
+IDENTIFIER      <OUR>
+ERROR           <_>
+IDENTIFIER      <OUT2>
+WHITE_SPACE     <
+>
+ERROR           <2231_>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Demo>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program3>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <!>>
+WHITE_SPACE     < >
+IDENTIFIER      <THEIR>
+ERROR           <_>
+IDENTIFIER      <OUT3>
+WHITE_SPACE     <
+>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Test>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program3>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <>!>
+WHITE_SPACE     < >
+IDENTIFIER      <OUR>
+ERROR           <_>
+IDENTIFIER      <OUT3>
+WHITE_SPACE     <
+>
+ERROR           <2231_>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Demo>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program4>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <!>>
+WHITE_SPACE     < >
+IDENTIFIER      <THEIR>
+ERROR           <_>
+IDENTIFIER      <OUT4>
+WHITE_SPACE     <
+>
+IDENTIFIER      <Tokenizing>
+ERROR           <_>
+IDENTIFIER      <Machine>
+ERROR           <_>
+IDENTIFIER      <Test>
+WHITE_SPACE     < >
+ERROR           <<>
+WHITE_SPACE     < >
+IDENTIFIER      <BL>
+ERROR           <_>
+IDENTIFIER      <source>
+ERROR           <_>
+IDENTIFIER      <program4>
+ERROR           <.>
+IDENTIFIER      <txt>
+WHITE_SPACE     < >
+ERROR           <>!>
+WHITE_SPACE     < >
+IDENTIFIER      <OUR>
+ERROR           <_>
+IDENTIFIER      <OUT4>
+WHITE_SPACE     <
+
+>
+
+Test case completed.

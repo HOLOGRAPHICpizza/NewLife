@@ -1,0 +1,176 @@
+Run in interactive mode (y/n)? 
+
+
+*   0	JUMP_IF_NOT_TRUE
+    1	25
+    2	JUMP_IF_NOT_NEXT_IS_EMPTY
+    3	7
+    4	MOVE
+    5	JUMP
+    6	2
+    7	JUMP_IF_NOT_NEXT_IS_ENEMY
+    8	12
+    9	INFECT
+   10	JUMP
+   11	23
+   12	JUMP_IF_NOT_NEXT_IS_WALL
+   13	22
+   14	JUMP_IF_NOT_RANDOM
+   15	19
+   16	TURNLEFT
+   17	JUMP
+   18	20
+   19	TURNRIGHT
+   20	JUMP
+   21	23
+   22	SKIP
+   23	JUMP
+   24	0
+   25	HALT
+-------------------------------------------------
+                      |  pc            = 0
+                      |  what_bug_sees = EMPTY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 5
+                      |  primitive_instruction = MOVE
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 5
+                      |  what_bug_sees = EMPTY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 5
+                      |  primitive_instruction = MOVE
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 5
+                      |  what_bug_sees = ENEMY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 10
+                      |  primitive_instruction = INFECT
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 10
+                      |  what_bug_sees = FRIEND
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 23
+                      |  primitive_instruction = SKIP
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 23
+                      |  what_bug_sees = FRIEND
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 23
+                      |  primitive_instruction = SKIP
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 23
+                      |  what_bug_sees = ENEMY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 10
+                      |  primitive_instruction = INFECT
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 10
+                      |  what_bug_sees = WALL
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 20
+                      |  primitive_instruction = TURNRIGHT
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 20
+                      |  what_bug_sees = WALL
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 17
+                      |  primitive_instruction = TURNLEFT
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 17
+                      |  what_bug_sees = EMPTY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 5
+                      |  primitive_instruction = MOVE
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 5
+                      |  what_bug_sees = ENEMY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 10
+                      |  primitive_instruction = INFECT
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 10
+                      |  what_bug_sees = EMPTY
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 5
+                      |  primitive_instruction = MOVE
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 5
+                      |  what_bug_sees = WALL
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 17
+                      |  primitive_instruction = TURNLEFT
+-------------------------------------------------
+-------------------------------------------------
+                      |  pc            = 17
+                      |  what_bug_sees = FRIEND
+-------------------------------------------------
+Next_Primitive_Instruction (cp, what_bug_sees, pc, primitive_instruction);|
+-------------------------------------------------
+                      |  pc                    = 23
+                      |  primitive_instruction = SKIP
+-------------------------------------------------
+
+
+    0	JUMP_IF_NOT_TRUE
+    1	25
+    2	JUMP_IF_NOT_NEXT_IS_EMPTY
+    3	7
+    4	MOVE
+    5	JUMP
+    6	2
+    7	JUMP_IF_NOT_NEXT_IS_ENEMY
+    8	12
+    9	INFECT
+   10	JUMP
+   11	23
+   12	JUMP_IF_NOT_NEXT_IS_WALL
+   13	22
+   14	JUMP_IF_NOT_RANDOM
+   15	19
+   16	TURNLEFT
+   17	JUMP
+   18	20
+   19	TURNRIGHT
+   20	JUMP
+   21	23
+   22	SKIP
+*  23	JUMP
+   24	0
+   25	HALT
+
+*** Quitting test program

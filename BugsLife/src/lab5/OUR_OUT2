@@ -1,0 +1,131 @@
+Running the test case . . .
+
+TOKEN KIND      TOKEN TEXT
+----------      ----------
+KEYWORD         <PROGRAM>
+WHITE_SPACE     < >
+IDENTIFIER      <SteerClear>
+WHITE_SPACE     < >
+KEYWORD         <IS>
+WHITE_SPACE     < >
+COMMENT         <#comment>
+WHITE_SPACE     <
+    >
+KEYWORD         <INSTRUCTION>
+WHITE_SPACE     < >
+IDENTIFIER      <StepAside>
+WHITE_SPACE     < >
+KEYWORD         <IS>
+WHITE_SPACE     <
+        >
+KEYWORD         <IF>
+WHITE_SPACE     < >
+CONDITION       <random>
+WHITE_SPACE     < >
+KEYWORD         <THEN>
+WHITE_SPACE     <
+            >
+IDENTIFIER      <turnright>
+WHITE_SPACE     <
+        >
+KEYWORD         <ELSE>
+WHITE_SPACE     <
+            >
+IDENTIFIER      <turnleft>
+WHITE_SPACE     <
+        >
+KEYWORD         <END>
+WHITE_SPACE     < >
+KEYWORD         <IF>
+WHITE_SPACE     <
+        >
+IDENTIFIER      <move>
+WHITE_SPACE     <
+    >
+KEYWORD         <END>
+WHITE_SPACE     < >
+IDENTIFIER      <StepAside>
+WHITE_SPACE     <
+    
+    >
+KEYWORD         <INSTRUCTION>
+WHITE_SPACE     < >
+IDENTIFIER      <Turn>
+ERROR           <%@>
+COMMENT         <#Around IS>
+WHITE_SPACE     <
+        >
+IDENTIFIER      <turnright>
+WHITE_SPACE     <
+        >
+IDENTIFIER      <turnright>
+WHITE_SPACE     <
+    >
+KEYWORD         <END>
+WHITE_SPACE     < >
+IDENTIFIER      <TurnAround>
+WHITE_SPACE     <
+    
+>
+KEYWORD         <BEGIN>
+WHITE_SPACE     <
+    >
+KEYWORD         <WHILE>
+WHITE_SPACE     < >
+CONDITION       <true>
+WHITE_SPACE     < >
+KEYWORD         <DO>
+WHITE_SPACE     <
+        >
+KEYWORD         <IF>
+WHITE_SPACE     < >
+IDENTIFIER      <next-is-emptytruly>
+ERROR           <!>
+WHITE_SPACE     < >
+KEYWORD         <THEN>
+WHITE_SPACE     <
+            >
+IDENTIFIER      <skip>
+WHITE_SPACE     <
+        >
+KEYWORD         <ELSE>
+WHITE_SPACE     <
+            >
+KEYWORD         <IF>
+WHITE_SPACE     < >
+CONDITION       <next-is-wall>
+WHITE_SPACE     < >
+KEYWORD         <THEN>
+WHITE_SPACE     <
+                >
+IDENTIFIER      <TurnAround>
+WHITE_SPACE     <
+            >
+KEYWORD         <ELSE>
+WHITE_SPACE     <
+                >
+IDENTIFIER      <StepAside>
+WHITE_SPACE     <
+            >
+KEYWORD         <END>
+WHITE_SPACE     < >
+KEYWORD         <IF>
+WHITE_SPACE     <
+        >
+KEYWORD         <END>
+WHITE_SPACE     < >
+KEYWORD         <IF>
+WHITE_SPACE     <
+    >
+KEYWORD         <END>
+WHITE_SPACE     < >
+KEYWORD         <WHILE>
+WHITE_SPACE     <
+>
+KEYWORD         <END>
+WHITE_SPACE     < >
+IDENTIFIER      <SteerClear>
+WHITE_SPACE     <
+>
+
+Test case completed.

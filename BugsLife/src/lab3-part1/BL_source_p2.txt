@@ -1,0 +1,15 @@
+PROGRAM SteerClear IS
+    
+BEGIN
+    WHILE true DO
+        IF next-is-empty THEN
+            skip
+        ELSE
+            IF next-is-wall THEN
+                TurnAround
+            ELSE
+                StepAside
+            END IF
+        END IF
+    END WHILE
+END SteerClear
