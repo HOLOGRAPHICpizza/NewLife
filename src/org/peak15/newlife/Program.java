@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.peak15.newlife.Token.TokenType;
+
+import static org.peak15.newlife.NewLifeParserException.assertCode;
 
 /**
  * One abstract program.
@@ -36,6 +37,10 @@ public final class Program {
 	private final Map<String, Statement> context;
 	private final Statement body;
 	
+	/**
+	 * Used to cache bytes after first compile.
+	 */
+	@SuppressWarnings("unused")
 	private byte[] compiledBytes = null;
 	
 	public Program(String name, Map<String, Statement> context, Statement body) {
@@ -46,14 +51,15 @@ public final class Program {
 	
 	/**
 	 * Parse a program from a tokenizer.
+	 * The first token should NOT have already been removed,
+	 * and this will not remove a trailing token.
+	 * This removes precisely the tokens which form the program.
+	 * 
 	 * 
 	 * @param tokenizer to parse from.
 	 * @throws IOException if the tokenizer fails to read
 	 */
 	public Program(Tokenizer tokenizer) throws NewLifeParserException {
-		
-		//TODO: figure out the craziniess about what exactly each parser "pops off"
-		
 		this.context = new HashMap<String, Statement>();
 		
 		Token t;
@@ -107,7 +113,7 @@ public final class Program {
 					"Expected program name to follow entire program.");
 			
 		} catch(IOException e) {
-			throw new NewLifeParserException(e);
+			throw new NewLifeParserException("Read error while parsing program.", e);
 		}
 		
 	}
@@ -117,9 +123,10 @@ public final class Program {
 	 * The first token should have already been removed.
 	 * 
 	 * @param tokenizer to parse from
+	 * @param takenNames instruction names that have already been used.
 	 * @return pair of the name and the block of the parsed instruction
 	 * @throws IOException if the parser fails to read
-	 * @throws NewLifeParserException upon encountering a source code error
+	 * @throws NewLifeParserException upon encountering a syntax error
 	 */
 	private static NamedStatement parseInstruction(
 			Tokenizer tokenizer,
@@ -155,19 +162,6 @@ public final class Program {
 				"Expected instruction name to follow instruction definition.");
 		
 		return new NamedStatement(instName, s);
-	}
-
-	/**
-	 * Checks the specified condition, and throws an exception if it is false.
-	 * 
-	 * @param expectedTrueCond condition expected to be true
-	 * @param failMsg Message to print if the condition is false.
-	 * @throws NewLifeParserException If the condition is false.
-	 */
-	private static void assertCode(boolean expectedTrueCond, String failMsg)
-			throws NewLifeParserException {
-		if(!expectedTrueCond)
-			throw new NewLifeParserException(failMsg);
 	}
 	
 	/**
