@@ -95,65 +95,7 @@ public final class Program {
 		
 	}
 	
-	/**
-	 * Parses an instruction from the tokenizer into a BLOCK statement.
-	 * The first token should have already been removed.
-	 * 
-	 * @param tokenizer to parse from
-	 * @param takenNames instruction names that have already been used.
-	 * @return pair of the name and the block of the parsed instruction
-	 * @throws IOException if the parser fails to read
-	 * @throws NewLifeParserException upon encountering a syntax error
-	 */
-	private static NamedStatement parseInstruction(
-			Tokenizer tokenizer,
-			Set<String> takenNames)
-			throws IOException, NewLifeParserException {
-		
-		Token t;
-		
-		// instruction name
-		t = tokenizer.nextToken();
-		String instName = t.getText();
-		assertCode(t.getType() == TokenType.IDENTIFIER,
-				"Expected valid identifier for instruction name.");
-		assertCode(!takenNames.contains(instName),
-				"Expected a unique instruction name (a name was repeated).");
-		
-		// IS
-		t = tokenizer.nextToken();
-		assertCode(t.getText().equals("IS"),
-				"Expected \"IS\" to follow instruction name.");
-		
-		// body
-		Statement s = new Statement(tokenizer, true);
-		
-		// END
-		t = tokenizer.nextToken();
-		assertCode(t.getText().equals("END"),
-				"Expected \"END\" to follow instruction body.");
-		
-		// name again
-		t = tokenizer.nextToken();
-		assertCode(t.getText().equals(instName),
-				"Expected instruction name to follow instruction definition.");
-		
-		return new NamedStatement(instName, s);
-	}
 	
-	/**
-	 * For use in passing pairs for the context.
-	 * Apparently it is Java "best practice" to create a class for pairs.
-	 */
-	private static class NamedStatement {
-		public final String name;
-		public final Statement statement;
-		
-		public NamedStatement(String name, Statement statement) {
-			this.name = name;
-			this.statement = statement;
-		}
-	}
 
 	/**
 	 * @return the name

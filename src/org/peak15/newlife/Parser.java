@@ -3,7 +3,10 @@ package org.peak15.newlife;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import org.peak15.newlife.types.NamedStatement;
+import org.peak15.newlife.types.Program;
 import org.peak15.newlife.types.Statement;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.TokenType;
@@ -73,7 +76,32 @@ public class Parser {
 		return s;
 	}
 	
-	public static Program parseProgram;
+	/**
+	 * Parse a program.
+	 * Parses precisely the tokens which form the program, and no more.
+	 * 
+	 * @param first the first token of the program, already pulled out.
+	 * @param tokenizer to parse from
+	 * @return the parsed program
+	 * @throws NewLifeParserException upon encountering an error
+	 */
+	public static Program parseProgram(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+		return null;
+	}
+	
+	/**
+	 * For use in passing pairs for the context.
+	 * Apparently it is Java "best practice" to create a class for pairs.
+	 */
+	private static class NamedStatement {
+		public final String name;
+		public final Statement statement;
+		
+		public NamedStatement(String name, Statement statement) {
+			this.name = name;
+			this.statement = statement;
+		}
+	}
 	
 	/**
 	 * @param t token to test
@@ -85,7 +113,54 @@ public class Parser {
 				|| t.getText().equals("IF")
 				|| t.getText().equals("WHILE");
 	}
-	
+
+	/**
+	 * Parses an instruction definition into a named BLOCK statement.
+	 * 
+	 * @param first the first token of the statement, already pulled out.
+	 * @param tokenizer to parse from
+	 * @param takenNames instruction names that have already been used.
+	 * @return pair of the name and the block of the parsed instruction
+	 * @throws IOException if the parser fails to read
+	 * @throws NewLifeParserException upon encountering a syntax error
+	 */
+	private static NamedStatement parseInstruction(
+			Tokenizer tokenizer,
+			Set<String> takenNames)
+			throws IOException, NewLifeParserException {
+		
+		Token t;
+		
+		// instruction name
+		t = tokenizer.nextToken();
+		String instName = t.getText();
+		assertCode(t.getType() == TokenType.IDENTIFIER,
+				"Expected valid identifier for instruction name.");
+		assertCode(!takenNames.contains(instName),
+				"Expected a unique instruction name (a name was repeated).");
+		
+		// IS
+		t = tokenizer.nextToken();
+		assertCode(t.getText().equals("IS"),
+				"Expected \"IS\" to follow instruction name.");
+		
+		// body
+		t = tokenizer.nextToken();
+		Statement s = parseBlock(first, tokenizer);
+		
+		// END
+		t = tokenizer.nextToken();
+		assertCode(t.getText().equals("END"),
+				"Expected \"END\" to follow instruction body.");
+		
+		// name again
+		t = tokenizer.nextToken();
+		assertCode(t.getText().equals(instName),
+				"Expected instruction name to follow instruction definition.");
+		
+		return new NamedStatement(instName, s);
+	}
+
 	/**
 	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
