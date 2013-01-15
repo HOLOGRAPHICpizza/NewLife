@@ -1,18 +1,21 @@
-package org.peak15.newlife;
+package org.peak15.newlife.types;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.peak15.newlife.Token.TokenType;
+import org.peak15.newlife.NewLifeParserException;
+import org.peak15.newlife.Tokenizer;
 
 import static org.peak15.newlife.NewLifeParserException.assertCode;
+import static org.peak15.newlife.types.Token.TokenType;
 
 /**
  * One abstract statement of code.
  * 
  * Immutable.
  */
+@SuppressWarnings("unused")
 public final class Statement {
 	public enum StatementType {
 		BLOCK,
@@ -73,53 +76,6 @@ public final class Statement {
 			this.condition = s.getCondition();
 			this.instruction = s.getInstruction();
 		}
-	}
-	
-	/**
-	 * Parse an instruction call, IF(ELSE), or WHILE statement.
-	 * Can not parse blocks.
-	 * 
-	 * @param firstToken the first token of the statement, already pulled out.
-	 * @param tokenizer to parse from
-	 * @return the parsed statement
-	 */
-	private static Statement parseStatement(Token firstToken, Tokenizer tokenizer) {
-		Statement s;
-		
-		if(firstToken.getType() == TokenType.IDENTIFIER) {
-			// CALL
-			s = new Statement(firstToken.getText());
-		}
-		else if(firstToken.getText().equals("IF")) {
-			// IF(ELSE)
-			s = parseIf(tokenizer);
-		}
-		else {
-			// WHILE
-			s = parseWhile(tokenizer);
-		}
-		
-		return s;
-	}
-	
-	/**
-	 * The first token should have been already removed.
-	 * 
-	 * @param tokenizer to parse from
-	 * @return parsed IF(ELSE) statement
-	 */
-	private static Statement parseIf(Tokenizer tokenizer) {
-		return null;
-	}
-	
-	/**
-	 * The first token should have been already removed.
-	 * 
-	 * @param tokenizer to parse from
-	 * @return parsed WHILE statement
-	 */
-	private static Statement parseWhile(Tokenizer tokenizer) {
-		return null;
 	}
 	
 	/**

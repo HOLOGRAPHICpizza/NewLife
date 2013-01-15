@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.StringReader;
 import org.junit.Test;
-import org.peak15.newlife.Token;
 import org.peak15.newlife.Tokenizer;
-import org.peak15.newlife.Token.TokenType;
+import org.peak15.newlife.types.Token;
+import org.peak15.newlife.types.Token.TokenType;
 
 public class TokenizerTest {
 	

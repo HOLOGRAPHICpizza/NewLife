@@ -1,16 +1,13 @@
 package org.peak15.newlife;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.peak15.newlife.Token.TokenType;
+import org.peak15.newlife.types.Token;
+import org.peak15.newlife.types.Token.TokenType;
 
 /**
  * Creates tagged tokens from an input stream.
- * 
- * @author Michael Craft <mcraft@peak15.org>
  */
 public class Tokenizer {
 	
@@ -28,16 +25,6 @@ public class Tokenizer {
 	private boolean tokenReady, EOFReached;
 	
 	private final Reader reader;
-	
-	/**
-	 * The given input stream is not buffered,
-	 * you should buffer it yourself if you want that.
-	 * 
-	 * @param ins input stream to read from
-	 */
-	public Tokenizer(InputStream ins) {
-		this.reader = new InputStreamReader(ins);
-	}
 	
 	/**
 	 * The given reader is not buffered,

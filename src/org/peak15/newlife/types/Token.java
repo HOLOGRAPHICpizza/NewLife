@@ -1,4 +1,4 @@
-package org.peak15.newlife;
+package org.peak15.newlife.types;
 
 /**
  * One nicely packaged unit of source code!

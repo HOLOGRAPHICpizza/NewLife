@@ -19,17 +19,4 @@ public class NewLifeParserException extends Exception {
 	public NewLifeParserException(Throwable e) {
 		super(e);
 	}
-	
-	/**
-	 * Checks the specified condition, and throws an exception if it is false.
-	 * 
-	 * @param expectedTrueCond condition expected to be true
-	 * @param failMsg Message to print if the condition is false.
-	 * @throws NewLifeParserException If the condition is false.
-	 */
-	public static void assertCode(boolean expectedTrueCond, String failMsg)
-			throws NewLifeParserException {
-		if(!expectedTrueCond)
-			throw new NewLifeParserException(failMsg);
-	}
 }
