@@ -1,11 +1,11 @@
 package org.peak15.newlife;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import org.peak15.newlife.types.NamedStatement;
 import org.peak15.newlife.types.Program;
 import org.peak15.newlife.types.Statement;
 import org.peak15.newlife.types.Token;
@@ -86,7 +86,65 @@ public class Parser {
 	 * @throws NewLifeParserException upon encountering an error
 	 */
 	public static Program parseProgram(Token first, Tokenizer tokenizer) throws NewLifeParserException {
-		return null;
+		String name;
+		Map<String, Statement> context = new HashMap<String, Statement>();
+		Statement body;
+		Token t = first;
+		
+		try {
+			// PROGRAM
+			assertCode(t.getText().equals("PROGRAM"),
+					"Expected program to begin with \"PROGRAM\"");
+			
+			// program name
+			t = tokenizer.nextToken();
+			assertCode(t.getType() == TokenType.IDENTIFIER,
+					"Expected valid identifier for program name.");
+			name = t.getText();
+			
+			// IS
+			t = tokenizer.nextToken();
+			assertCode(t.getText().equals("IS"),
+					"Expected \"IS\" to follow program name.");
+			
+			// parse instructions (if any)
+			t = tokenizer.nextToken(); // this could be BEGIN
+			
+			// go until we reach BEGIN
+			while(!t.getText().equals("BEGIN")) {
+				assertCode(t.getText().equals("INSTRUCTION"), "Malformed instruction definition.");
+				
+				NamedStatement pair = parseInstruction(tokenizer, context.keySet());
+				context.put(pair.name, pair.statement);
+				
+				// get next token (next instruction or BEGIN)
+				t = tokenizer.nextToken();
+			}
+			
+			// BEGIN
+			assertCode(t.getText().equals("BEGIN"),
+					"Expected \"BEGIN\" after possible instruction definitions.");
+			
+			
+			// parse body and add to program
+			t = tokenizer.nextToken();
+			body = parseBlock(t, tokenizer);
+			
+			// END
+			t = tokenizer.nextToken();
+			assertCode(t.getText().equals("END"),
+					"Expected \"END\" to follow program body.");
+			
+			// name again
+			t = tokenizer.nextToken();
+			assertCode(t.getText().equals(name),
+					"Expected program name to follow entire program.");
+			
+		} catch(IOException e) {
+			throw new NewLifeParserException("Read error while parsing program.", e);
+		}
+		
+		return new Program(name, context, body);
 	}
 	
 	/**
@@ -124,7 +182,7 @@ public class Parser {
 	 * @throws IOException if the parser fails to read
 	 * @throws NewLifeParserException upon encountering a syntax error
 	 */
-	private static NamedStatement parseInstruction(
+	private static NamedStatement parseInstruction (
 			Tokenizer tokenizer,
 			Set<String> takenNames)
 			throws IOException, NewLifeParserException {
@@ -146,7 +204,7 @@ public class Parser {
 		
 		// body
 		t = tokenizer.nextToken();
-		Statement s = parseBlock(first, tokenizer);
+		Statement s = parseBlock(t, tokenizer);
 		
 		// END
 		t = tokenizer.nextToken();
