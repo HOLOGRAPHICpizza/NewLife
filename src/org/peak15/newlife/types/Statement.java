@@ -1,21 +1,14 @@
 package org.peak15.newlife.types;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.peak15.newlife.NewLifeParserException;
-import org.peak15.newlife.Tokenizer;
-
-import static org.peak15.newlife.NewLifeParserException.assertCode;
-import static org.peak15.newlife.types.Token.TokenType;
 
 /**
  * One abstract statement of code.
  * 
  * Immutable.
  */
-@SuppressWarnings("unused")
 public final class Statement {
 	public enum StatementType {
 		BLOCK,
@@ -42,43 +35,6 @@ public final class Statement {
 	private final String instruction;
 	
 	/**
-	 * Parse a statement from the given tokenizer.
-	 * The first token should NOT have already been removed,
-	 * and this will not remove a trailing token.
-	 * This removes precisely the tokens which form the statement.
-	 * 
-	 * @param tokenizer The tokenizer to read from.
-	 * @param block Is the statement to be parsed a block?
-	 * @throws IOException if the parser fails to read
-	 * @throws NewLifeParserException upon encountering a syntax error
-	 */
-	public Statement(Tokenizer tokenizer, boolean parseBlock) throws IOException, NewLifeParserException {
-		Token t = tokenizer.nextToken();
-		
-		if(parseBlock) {
-			this.type = StatementType.BLOCK;
-			this.statements = new LinkedList<Statement>();
-			this.condition = null;
-			this.instruction = null;
-			
-			while(t.getType() == TokenType.IDENTIFIER
-					|| t.getText().equals("IF")
-					|| t.getText().equals("WHILE")) {
-				
-				this.statements.add(parseStatement(t, tokenizer));
-			}
-		}
-		else {
-			Statement s = parseStatement(t, tokenizer);
-			
-			this.type = s.getType();
-			this.statements = s.getStatements();
-			this.condition = s.getCondition();
-			this.instruction = s.getInstruction();
-		}
-	}
-	
-	/**
 	 * Construct a BLOCK statement.
 	 * 
 	 * @param statements The statements in the block.
@@ -91,27 +47,33 @@ public final class Statement {
 	}
 	
 	/**
-	 * Construct an IF or IF_ELSE statement.
+	 * Construct an IF statement.
 	 * 
 	 * @param cond condition for the statement
 	 * @param body code to execute if true
-	 * @param elseBody code to execute if false, or null for an IF statement
+	 */
+	public Statement(Condition cond, Statement body) {
+		this.type = StatementType.IF;
+		this.condition = cond;
+		this.statements = Collections.singletonList(body);
+		this.instruction = null;
+	}
+	
+	/**
+	 * Construct an IF_ELSE statement.
+	 * 
+	 * @param cond condition for the statement
+	 * @param body code to execute if true
+	 * @param elseBody code to execute if false
 	 */
 	public Statement(Condition cond, Statement body, Statement elseBody) {
+		this.type = StatementType.IF_ELSE;
 		this.condition = cond;
 		this.instruction = null;
 		
 		this.statements = new LinkedList<Statement>();
 		this.statements.add(body);
-		
-		if(elseBody == null) {
-			this.type = StatementType.IF;
-		}
-		else {
-			this.type = StatementType.IF_ELSE;
-			this.statements.add(elseBody);
-		}
-		
+		this.statements.add(elseBody);
 	}
 	
 	/**
