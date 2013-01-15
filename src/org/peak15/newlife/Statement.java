@@ -36,6 +36,9 @@ public final class Statement {
 	
 	/**
 	 * Parse a statement from the given tokenizer.
+	 * For blocks, the first token should NOT have already been removed,
+	 * and this will not remove a trailing token.
+	 * This removes precisely the tokens which form the block.
 	 * 
 	 * @param tokenizer The tokenizer to read from.
 	 * @param block Is the statement to be parsed a block?

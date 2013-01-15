@@ -1,8 +1,10 @@
 package org.peak15.newlife;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.peak15.newlife.Token.TokenType;
 
@@ -79,8 +81,8 @@ public final class Program {
 			while(!t.getText().equals("BEGIN")) {
 				assertCode(t.getText().equals("INSTRUCTION"), "Malformed instruction definition.");
 				
-				Map.Entry<String, Statement> pair = parseInstruction(tokenizer);
-				this.context.put(pair.getKey(), pair.getValue());
+				NamedStatement pair = parseInstruction(tokenizer, context.keySet());
+				this.context.put(pair.name, pair.statement);
 				
 				// get next token (next instruction or BEGIN)
 				t = tokenizer.nextToken();
@@ -90,13 +92,19 @@ public final class Program {
 			assertCode(t.getText().equals("BEGIN"),
 					"Expected \"BEGIN\" after possible instruction definitions.");
 			
-			// get the next token for parseBlock
-			t = tokenizer.nextToken();
+			
 			// parse body and add to program
 			body = new Statement(tokenizer, true);
 			
-			// END already pulled out in parseBlock
+			// END
+			t = tokenizer.nextToken();
+			assertCode(t.getText().equals("END"),
+					"Expected \"END\" to follow program body.");
 			
+			// name again
+			t = tokenizer.nextToken();
+			assertCode(t.getText().equals(this.name),
+					"Expected program name to follow entire program.");
 			
 		} catch(IOException e) {
 			throw new NewLifeParserException(e);
@@ -106,25 +114,49 @@ public final class Program {
 	
 	/**
 	 * Parses an instruction from the tokenizer into a BLOCK statement.
+	 * The first token should have already been removed.
 	 * 
 	 * @param tokenizer to parse from
 	 * @return pair of the name and the block of the parsed instruction
+	 * @throws IOException if the parser fails to read
+	 * @throws NewLifeParserException upon encountering a source code error
 	 */
-	private static Map.Entry<String, Statement> parseInstruction(Tokenizer tokenizer) {
-		// TODO Auto-generated method stub
-		return null;
+	private static NamedStatement parseInstruction(
+			Tokenizer tokenizer,
+			Set<String> takenNames)
+			throws IOException, NewLifeParserException {
+		
+		Token t;
+		
+		// instruction name
+		t = tokenizer.nextToken();
+		String instName = t.getText();
+		assertCode(t.getType() == TokenType.IDENTIFIER,
+				"Expected valid identifier for instruction name.");
+		assertCode(!takenNames.contains(instName),
+				"Expected a unique instruction name (a name was repeated).");
+		
+		// IS
+		t = tokenizer.nextToken();
+		assertCode(t.getText().equals("IS"),
+				"Expected \"IS\" to follow instruction name.");
+		
+		// body
+		Statement s = new Statement(tokenizer, true);
+		
+		// END
+		t = tokenizer.nextToken();
+		assertCode(t.getText().equals("END"),
+				"Expected \"END\" to follow instruction body.");
+		
+		// name again
+		t = tokenizer.nextToken();
+		assertCode(t.getText().equals(instName),
+				"Expected instruction name to follow instruction definition.");
+		
+		return new NamedStatement(instName, s);
 	}
 
-	/**
-	 * Compiles the program and returns the compiled byte array.
-	 * 
-	 * @return the compiled byte array.
-	 */
-	public byte[] getCompiledBytes() {
-		//TODO: Implement.
-		return null;
-	}
-	
 	/**
 	 * Checks the specified condition, and throws an exception if it is false.
 	 * 
@@ -136,5 +168,50 @@ public final class Program {
 			throws NewLifeParserException {
 		if(!expectedTrueCond)
 			throw new NewLifeParserException(failMsg);
+	}
+	
+	/**
+	 * For use in passing pairs for the context.
+	 * Apparently it is Java "best practice" to create a class for pairs.
+	 */
+	private static class NamedStatement {
+		public final String name;
+		public final Statement statement;
+		
+		public NamedStatement(String name, Statement statement) {
+			this.name = name;
+			this.statement = statement;
+		}
+	}
+
+	/**
+	 * Compiles the program and returns the compiled byte array.
+	 * 
+	 * @return the compiled byte array.
+	 */
+	public byte[] getCompiledBytes() {
+		//TODO: Implement.
+		return null;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public Map<String, Statement> getContext() {
+		return Collections.unmodifiableMap(context);
+	}
+
+	/**
+	 * @return the body
+	 */
+	public Statement getBody() {
+		return body;
 	}
 }
