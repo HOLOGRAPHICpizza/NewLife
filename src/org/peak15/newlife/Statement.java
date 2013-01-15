@@ -84,16 +84,41 @@ public final class Statement {
 	 * @return the parsed statement
 	 */
 	private static Statement parseStatement(Token firstToken, Tokenizer tokenizer) {
+		Statement s;
+		
 		if(firstToken.getType() == TokenType.IDENTIFIER) {
-			//
+			// CALL
+			s = new Statement(firstToken.getText());
 		}
 		else if(firstToken.getText().equals("IF")) {
-			//
+			// IF(ELSE)
+			s = parseIf(tokenizer);
 		}
-		else { // WHILE
-			//
+		else {
+			// WHILE
+			s = parseWhile(tokenizer);
 		}
 		
+		return s;
+	}
+	
+	/**
+	 * The first token should have been already removed.
+	 * 
+	 * @param tokenizer to parse from
+	 * @return parsed IF(ELSE) statement
+	 */
+	private static Statement parseIf(Tokenizer tokenizer) {
+		return null;
+	}
+	
+	/**
+	 * The first token should have been already removed.
+	 * 
+	 * @param tokenizer to parse from
+	 * @return parsed WHILE statement
+	 */
+	private static Statement parseWhile(Tokenizer tokenizer) {
 		return null;
 	}
 	
@@ -110,16 +135,27 @@ public final class Statement {
 	}
 	
 	/**
-	 * Construct an IF statement.
+	 * Construct an IF or IF_ELSE statement.
 	 * 
 	 * @param cond condition for the statement
-	 * @param body code for the statement
+	 * @param body code to execute if true
+	 * @param elseBody code to execute if false, or null for an IF statement
 	 */
-	public Statement(Condition cond, Statement body) {
-		type = StatementType.IF;
+	public Statement(Condition cond, Statement body, Statement elseBody) {
 		this.condition = cond;
-		statements = Collections.singletonList(body);
-		instruction = null;
+		this.instruction = null;
+		
+		this.statements = new LinkedList<Statement>();
+		this.statements.add(body);
+		
+		if(elseBody == null) {
+			this.type = StatementType.IF;
+		}
+		else {
+			this.type = StatementType.IF_ELSE;
+			this.statements.add(elseBody);
+		}
+		
 	}
 	
 	/**
@@ -147,6 +183,9 @@ public final class Statement {
 	}
 	
 	public List<Statement> getStatements() {
+		if(statements == null)
+			return null;
+		
 		return Collections.unmodifiableList(statements);
 	}
 }
