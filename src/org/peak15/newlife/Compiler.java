@@ -28,7 +28,7 @@ public class Compiler {
 	
 	/**
 	 * @param program to compile
-	 * @return the compiled byte array
+	 * @return the compiled list of bytes
 	 */
 	public static List<Byte> compile(Program program) {
 		//TODO: Implement.
