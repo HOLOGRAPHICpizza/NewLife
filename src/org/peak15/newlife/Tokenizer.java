@@ -23,6 +23,7 @@ public class Tokenizer {
 	private final StringBuilder buffer = new StringBuilder();
 	
 	private boolean tokenReady, EOFReached;
+	private Token tokenBuffer = null;
 	
 	private final Reader reader;
 	
@@ -37,13 +38,41 @@ public class Tokenizer {
 	}
 	
 	/**
-	 * Returns the next token from the input stream,
+	 * Pulls the next token from the input stream,
 	 * whitespace is ignored, returns EOF_TOKEN on end of stream.
 	 * 
 	 * @return the next token from the input stream
 	 * @throws IOException in the event of an input error
 	 */
 	public Token nextToken() throws IOException {
+		Token t;
+		
+		if(tokenBuffer == null) {
+			t = pullNextToken();
+		}
+		else {
+			t = tokenBuffer;
+			tokenBuffer = null;
+		}
+		
+		return t;
+	}
+	
+	/**
+	 * The same as nextToken, except the state of the tokenizer is not changed.
+	 * The token is not pulled out, future calls to nextToken are unaffected.
+	 * 
+	 * @return the next token
+	 */
+	public Token peekNextToken() throws IOException {
+		if(tokenBuffer == null) {
+			tokenBuffer = pullNextToken();
+		}
+		
+		return tokenBuffer;
+	}
+	
+	private Token pullNextToken() throws IOException {
 		// read characters until the token is ready
 		while(!tokenReady && !EOFReached) {
 			processNextChar();

@@ -22,10 +22,10 @@ public class TokenizerTest {
 			+ "END test";
 	private static final int TOKEN_COUNT = 20;
 	
-	private final Tokenizer tokenizer = new Tokenizer(new StringReader(TEST_STRING));
-	
 	@Test
 	public void testNextToken() throws IOException {
+		Tokenizer tokenizer = new Tokenizer(new StringReader(TEST_STRING));
+		
 		Token[] tokens = new Token[TOKEN_COUNT];
 		for(int i=0; i < tokens.length; i++) {
 			tokens[i] = tokenizer.nextToken();
@@ -40,6 +40,16 @@ public class TokenizerTest {
 		assertEquals("13:", TokenType.ERROR, tokens[12].getType());
 		assertEquals("14:", TokenType.COMMENT, tokens[13].getType());
 		assertEquals("EOF:", TokenType.EOF_TOKEN, tokens[TOKEN_COUNT - 1].getType());
+	}
+	
+	@Test
+	public void testPeekNextToken() throws IOException {
+		Tokenizer tokenizer = new Tokenizer(new StringReader(TEST_STRING));
+		
+		assertEquals("1:", TokenType.KEYWORD, tokenizer.nextToken().getType());
+		assertEquals("2 peek:", TokenType.IDENTIFIER, tokenizer.peekNextToken().getType());
+		assertEquals("2:", TokenType.IDENTIFIER, tokenizer.nextToken().getType());
+		assertEquals("3:", TokenType.KEYWORD, tokenizer.nextToken().getType());
 	}
 
 }

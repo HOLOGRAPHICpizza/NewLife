@@ -49,7 +49,7 @@ public class Parser {
 	
 	/**
 	 * Parse a BLOCK.
-	 * NOTE: Parses one extra token past the end of the block.
+	 * Parses precisely the tokens which form the block, and no more.
 	 * 
 	 * @param first the first token of the block, already pulled out.
 	 * @param tokenizer to parse from

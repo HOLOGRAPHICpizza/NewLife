@@ -1,5 +1,7 @@
 package org.peak15.newlife;
 
+import java.util.List;
+
 import org.peak15.newlife.types.Program;
 
 /**
@@ -28,7 +30,7 @@ public class Compiler {
 	 * @param program to compile
 	 * @return the compiled byte array
 	 */
-	public static byte[] compile(Program program) {
+	public static List<Byte> compile(Program program) {
 		//TODO: Implement.
 		return null;
 	}
