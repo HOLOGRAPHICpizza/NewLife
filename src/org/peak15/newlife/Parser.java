@@ -65,7 +65,14 @@ public class Parser {
 			
 			while(isPrimitiveStatement(t)) {
 				statements.add(parseStatement(t, tokenizer));
-				t = tokenizer.nextToken();
+				
+				// if the next token is part of the block, pull it out
+				if(isPrimitiveStatement(tokenizer.peekNextToken())) {
+					t = tokenizer.nextToken();
+				}
+				else {
+					t = tokenizer.peekNextToken();
+				}
 			}
 			
 			s = new Statement(statements);

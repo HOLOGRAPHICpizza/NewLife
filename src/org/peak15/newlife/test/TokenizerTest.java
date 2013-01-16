@@ -48,6 +48,7 @@ public class TokenizerTest {
 		
 		assertEquals("1:", TokenType.KEYWORD, tokenizer.nextToken().getType());
 		assertEquals("2 peek:", TokenType.IDENTIFIER, tokenizer.peekNextToken().getType());
+		assertEquals("2 peek2:", TokenType.IDENTIFIER, tokenizer.peekNextToken().getType());
 		assertEquals("2:", TokenType.IDENTIFIER, tokenizer.nextToken().getType());
 		assertEquals("3:", TokenType.KEYWORD, tokenizer.nextToken().getType());
 	}
