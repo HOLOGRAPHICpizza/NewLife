@@ -39,11 +39,12 @@ public final class Statement {
 	 * 
 	 * @param statements The statements in the block.
 	 */
-	public Statement(List<Statement> statements) {
-		type = StatementType.BLOCK;
-		this.statements = new LinkedList<Statement>(statements);
-		this.condition = null;
-		instruction = null;
+	public static Statement makeBlock(List<Statement> statements) {
+		return new Statement(
+				StatementType.BLOCK,
+				new LinkedList<Statement>(statements),
+				null,
+				null);
 	}
 	
 	/**
@@ -52,11 +53,16 @@ public final class Statement {
 	 * @param cond condition for the statement
 	 * @param body code to execute if true
 	 */
-	public Statement(Condition cond, Statement body) {
-		this.type = StatementType.IF;
-		this.condition = cond;
-		this.statements = Collections.singletonList(body);
-		this.instruction = null;
+	public static Statement makeIf(Condition cond, Statement body) {
+		if(cond == null || body == null) {
+			throw new NullPointerException();
+		}
+		
+		return new Statement(
+				StatementType.IF,
+				Collections.singletonList(body),
+				cond,
+				null);
 	}
 	
 	/**
@@ -66,14 +72,20 @@ public final class Statement {
 	 * @param body code to execute if true
 	 * @param elseBody code to execute if false
 	 */
-	public Statement(Condition cond, Statement body, Statement elseBody) {
-		this.type = StatementType.IF_ELSE;
-		this.condition = cond;
-		this.instruction = null;
+	public static Statement makeIfElse(Condition cond, Statement body, Statement elseBody) {
+		if(cond == null || body == null || elseBody == null) {
+			throw new NullPointerException();
+		}
 		
-		this.statements = new LinkedList<Statement>();
-		this.statements.add(body);
-		this.statements.add(elseBody);
+		List<Statement> statements = new LinkedList<>();
+		statements.add(body);
+		statements.add(elseBody);
+		
+		return new Statement(
+				StatementType.IF_ELSE,
+				statements,
+				cond,
+				null);
 	}
 	
 	/**
@@ -81,28 +93,82 @@ public final class Statement {
 	 * 
 	 * @param instruction
 	 */
-	public Statement(String instruction) {
-		type = StatementType.CALL;
+	public static Statement makeCall(String instruction) {
+		if(instruction == null) {
+			throw new NullPointerException();
+		}
+		
+		return new Statement(
+				StatementType.CALL,
+				null,
+				null,
+				instruction);
+	}
+	
+	private Statement(StatementType type, List<Statement> statements,
+			Condition condition, String instruction) {
+		this.type = type;
+		this.statements = statements;
+		this.condition = condition;
 		this.instruction = instruction;
-		condition = null;
-		statements = null;
 	}
 	
 	public StatementType getType() {
 		return type;
 	}
 	
+	/**
+	 * Only valid for statements with conditions.
+	 * 
+	 * @return the condition
+	 */
 	public Condition getCondition() {
+		switch(type) {
+		case IF:
+		case IF_ELSE:
+		case WHILE:
+			break;
+		
+		default:
+			throw new UnsupportedOperationException();
+		}
+		
 		return condition;
 	}
 	
+	/**
+	 * Only valid for CALL statements.
+	 * 
+	 * @return the call instruction
+	 */
 	public String getInstruction() {
+		if(type != StatementType.CALL) {
+			throw new UnsupportedOperationException();
+		}
+		
 		return instruction;
 	}
 	
+	/**
+	 * For BLOCKs, the body of statements.
+	 * For IF(_ELSE)s, the body, then the elseBody (if any).
+	 * For WHILEs, the body of statements.
+	 * 
+	 * Invalid for other statement types.
+	 * 
+	 * @return the list of statements within this statement
+	 */
 	public List<Statement> getStatements() {
-		if(statements == null)
-			return null;
+		switch(type) {
+		case BLOCK:
+		case IF:
+		case IF_ELSE:
+		case WHILE:
+			break;
+		
+		default:
+			throw new UnsupportedOperationException();
+		}
 		
 		return Collections.unmodifiableList(statements);
 	}

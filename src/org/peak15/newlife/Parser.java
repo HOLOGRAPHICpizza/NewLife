@@ -14,7 +14,7 @@ import org.peak15.newlife.types.Token.TokenType;
 /**
  * Parses tokens into abstract statements and programs.
  */
-public class Parser {
+public final class Parser {
 	/**
 	 * Parse an instruction call, IF(ELSE), or WHILE statement.
 	 * Can not parse blocks.
@@ -30,7 +30,7 @@ public class Parser {
 		
 		if(first.getType() == TokenType.IDENTIFIER) {
 			// CALL
-			s = new Statement(first.getText());
+			s = Statement.makeCall(first.getText());
 		}
 		else if(first.getText().equals("IF")) {
 			// IF(ELSE)
@@ -75,7 +75,7 @@ public class Parser {
 				}
 			}
 			
-			s = new Statement(statements);
+			s = Statement.makeBlock(statements);
 		} catch(IOException e) {
 			throw new NewLifeParserException("Read error while parsing block.", e);
 		}
