@@ -194,4 +194,96 @@ public final class Statement {
 		
 		return Collections.unmodifiableList(statements);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this) {
+			return true;
+		}
+		
+		if(!(obj instanceof Statement)) {
+			return false;
+		}
+		
+		Statement t = (Statement) obj;
+		
+		if(t.getType() != this.getType()) {
+			return false;
+		}
+		
+		switch(t.getType()) {
+		case BLOCK:
+			return t.getStatements().equals(this.getStatements());
+			
+		case CALL:
+			return t.getInstruction().equals(this.getInstruction());
+			
+		case IF:
+		case IF_ELSE:
+		case WHILE:
+			return	t.getCondition() == this.getCondition() &&
+					t.getStatements().equals(this.getStatements());
+		
+		default:
+			throw new UnsupportedOperationException();
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 9001;
+		
+		result = 1327 * result + this.getType().hashCode();
+		
+		switch(this.getType()) {
+		case BLOCK:
+			result = 1327 * result + this.getStatements().hashCode();
+			break;
+			
+		case CALL:
+			result = 1327 * result + this.getInstruction().hashCode();
+			break;
+			
+		case IF:
+		case IF_ELSE:
+		case WHILE:
+			result = 1327 * result + this.getCondition().hashCode();
+			result = 1327 * result + this.getStatements().hashCode();
+			break;
+		
+		default:
+			throw new UnsupportedOperationException();
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder desc = new StringBuilder();
+		
+		switch(this.getType()) {
+		case BLOCK:
+			desc.append(this.getStatements().size()).append(" statements");
+			break;
+			
+		case CALL:
+			desc.append(this.getInstruction());
+			break;
+			
+		case IF:
+		case WHILE:
+		case IF_ELSE:
+			desc.append(this.condition.toString());
+			
+			for(Statement s : this.getStatements()) {
+				desc.append(", ").append(s.toString());
+			}
+			break;
+		
+		default:
+			throw new UnsupportedOperationException();
+		}
+		return String.format("(%s, \"%s\")", this.getType().toString(), desc.toString());
+	}
 }
