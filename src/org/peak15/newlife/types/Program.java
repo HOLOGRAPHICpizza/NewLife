@@ -15,6 +15,11 @@ public final class Program {
 	private final Map<String, Statement> context;
 	private final Statement body;
 	
+	/**
+	 * @param name of the program.
+	 * @param context Map of instruction names to their body BLOCK statements.
+	 * @param body The body BLOCK statement of the program.
+	 */
 	public Program(String name, Map<String, Statement> context, Statement body) {
 		this.name = name;
 		this.context = new HashMap<String, Statement>(context);
