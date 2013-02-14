@@ -205,24 +205,24 @@ public final class Statement {
 			return false;
 		}
 		
-		Statement t = (Statement) obj;
+		Statement s = (Statement) obj;
 		
-		if(t.getType() != this.getType()) {
+		if(s.getType() != this.getType()) {
 			return false;
 		}
 		
-		switch(t.getType()) {
+		switch(s.getType()) {
 		case BLOCK:
-			return t.getStatements().equals(this.getStatements());
+			return s.getStatements().equals(this.getStatements());
 			
 		case CALL:
-			return t.getInstruction().equals(this.getInstruction());
+			return s.getInstruction().equals(this.getInstruction());
 			
 		case IF:
 		case IF_ELSE:
 		case WHILE:
-			return	t.getCondition() == this.getCondition() &&
-					t.getStatements().equals(this.getStatements());
+			return	s.getCondition() == this.getCondition() &&
+					s.getStatements().equals(this.getStatements());
 		
 		default:
 			throw new UnsupportedOperationException();
