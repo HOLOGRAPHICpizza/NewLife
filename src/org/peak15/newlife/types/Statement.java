@@ -284,6 +284,6 @@ public final class Statement {
 		default:
 			throw new UnsupportedOperationException();
 		}
-		return String.format("(%s, \"%s\")", this.getType().toString(), desc.toString());
+		return String.format("(%s, %s)", this.getType().toString(), desc.toString());
 	}
 }
