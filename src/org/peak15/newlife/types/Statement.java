@@ -105,6 +105,28 @@ public final class Statement {
 				instruction);
 	}
 	
+	/**
+	 * Construct a WHILE statement.
+	 * 
+	 * @param condition execute body while this is true
+	 * @param body BLOCK statement to execute while condition holds
+	 * @return WHILE statement with given components
+	 */
+	public static Statement makeWhile(Condition condition, Statement body) {
+		if(condition == null || body == null) {
+			throw new NullPointerException();
+		}
+		if(body.type != StatementType.BLOCK) {
+			throw new IllegalArgumentException("body is not a BLOCK statement");
+		}
+		
+		return new Statement(
+				StatementType.WHILE,
+				Collections.singletonList(body),
+				condition,
+				null);
+	}
+	
 	private Statement(StatementType type, List<Statement> statements,
 			Condition condition, String instruction) {
 		this.type = type;
