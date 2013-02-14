@@ -12,17 +12,17 @@ import java.util.Map;
  */
 public final class Program {
 	private final String name;
-	private final Map<String, Statement> context;
-	private final Statement body;
+	private final Map<String, BlargStatement> context;
+	private final BlargStatement body;
 	
 	/**
 	 * @param name of the program.
 	 * @param context Map of instruction names to their body BLOCK statements.
-	 * @param body The body BLOCK statement of the program.
+	 * @param body The body BLOCK blargStatement of the program.
 	 */
-	public Program(String name, Map<String, Statement> context, Statement body) {
+	public Program(String name, Map<String, BlargStatement> context, BlargStatement body) {
 		this.name = name;
-		this.context = new HashMap<String, Statement>(context);
+		this.context = new HashMap<String, BlargStatement>(context);
 		this.body = body;
 	}
 
@@ -36,14 +36,14 @@ public final class Program {
 	/**
 	 * @return the context
 	 */
-	public Map<String, Statement> getContext() {
+	public Map<String, BlargStatement> getContext() {
 		return Collections.unmodifiableMap(context);
 	}
 
 	/**
 	 * @return the body
 	 */
-	public Statement getBody() {
+	public BlargStatement getBody() {
 		return body;
 	}
 	

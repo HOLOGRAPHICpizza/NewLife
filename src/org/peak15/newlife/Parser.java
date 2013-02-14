@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.peak15.newlife.types.Program;
-import org.peak15.newlife.types.Statement;
+import org.peak15.newlife.types.BlargStatement;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.TokenType;
 
@@ -16,21 +16,21 @@ import org.peak15.newlife.types.Token.TokenType;
  */
 public final class Parser {
 	/**
-	 * Parse an instruction call, IF(ELSE), or WHILE statement.
+	 * Parse an instruction call, IF(ELSE), or WHILE blargStatement.
 	 * Can not parse blocks.
-	 * Parses precisely the tokens which form the statement, and no more.
+	 * Parses precisely the tokens which form the blargStatement, and no more.
 	 * 
-	 * @param first the first token of the statement, already pulled out.
+	 * @param first the first token of the blargStatement, already pulled out.
 	 * @param tokenizer to parse from
-	 * @return the parsed statement
+	 * @return the parsed blargStatement
 	 * @throws NewLifeParserException upon encountering an error
 	 */
-	public static Statement parseStatement(Token first, Tokenizer tokenizer) throws NewLifeParserException {
-		Statement s = null;
+	public static BlargStatement parseStatement(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+		BlargStatement s = null;
 		
 		if(first.getType() == TokenType.IDENTIFIER) {
 			// CALL
-			s = Statement.makeCall(first.getText());
+			s = BlargStatement.makeCall(first.getText());
 		}
 		else if(first.getText().equals("IF")) {
 			// IF(ELSE)
@@ -56,15 +56,15 @@ public final class Parser {
 	 * @return the parsed block
 	 * @throws NewLifeParserException upon encountering an error
 	 */
-	public static Statement parseBlock(Token first, Tokenizer tokenizer) throws NewLifeParserException {
-		Statement s;
+	public static BlargStatement parseBlock(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+		BlargStatement s;
 		
 		try {
 			Token t = first;
-			List<Statement> statements = new LinkedList<Statement>();
+			List<BlargStatement> blargStatements = new LinkedList<BlargStatement>();
 			
 			while(isPrimitiveStatement(t)) {
-				statements.add(parseStatement(t, tokenizer));
+				blargStatements.add(parseStatement(t, tokenizer));
 				
 				// if the next token is part of the block, pull it out
 				if(isPrimitiveStatement(tokenizer.peekNextToken())) {
@@ -75,7 +75,7 @@ public final class Parser {
 				}
 			}
 			
-			s = Statement.makeBlock(statements);
+			s = BlargStatement.makeBlock(blargStatements);
 		} catch(IOException e) {
 			throw new NewLifeParserException("Read error while parsing block.", e);
 		}
@@ -94,8 +94,8 @@ public final class Parser {
 	 */
 	public static Program parseProgram(Token first, Tokenizer tokenizer) throws NewLifeParserException {
 		String name;
-		Map<String, Statement> context = new HashMap<String, Statement>();
-		Statement body;
+		Map<String, BlargStatement> context = new HashMap<String, BlargStatement>();
+		BlargStatement body;
 		Token t = first;
 		
 		try {
@@ -122,7 +122,7 @@ public final class Parser {
 				assertCode(t.getText().equals("INSTRUCTION"), "Malformed instruction definition.");
 				
 				NamedStatement pair = parseInstruction(tokenizer, context.keySet());
-				context.put(pair.name, pair.statement);
+				context.put(pair.name, pair.blargStatement);
 				
 				// get next token (next instruction or BEGIN)
 				t = tokenizer.nextToken();
@@ -160,18 +160,18 @@ public final class Parser {
 	 */
 	private static class NamedStatement {
 		public final String name;
-		public final Statement statement;
+		public final BlargStatement blargStatement;
 		
-		public NamedStatement(String name, Statement statement) {
+		public NamedStatement(String name, BlargStatement blargStatement) {
 			this.name = name;
-			this.statement = statement;
+			this.blargStatement = blargStatement;
 		}
 	}
 	
 	/**
 	 * @param t token to test
-	 * @return true if the statement represented by the token is
-	 *         an instruction call, IF(ELSE), or WHILE statement.
+	 * @return true if the blargStatement represented by the token is
+	 *         an instruction call, IF(ELSE), or WHILE blargStatement.
 	 */
 	private static boolean isPrimitiveStatement(Token t) {
 		return t.getType() == TokenType.IDENTIFIER
@@ -180,9 +180,9 @@ public final class Parser {
 	}
 
 	/**
-	 * Parses an instruction definition into a named BLOCK statement.
+	 * Parses an instruction definition into a named BLOCK blargStatement.
 	 * 
-	 * @param first the first token of the statement, already pulled out.
+	 * @param first the first token of the blargStatement, already pulled out.
 	 * @param tokenizer to parse from
 	 * @param takenNames instruction names that have already been used.
 	 * @return pair of the name and the block of the parsed instruction
@@ -211,7 +211,7 @@ public final class Parser {
 		
 		// body
 		t = tokenizer.nextToken();
-		Statement s = parseBlock(t, tokenizer);
+		BlargStatement s = parseBlock(t, tokenizer);
 		
 		// END
 		t = tokenizer.nextToken();
@@ -227,20 +227,20 @@ public final class Parser {
 	}
 
 	/**
-	 * @param first the first token of the statement, already pulled out.
+	 * @param first the first token of the blargStatement, already pulled out.
 	 * @param tokenizer to parse from
-	 * @return parsed IF(ELSE) statement
+	 * @return parsed IF(ELSE) blargStatement
 	 */
-	private static Statement parseIf(Token first, Tokenizer tokenizer) {
+	private static BlargStatement parseIf(Token first, Tokenizer tokenizer) {
 		return null;
 	}
 	
 	/**
-	 * @param first the first token of the statement, already pulled out.
+	 * @param first the first token of the blargStatement, already pulled out.
 	 * @param tokenizer to parse from
-	 * @return parsed WHILE statement
+	 * @return parsed WHILE blargStatement
 	 */
-	private static Statement parseWhile(Token first, Tokenizer tokenizer) {
+	private static BlargStatement parseWhile(Token first, Tokenizer tokenizer) {
 		return null;
 	}
 	

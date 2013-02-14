@@ -9,7 +9,7 @@ import org.peak15.newlife.types.Token.TokenType;
 /**
  * Creates tagged tokens from an input stream.
  */
-public class Tokenizer {
+public final class Tokenizer {
 	
 	private enum BufferState {
 		EMPTY_BS,

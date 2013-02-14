@@ -8,17 +8,17 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.peak15.newlife.types.Program;
-import org.peak15.newlife.types.Statement;
+import org.peak15.newlife.types.BlargStatement;
 
 public class ProgramTest extends ValueTypeTest<Program> {
 
-	private static final Map<String, Statement> context;
-	private static final Statement body = Statement.makeBlock(
-			Collections.singletonList(Statement.makeCall("explode")));
+	private static final Map<String, BlargStatement> context;
+	private static final BlargStatement body = BlargStatement.makeBlock(
+			Collections.singletonList(BlargStatement.makeCall("explode")));
 	
 	static {
-		List<Statement> explodeBody = Collections.singletonList(Statement.makeCall("turnright"));
-		Statement explode = Statement.makeBlock(explodeBody);
+		List<BlargStatement> explodeBody = Collections.singletonList(BlargStatement.makeCall("turnright"));
+		BlargStatement explode = BlargStatement.makeBlock(explodeBody);
 		context = Collections.singletonMap("explode", explode);
 	}
 	
@@ -44,9 +44,9 @@ public class ProgramTest extends ValueTypeTest<Program> {
 
 	@Override
 	protected Program D() {
-		Statement body = Statement.makeBlock(
-				Collections.singletonList(Statement.makeCall("turnleft")));
-		return new Program("totheleft", Collections.<String, Statement>emptyMap(), body);
+		BlargStatement body = BlargStatement.makeBlock(
+				Collections.singletonList(BlargStatement.makeCall("turnleft")));
+		return new Program("totheleft", Collections.<String, BlargStatement>emptyMap(), body);
 	}
 
 }

@@ -7,7 +7,7 @@ import org.peak15.newlife.types.Program;
 /**
  * Turns Programs into compiled binaries.
  */
-public class Compiler {
+public final class Compiler {
 	/**
 	 * @param program to compile
 	 * @return the compiled list of bytes
