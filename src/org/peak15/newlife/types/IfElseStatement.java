@@ -31,4 +31,16 @@ public final class IfElseStatement implements Statement {
 		this.body = body;
 		this.elseBody = elseBody;
 	}
+	
+	public Condition getCondition() {
+		return this.condition;
+	}
+	
+	public BlockStatement getBody() {
+		return this.body;
+	}
+	
+	public BlockStatement getElseBody() {
+		return this.elseBody;
+	}
 }
