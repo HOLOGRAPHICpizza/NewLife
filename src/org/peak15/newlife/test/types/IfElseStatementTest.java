@@ -18,7 +18,7 @@ public class IfElseStatementTest extends ValueTypeTest<IfElseStatement> {
 
 	@Override
 	protected IfElseStatement D() {
-		return new IfElseStatement(Condition.TRUE, BlockStatementTest.COMPOUND_BLOCK());
+		return new IfElseStatement(Condition.TRUE, BlockStatementTest.compoundBlock());
 	}
 	
 	@Test
@@ -28,7 +28,7 @@ public class IfElseStatementTest extends ValueTypeTest<IfElseStatement> {
 	
 	@Test
 	public void testGetBody() {
-		assertEquals(BlockStatementTest.COMPOUND_BLOCK(), d.getBody());
+		assertEquals(BlockStatementTest.compoundBlock(), d.getBody());
 	}
 	
 	@Test

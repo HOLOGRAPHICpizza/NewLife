@@ -9,22 +9,22 @@ public final class IfElseStatement implements Statement {
 	 * Construct an if statement.
 	 * 
 	 * @param condition to execute body when true
-	 * @param body
+	 * @param body block to execute when true.
 	 */
 	public IfElseStatement(Condition condition, BlockStatement body) {
-		this(condition, body, null);
+		this(condition, body, BlockStatement.EMPTY_BLOCK);
 	}
 	
 	/**
 	 * Construct an if else statement.
 	 * 
-	 * @param condition to execute body when true, or elseBody (if present) when false.
+	 * @param condition to execute body when true, or elseBody when false.
 	 * @param body block to execute when true.
-	 * @param elseBody block to execute when false, or null for none.
+	 * @param elseBody block to execute when false.
 	 */
 	public IfElseStatement(Condition condition, BlockStatement body, BlockStatement elseBody) {
-		if(condition == null || body == null) {
-			throw new NullPointerException("IfElseStatement needs at least a condition and body.");
+		if(condition == null || body == null || elseBody == null) {
+			throw new NullPointerException("No paramaters may be null.");
 		}
 		
 		this.condition = condition;

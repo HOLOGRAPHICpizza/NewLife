@@ -10,7 +10,7 @@ public class WhileStatementTest extends ValueTypeTest<WhileStatement> {
 	
 	@Override
 	protected WhileStatement A() {
-		return new WhileStatement(Condition.RANDOM, BlockStatementTest.COMPOUND_BLOCK());
+		return new WhileStatement(Condition.RANDOM, BlockStatementTest.compoundBlock());
 	}
 
 	@Override
@@ -25,6 +25,6 @@ public class WhileStatementTest extends ValueTypeTest<WhileStatement> {
 	
 	@Test
 	public void testGetBody() {
-		assertEquals(BlockStatementTest.COMPOUND_BLOCK(), a.getBody());
+		assertEquals(BlockStatementTest.compoundBlock(), a.getBody());
 	}
 }

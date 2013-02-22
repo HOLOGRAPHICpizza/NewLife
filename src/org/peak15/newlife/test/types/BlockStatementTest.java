@@ -19,7 +19,7 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	static final BlockStatement INFECT_BLOCK =
 			new BlockStatement.Builder(new CallStatement("infect")).build();
 	
-	static BlockStatement COMPOUND_BLOCK() {
+	static BlockStatement compoundBlock() {
 		return new BlockStatement.Builder()
 				.append(EXPLODE_BLOCK)
 				.append(INFECT_BLOCK)
@@ -41,7 +41,7 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	
 	@Override
 	protected BlockStatement A() {
-		return COMPOUND_BLOCK();
+		return compoundBlock();
 	}
 
 	@Override

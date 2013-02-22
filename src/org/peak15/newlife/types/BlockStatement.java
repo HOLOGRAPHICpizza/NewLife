@@ -5,22 +5,24 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * List of one or more statements.
+ * List of zero or more statements.
  */
 public final class BlockStatement implements Statement {
 	
 	private final List<Statement> list;
 	
+	public static final BlockStatement EMPTY_BLOCK = new BlockStatement.Builder().build();
+	
 	/**
-	 * @param statements a list of one or more statements.
+	 * @param statements a list of zero or more statements.
 	 */
 	public BlockStatement(List<Statement> statements) {
 		if(statements == null) {
 			throw new NullPointerException("No parameters may be null.");
 		}
-		else if(statements.size() < 1) {
+		/*else if(statements.size() < 1) {
 			throw new IllegalArgumentException("A block must contain at least one statement.");
-		}
+		}*/
 		
 		this.list = new LinkedList<>(statements);
 	}
@@ -29,9 +31,6 @@ public final class BlockStatement implements Statement {
 		
 		private List<Statement> list = new LinkedList<>();
 		
-		/**
-		 * Empty constructor for syntax convenience.
-		 */
 		public Builder() {}
 		
 		public Builder(Statement first) {
