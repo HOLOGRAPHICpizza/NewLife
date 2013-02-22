@@ -20,6 +20,10 @@ public final class Token {
 	private final String text;
 	
 	public Token(TokenType type, String text) {
+		if(type == null || text == null) {
+			throw new NullPointerException("No parameters may be null.");
+		}
+		
 		this.type = type;
 		this.text = text;
 	}

@@ -2,35 +2,41 @@ package org.peak15.newlife;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.peak15.newlife.types.BlockStatement;
+import org.peak15.newlife.types.CallStatement;
+import org.peak15.newlife.types.IfElseStatement;
 import org.peak15.newlife.types.Program;
-import org.peak15.newlife.types.BlargStatement;
+import org.peak15.newlife.types.Statement;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.TokenType;
+import org.peak15.newlife.types.WhileStatement;
 
 /**
  * Parses tokens into abstract statements and programs.
  */
 public final class Parser {
 	/**
-	 * Parse an instruction call, IF(ELSE), or WHILE blargStatement.
+	 * Parse an instruction call, IF(ELSE), or WHILE statement.
 	 * Can not parse blocks.
-	 * Parses precisely the tokens which form the blargStatement, and no more.
+	 * Parses precisely the tokens which form the statement, and no more.
 	 * 
-	 * @param first the first token of the blargStatement, already pulled out.
+	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
-	 * @return the parsed blargStatement
+	 * @return the parsed statement
 	 * @throws NewLifeParserException upon encountering an error
 	 */
-	public static BlargStatement parseStatement(Token first, Tokenizer tokenizer) throws NewLifeParserException {
-		BlargStatement s = null;
+	public static Statement parseStatement(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+		if(first == null || tokenizer == null) {
+			throw new NullPointerException("No paramenters may be null.");
+		}
+		
+		Statement s = null;
 		
 		if(first.getType() == TokenType.IDENTIFIER) {
 			// CALL
-			s = BlargStatement.makeCall(first.getText());
+			s = new CallStatement(first.getText());
 		}
 		else if(first.getText().equals("IF")) {
 			// IF(ELSE)
@@ -48,7 +54,7 @@ public final class Parser {
 	}
 	
 	/**
-	 * Parse a BLOCK.
+	 * Parse a block.
 	 * Parses precisely the tokens which form the block, and no more.
 	 * 
 	 * @param first the first token of the block, already pulled out.
@@ -56,15 +62,19 @@ public final class Parser {
 	 * @return the parsed block
 	 * @throws NewLifeParserException upon encountering an error
 	 */
-	public static BlargStatement parseBlock(Token first, Tokenizer tokenizer) throws NewLifeParserException {
-		BlargStatement s;
+	public static BlockStatement parseBlock(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+		if(first == null || tokenizer == null) {
+			throw new NullPointerException("No paramenters may be null.");
+		}
+		
+		BlockStatement s;
 		
 		try {
 			Token t = first;
-			List<BlargStatement> blargStatements = new LinkedList<BlargStatement>();
+			BlockStatement.Builder bb = new BlockStatement.Builder();
 			
 			while(isPrimitiveStatement(t)) {
-				blargStatements.add(parseStatement(t, tokenizer));
+				bb.append(parseStatement(t, tokenizer));
 				
 				// if the next token is part of the block, pull it out
 				if(isPrimitiveStatement(tokenizer.peekNextToken())) {
@@ -75,7 +85,7 @@ public final class Parser {
 				}
 			}
 			
-			s = BlargStatement.makeBlock(blargStatements);
+			s = bb.build();
 		} catch(IOException e) {
 			throw new NewLifeParserException("Read error while parsing block.", e);
 		}
@@ -94,8 +104,8 @@ public final class Parser {
 	 */
 	public static Program parseProgram(Token first, Tokenizer tokenizer) throws NewLifeParserException {
 		String name;
-		Map<String, BlargStatement> context = new HashMap<String, BlargStatement>();
-		BlargStatement body;
+		Map<String, BlockStatement> context = new HashMap<>();
+		BlockStatement body;
 		Token t = first;
 		
 		try {
@@ -121,8 +131,8 @@ public final class Parser {
 			while(!t.getText().equals("BEGIN")) {
 				assertCode(t.getText().equals("INSTRUCTION"), "Malformed instruction definition.");
 				
-				NamedStatement pair = parseInstruction(tokenizer, context.keySet());
-				context.put(pair.name, pair.blargStatement);
+				NamedBlockStatement pair = parseInstruction(tokenizer, context.keySet());
+				context.put(pair.name, pair.statement);
 				
 				// get next token (next instruction or BEGIN)
 				t = tokenizer.nextToken();
@@ -156,15 +166,14 @@ public final class Parser {
 	
 	/**
 	 * For use in passing pairs for the context.
-	 * Apparently it is Java "best practice" to create a class for pairs.
 	 */
-	private static class NamedStatement {
+	private final static class NamedBlockStatement {
 		public final String name;
-		public final BlargStatement blargStatement;
+		public final BlockStatement statement;
 		
-		public NamedStatement(String name, BlargStatement blargStatement) {
+		public NamedBlockStatement(String name, BlockStatement statement) {
 			this.name = name;
-			this.blargStatement = blargStatement;
+			this.statement = statement;
 		}
 	}
 	
@@ -180,16 +189,16 @@ public final class Parser {
 	}
 
 	/**
-	 * Parses an instruction definition into a named BLOCK blargStatement.
+	 * Parses an instruction definition into a named block statement.
 	 * 
-	 * @param first the first token of the blargStatement, already pulled out.
+	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
 	 * @param takenNames instruction names that have already been used.
 	 * @return pair of the name and the block of the parsed instruction
 	 * @throws IOException if the parser fails to read
 	 * @throws NewLifeParserException upon encountering a syntax error
 	 */
-	private static NamedStatement parseInstruction (
+	private static NamedBlockStatement parseInstruction (
 			Tokenizer tokenizer,
 			Set<String> takenNames)
 			throws IOException, NewLifeParserException {
@@ -211,7 +220,7 @@ public final class Parser {
 		
 		// body
 		t = tokenizer.nextToken();
-		BlargStatement s = parseBlock(t, tokenizer);
+		BlockStatement s = parseBlock(t, tokenizer);
 		
 		// END
 		t = tokenizer.nextToken();
@@ -223,24 +232,24 @@ public final class Parser {
 		assertCode(t.getText().equals(instName),
 				"Expected instruction name to follow instruction definition.");
 		
-		return new NamedStatement(instName, s);
+		return new NamedBlockStatement(instName, s);
 	}
 
 	/**
-	 * @param first the first token of the blargStatement, already pulled out.
+	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return parsed IF(ELSE) blargStatement
 	 */
-	private static BlargStatement parseIf(Token first, Tokenizer tokenizer) {
+	private static IfElseStatement parseIf(Token first, Tokenizer tokenizer) {
 		return null;
 	}
 	
 	/**
-	 * @param first the first token of the blargStatement, already pulled out.
+	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
-	 * @return parsed WHILE blargStatement
+	 * @return parsed WHILE statement
 	 */
-	private static BlargStatement parseWhile(Token first, Tokenizer tokenizer) {
+	private static WhileStatement parseWhile(Token first, Tokenizer tokenizer) {
 		return null;
 	}
 	
