@@ -16,7 +16,7 @@ public final class BlockStatement implements Statement {
 	 */
 	public BlockStatement(List<Statement> statements) {
 		if(statements == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("No parameters may be null.");
 		}
 		
 		this.list = new LinkedList<>(statements);
@@ -28,9 +28,13 @@ public final class BlockStatement implements Statement {
 		
 		public Builder() {}
 		
+		public Builder(Statement first) {
+			this.append(first);
+		}
+		
 		public Builder append(Statement statement) {
 			if(statement == null) {
-				throw new NullPointerException();
+				throw new NullPointerException("Blocks may not contain null statements.");
 			}
 			
 			list.add(statement);
@@ -44,6 +48,10 @@ public final class BlockStatement implements Statement {
 	
 	public List<Statement> getStatements() {
 		return Collections.unmodifiableList(list);
+	}
+	
+	public int size() {
+		return list.size();
 	}
 	
 	@Override
@@ -70,6 +78,6 @@ public final class BlockStatement implements Statement {
 	
 	@Override
 	public String toString() {
-		return String.format("<block: %d statements>", this.getStatements().size());
+		return String.format("<block: %d statements>", this.size());
 	}
 }

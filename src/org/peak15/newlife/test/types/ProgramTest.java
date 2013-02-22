@@ -12,12 +12,12 @@ import org.peak15.newlife.types.Program;
 public class ProgramTest extends ValueTypeTest<Program> {
 
 	private static final BlockStatement body =
-			new BlockStatement.Builder().append(new CallStatement("explode")).build();
+			new BlockStatement.Builder(new CallStatement("explode")).build();
 	
 	private static final Map<String, BlockStatement> context =
 			Collections.singletonMap(
 				"explode",
-				new BlockStatement.Builder().append(new CallStatement("turnright")).build());
+				new BlockStatement.Builder(new CallStatement("turnright")).build());
 	
 	@Test
 	public void testGetName() {
@@ -44,7 +44,7 @@ public class ProgramTest extends ValueTypeTest<Program> {
 		return new Program(
 				"totheleft",
 				Collections.<String, BlockStatement>emptyMap(),
-				new BlockStatement.Builder().append(new CallStatement("turnleft")).build());
+				new BlockStatement.Builder(new CallStatement("turnleft")).build());
 	}
 
 }
