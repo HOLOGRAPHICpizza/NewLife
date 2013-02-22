@@ -21,17 +21,17 @@ public class ProgramTest extends ValueTypeTest<Program> {
 	
 	@Test
 	public void testGetName() {
-		assertEquals("omgbbq", a.getName());
+		assertEquals("omgbbq", a.name());
 	}
 
 	@Test
 	public void testGetContext() {
-		assertEquals(context, a.getContext());
+		assertEquals(context, a.context());
 	}
 
 	@Test
 	public void testGetBody() {
-		assertEquals(body, a.getBody());
+		assertEquals(body, a.body());
 	}
 
 	@Override

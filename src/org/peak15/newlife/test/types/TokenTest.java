@@ -20,11 +20,11 @@ public class TokenTest extends ValueTypeTest<Token> {
 	
 	@Test
 	public void testGetType() {
-		assertEquals(Type.COMMENT, a.getType());
+		assertEquals(Type.COMMENT, a.type());
 	}
 
 	@Test
 	public void testGetText() {
-		assertEquals(Type.COMMENT, a.getType());
+		assertEquals(Type.COMMENT, a.type());
 	}
 }

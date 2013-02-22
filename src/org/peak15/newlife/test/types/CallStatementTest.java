@@ -9,7 +9,7 @@ public class CallStatementTest extends ValueTypeTest<CallStatement> {
 	
 	@Test
 	public void testGetCall() {
-		assertEquals("explode", a.getCall());
+		assertEquals("explode", a.callString());
 	}
 	
 	@Override

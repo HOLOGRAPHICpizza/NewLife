@@ -38,15 +38,15 @@ public final class Parser {
 		
 		Statement s = null;
 		
-		if(first.getType() == Type.IDENTIFIER) {
+		if(first.type() == Type.IDENTIFIER) {
 			// CALL
-			s = new CallStatement(first.getText());
+			s = new CallStatement(first.text());
 		}
-		else if(first.getText().equals("IF")) {
+		else if(first.text().equals("IF")) {
 			// IF(ELSE)
 			s = parseIf(first, tokenizer);
 		}
-		else if(first.getText().equals("WHILE")) {
+		else if(first.text().equals("WHILE")) {
 			// WHILE
 			s = parseWhile(first, tokenizer);
 		}
@@ -119,26 +119,26 @@ public final class Parser {
 		
 		try {
 			// PROGRAM
-			assertCode(t.getText().equals("PROGRAM"),
+			assertCode(t.text().equals("PROGRAM"),
 					"Expected program to begin with \"PROGRAM\"");
 			
 			// program name
 			t = tokenizer.nextToken();
-			assertCode(t.getType() == Type.IDENTIFIER,
+			assertCode(t.type() == Type.IDENTIFIER,
 					"Expected valid identifier for program name.");
-			name = t.getText();
+			name = t.text();
 			
 			// IS
 			t = tokenizer.nextToken();
-			assertCode(t.getText().equals("IS"),
+			assertCode(t.text().equals("IS"),
 					"Expected \"IS\" to follow program name.");
 			
 			// parse instructions (if any)
 			t = tokenizer.nextToken(); // this could be BEGIN
 			
 			// go until we reach BEGIN
-			while(!t.getText().equals("BEGIN")) {
-				assertCode(t.getText().equals("INSTRUCTION"), "Malformed instruction definition.");
+			while(!t.text().equals("BEGIN")) {
+				assertCode(t.text().equals("INSTRUCTION"), "Malformed instruction definition.");
 				
 				NamedBlockStatement pair = parseInstruction(tokenizer, context.keySet());
 				context.put(pair.name, pair.statement);
@@ -148,7 +148,7 @@ public final class Parser {
 			}
 			
 			// BEGIN
-			assertCode(t.getText().equals("BEGIN"),
+			assertCode(t.text().equals("BEGIN"),
 					"Expected \"BEGIN\" after possible instruction definitions.");
 			
 			
@@ -158,12 +158,12 @@ public final class Parser {
 			
 			// END
 			t = tokenizer.nextToken();
-			assertCode(t.getText().equals("END"),
+			assertCode(t.text().equals("END"),
 					"Expected \"END\" to follow program body.");
 			
 			// name again
 			t = tokenizer.nextToken();
-			assertCode(t.getText().equals(name),
+			assertCode(t.text().equals(name),
 					"Expected program name to follow entire program.");
 			
 		} catch(IOException e) {
@@ -192,9 +192,9 @@ public final class Parser {
 	 *         an instruction call, IF(ELSE), or WHILE blargStatement.
 	 */
 	private static boolean isPrimitiveStatement(Token t) {
-		return t.getType() == Type.IDENTIFIER
-				|| t.getText().equals("IF")
-				|| t.getText().equals("WHILE");
+		return t.type() == Type.IDENTIFIER
+				|| t.text().equals("IF")
+				|| t.text().equals("WHILE");
 	}
 
 	/**
@@ -212,15 +212,15 @@ public final class Parser {
 		
 		// instruction name
 		Token t = tokenizer.nextToken();
-		String instName = t.getText();
-		assertCode(t.getType() == Type.IDENTIFIER,
+		String instName = t.text();
+		assertCode(t.type() == Type.IDENTIFIER,
 				"Expected valid identifier for instruction name.");
 		assertCode(!takenNames.contains(instName),
 				"Expected a unique instruction name (a name was repeated).");
 		
 		// IS
 		t = tokenizer.nextToken();
-		assertCode(t.getText().equals("IS"),
+		assertCode(t.text().equals("IS"),
 				"Expected \"IS\" to follow instruction name.");
 		
 		// body
@@ -229,12 +229,12 @@ public final class Parser {
 		
 		// END
 		t = tokenizer.nextToken();
-		assertCode(t.getText().equals("END"),
+		assertCode(t.text().equals("END"),
 				"Expected \"END\" to follow instruction body.");
 		
 		// name again
 		t = tokenizer.nextToken();
-		assertCode(t.getText().equals(instName),
+		assertCode(t.text().equals(instName),
 				"Expected instruction name to follow instruction definition.");
 		
 		return new NamedBlockStatement(instName, s);

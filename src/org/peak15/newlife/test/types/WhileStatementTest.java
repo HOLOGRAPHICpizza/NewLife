@@ -20,11 +20,11 @@ public class WhileStatementTest extends ValueTypeTest<WhileStatement> {
 	
 	@Test
 	public void testGetCondition() {
-		assertEquals(Condition.TRUE, d.getCondition());
+		assertEquals(Condition.TRUE, d.condition());
 	}
 	
 	@Test
 	public void testGetBody() {
-		assertEquals(BlockStatementTest.compoundBlock(), a.getBody());
+		assertEquals(BlockStatementTest.compoundBlock(), a.body());
 	}
 }

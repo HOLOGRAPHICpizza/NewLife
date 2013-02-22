@@ -23,16 +23,16 @@ public class IfElseStatementTest extends ValueTypeTest<IfElseStatement> {
 	
 	@Test
 	public void testGetCondition() {
-		assertEquals(Condition.RANDOM, a.getCondition());
+		assertEquals(Condition.RANDOM, a.condition());
 	}
 	
 	@Test
 	public void testGetBody() {
-		assertEquals(BlockStatementTest.compoundBlock(), d.getBody());
+		assertEquals(BlockStatementTest.compoundBlock(), d.body());
 	}
 	
 	@Test
 	public void testGetElseBody() {
-		assertEquals(BlockStatementTest.INFECT_BLOCK, a.getElseBody());
+		assertEquals(BlockStatementTest.INFECT_BLOCK, a.elseBody());
 	}
 }

@@ -14,7 +14,7 @@ public final class Token {
 	 * I can think of no method that would accept only a single type of Token.
 	 */
 	
-	public enum Type {
+	public static enum Type {
 		KEYWORD,
 		IDENTIFIER,
 		CONDITION,
@@ -38,14 +38,14 @@ public final class Token {
 	/**
 	 * @return the type of the token
 	 */
-	public Type getType() {
+	public Type type() {
 		return type;
 	}
 
 	/**
 	 * @return the token's text
 	 */
-	public String getText() {
+	public String text() {
 		return text;
 	}
 	
@@ -61,20 +61,20 @@ public final class Token {
 		
 		Token t = (Token) obj;
 		
-		return	t.getType() == this.getType() &&
-				t.getText().equals(this.getText());
+		return	t.type() == this.type() &&
+				t.text().equals(this.text());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.getType().hashCode();
-		result = 1327 * result + this.getText().hashCode();
+		result = 1327 * result + this.type().hashCode();
+		result = 1327 * result + this.text().hashCode();
 		return result;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("(%s, \"%s\")", this.getType().toString(), this.getText());
+		return String.format("(%s, \"%s\")", this.type().toString(), this.text());
 	}
 }

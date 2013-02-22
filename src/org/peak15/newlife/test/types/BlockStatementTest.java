@@ -29,7 +29,7 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	
 	@Test
 	public void testGetStatements() {
-		List<Statement> list = a.getStatements();
+		List<Statement> list = a.statementList();
 		assertEquals(2, list.size());
 		assertEquals(EXPLODE_BLOCK, list.get(0));
 		assertEquals(INFECT_BLOCK, list.get(1));
@@ -43,12 +43,12 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	@Test
 	public void testEmptyBlock() {
 		assertEquals(0, BlockStatement.emptyBlock().size());
-		assertEquals(Collections.<Statement>emptyList(), BlockStatement.emptyBlock().getStatements());
+		assertEquals(Collections.<Statement>emptyList(), BlockStatement.emptyBlock().statementList());
 	}
 	
 	@Test
 	public void testIterator() {
-		List<Statement> list = a.getStatements();
+		List<Statement> list = a.statementList();
 		int i = 0;
 		for(Statement s : a) {
 			assertEquals(list.get(i++), s);

@@ -13,18 +13,18 @@ public final class WhileStatement implements Statement {
 	 */
 	public WhileStatement(Condition condition, BlockStatement body) {
 		if(condition == null || body == null) {
-			throw new NullPointerException("WhileStatement needs a condition and body.");
+			throw new NullPointerException("No parameters may be null.");
 		}
 		
 		this.condition = condition;
 		this.body = body;
 	}
 	
-	public Condition getCondition() {
+	public Condition condition() {
 		return this.condition;
 	}
 	
-	public BlockStatement getBody() {
+	public BlockStatement body() {
 		return this.body;
 	}
 	
@@ -40,20 +40,20 @@ public final class WhileStatement implements Statement {
 		
 		WhileStatement s = (WhileStatement) obj;
 		
-		return	s.getCondition().equals(this.getCondition()) &&
-				s.getBody().equals(this.getBody());
+		return	s.condition().equals(this.condition()) &&
+				s.body().equals(this.body());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.getCondition().hashCode();
-		result = 1327 * result + this.getBody().hashCode();
+		result = 1327 * result + this.condition().hashCode();
+		result = 1327 * result + this.body().hashCode();
 		return result;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("(WHILE %s: %s)", this.getCondition(), this.getBody());
+		return String.format("(WHILE %s: %s)", this.condition(), this.body());
 	}
 }

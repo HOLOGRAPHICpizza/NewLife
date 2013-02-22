@@ -57,7 +57,10 @@ public final class BlockStatement implements Statement, Iterable<Statement> {
 		}
 	}
 	
-	public List<Statement> getStatements() {
+	/**
+	 * @return an immutable view of the backing list for this block.
+	 */
+	public List<Statement> statementList() {
 		return Collections.unmodifiableList(list);
 	}
 	
@@ -77,13 +80,13 @@ public final class BlockStatement implements Statement, Iterable<Statement> {
 		
 		BlockStatement s = (BlockStatement) obj;
 		
-		return s.getStatements().equals(this.getStatements());
+		return s.statementList().equals(this.statementList());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.getStatements().hashCode();
+		result = 1327 * result + this.statementList().hashCode();
 		return result;
 	}
 	
@@ -94,6 +97,6 @@ public final class BlockStatement implements Statement, Iterable<Statement> {
 
 	@Override
 	public Iterator<Statement> iterator() {
-		return this.getStatements().iterator();
+		return this.statementList().iterator();
 	}
 }

@@ -32,15 +32,15 @@ public final class IfElseStatement implements Statement {
 		this.elseBody = elseBody;
 	}
 	
-	public Condition getCondition() {
+	public Condition condition() {
 		return this.condition;
 	}
 	
-	public BlockStatement getBody() {
+	public BlockStatement body() {
 		return this.body;
 	}
 	
-	public BlockStatement getElseBody() {
+	public BlockStatement elseBody() {
 		return this.elseBody;
 	}
 	
@@ -56,27 +56,27 @@ public final class IfElseStatement implements Statement {
 		
 		IfElseStatement s = (IfElseStatement) obj;
 		
-		return	s.getCondition().equals(this.getCondition()) &&
-				s.getBody().equals(this.getBody()) &&
-				s.getElseBody().equals(this.getElseBody());
+		return	s.condition().equals(this.condition()) &&
+				s.body().equals(this.body()) &&
+				s.elseBody().equals(this.elseBody());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.getCondition().hashCode();
-		result = 1327 * result + this.getBody().hashCode();
-		result = 1327 * result + this.getElseBody().hashCode();
+		result = 1327 * result + this.condition().hashCode();
+		result = 1327 * result + this.body().hashCode();
+		result = 1327 * result + this.elseBody().hashCode();
 		return result;
 	}
 	
 	@Override
 	public String toString() {
 		String elseDesc = "";
-		if(this.getElseBody().size() > 0) {
-			elseDesc = ", ELSE: " + this.getElseBody().toString();
+		if(this.elseBody().size() > 0) {
+			elseDesc = ", ELSE: " + this.elseBody().toString();
 		}
 		
-		return String.format("(IF %s: %s%s)", this.getCondition(), this.getBody(), elseDesc);
+		return String.format("(IF %s: %s%s)", this.condition(), this.body(), elseDesc);
 	}
 }

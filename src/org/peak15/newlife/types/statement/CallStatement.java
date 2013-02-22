@@ -5,18 +5,18 @@ public final class CallStatement implements Statement {
 	
 	private final String call;
 	
-	public CallStatement(String call) {
-		if(call == null) {
+	public CallStatement(String callString) {
+		if(callString == null) {
 			throw new NullPointerException("Call string may not be null.");
 		}
-		else if(call.length() < 1) {
+		/*else if(callString.length() < 1) {
 			throw new IllegalArgumentException("Call string may not be empty.");
-		}
+		}*/
 		
-		this.call = call;
+		this.call = callString;
 	}
 	
-	public String getCall() {
+	public String callString() {
 		return call;
 	}
 	
@@ -32,18 +32,18 @@ public final class CallStatement implements Statement {
 		
 		CallStatement s = (CallStatement) obj;
 		
-		return s.getCall().equals(this.getCall());
+		return s.callString().equals(this.callString());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.getCall().hashCode();
+		result = 1327 * result + this.callString().hashCode();
 		return result;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("(CALL: %s)", this.getCall());
+		return String.format("(CALL: %s)", this.callString());
 	}
 }

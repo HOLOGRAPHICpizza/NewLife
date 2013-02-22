@@ -42,21 +42,21 @@ public final class Program {
 	/**
 	 * @return the name
 	 */
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
 	/**
 	 * @return the context
 	 */
-	public Map<String, BlockStatement> getContext() {
+	public Map<String, BlockStatement> context() {
 		return Collections.unmodifiableMap(context);
 	}
 
 	/**
 	 * @return the body
 	 */
-	public BlockStatement getBody() {
+	public BlockStatement body() {
 		return body;
 	}
 	
@@ -72,17 +72,17 @@ public final class Program {
 		
 		Program p = (Program) obj;
 		
-		return	p.getName().equals(this.getName()) &&
-				p.getBody().equals(this.getBody()) &&
-				p.getContext().equals(this.getContext());
+		return	p.name().equals(this.name()) &&
+				p.body().equals(this.body()) &&
+				p.context().equals(this.context());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.getName().hashCode();
-		result = 1327 * result + this.getBody().hashCode();
-		result = 1327 * result + this.getContext().hashCode();
+		result = 1327 * result + this.name().hashCode();
+		result = 1327 * result + this.body().hashCode();
+		result = 1327 * result + this.context().hashCode();
 		return result;
 	}
 	
@@ -90,7 +90,7 @@ public final class Program {
 	public String toString() {
 		StringBuilder conDesc = new StringBuilder();
 		
-		Iterator<String> i = this.getContext().keySet().iterator();
+		Iterator<String> i = this.context().keySet().iterator();
 		while(i.hasNext()) {
 			conDesc.append(i.next());
 			
@@ -101,8 +101,8 @@ public final class Program {
 		
 		return String.format(
 				"(name: %s, context: {%s}, body: %s)",
-				this.getName(),
+				this.name(),
 				conDesc.toString(),
-				this.getBody().toString());
+				this.body().toString());
 	}
 }

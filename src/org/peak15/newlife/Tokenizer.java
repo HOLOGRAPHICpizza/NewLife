@@ -8,10 +8,12 @@ import org.peak15.newlife.types.Token.Type;
 
 /**
  * Creates tagged tokens from an input stream.
+ * 
+ * Mutable.
  */
 public final class Tokenizer {
 	
-	private enum BufferState {
+	private static enum BufferState {
 		EMPTY_BS,
 		ID_KW_COND_BS,
 		WHITESPACE_BS,
