@@ -7,7 +7,7 @@ import java.io.StringReader;
 import org.junit.Test;
 import org.peak15.newlife.Tokenizer;
 import org.peak15.newlife.types.Token;
-import org.peak15.newlife.types.Token.TokenType;
+import org.peak15.newlife.types.Token.Type;
 
 public class TokenizerTest {
 	
@@ -31,26 +31,26 @@ public class TokenizerTest {
 			tokens[i] = tokenizer.nextToken();
 		}
 		
-		assertEquals("1:", TokenType.KEYWORD, tokens[0].getType());
-		assertEquals("2:", TokenType.IDENTIFIER, tokens[1].getType());
-		assertEquals("3:", TokenType.KEYWORD, tokens[2].getType());
-		assertEquals("4 type:", TokenType.KEYWORD, tokens[3].getType());
+		assertEquals("1:", Type.KEYWORD, tokens[0].getType());
+		assertEquals("2:", Type.IDENTIFIER, tokens[1].getType());
+		assertEquals("3:", Type.KEYWORD, tokens[2].getType());
+		assertEquals("4 type:", Type.KEYWORD, tokens[3].getType());
 		assertEquals("4 text:", "INSTRUCTION", tokens[3].getText());
-		assertEquals("8:", TokenType.CONDITION, tokens[7].getType());
-		assertEquals("13:", TokenType.ERROR, tokens[12].getType());
-		assertEquals("14:", TokenType.COMMENT, tokens[13].getType());
-		assertEquals("EOF:", TokenType.EOF_TOKEN, tokens[TOKEN_COUNT - 1].getType());
+		assertEquals("8:", Type.CONDITION, tokens[7].getType());
+		assertEquals("13:", Type.ERROR, tokens[12].getType());
+		assertEquals("14:", Type.COMMENT, tokens[13].getType());
+		assertEquals("EOF:", Type.EOF_TOKEN, tokens[TOKEN_COUNT - 1].getType());
 	}
 	
 	@Test
 	public void testPeekNextToken() throws IOException {
 		Tokenizer tokenizer = new Tokenizer(new StringReader(TEST_STRING));
 		
-		assertEquals("1:", TokenType.KEYWORD, tokenizer.nextToken().getType());
-		assertEquals("2 peek:", TokenType.IDENTIFIER, tokenizer.peekNextToken().getType());
-		assertEquals("2 peek2:", TokenType.IDENTIFIER, tokenizer.peekNextToken().getType());
-		assertEquals("2:", TokenType.IDENTIFIER, tokenizer.nextToken().getType());
-		assertEquals("3:", TokenType.KEYWORD, tokenizer.nextToken().getType());
+		assertEquals("1:", Type.KEYWORD, tokenizer.nextToken().getType());
+		assertEquals("2 peek:", Type.IDENTIFIER, tokenizer.peekNextToken().getType());
+		assertEquals("2 peek2:", Type.IDENTIFIER, tokenizer.peekNextToken().getType());
+		assertEquals("2:", Type.IDENTIFIER, tokenizer.nextToken().getType());
+		assertEquals("3:", Type.KEYWORD, tokenizer.nextToken().getType());
 	}
 
 }

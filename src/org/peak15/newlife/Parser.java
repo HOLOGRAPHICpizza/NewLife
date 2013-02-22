@@ -10,7 +10,7 @@ import org.peak15.newlife.types.IfElseStatement;
 import org.peak15.newlife.types.Program;
 import org.peak15.newlife.types.Statement;
 import org.peak15.newlife.types.Token;
-import org.peak15.newlife.types.Token.TokenType;
+import org.peak15.newlife.types.Token.Type;
 import org.peak15.newlife.types.WhileStatement;
 
 /**
@@ -34,7 +34,7 @@ public final class Parser {
 		
 		Statement s = null;
 		
-		if(first.getType() == TokenType.IDENTIFIER) {
+		if(first.getType() == Type.IDENTIFIER) {
 			// CALL
 			s = new CallStatement(first.getText());
 		}
@@ -115,7 +115,7 @@ public final class Parser {
 			
 			// program name
 			t = tokenizer.nextToken();
-			assertCode(t.getType() == TokenType.IDENTIFIER,
+			assertCode(t.getType() == Type.IDENTIFIER,
 					"Expected valid identifier for program name.");
 			name = t.getText();
 			
@@ -183,7 +183,7 @@ public final class Parser {
 	 *         an instruction call, IF(ELSE), or WHILE blargStatement.
 	 */
 	private static boolean isPrimitiveStatement(Token t) {
-		return t.getType() == TokenType.IDENTIFIER
+		return t.getType() == Type.IDENTIFIER
 				|| t.getText().equals("IF")
 				|| t.getText().equals("WHILE");
 	}
@@ -208,7 +208,7 @@ public final class Parser {
 		// instruction name
 		t = tokenizer.nextToken();
 		String instName = t.getText();
-		assertCode(t.getType() == TokenType.IDENTIFIER,
+		assertCode(t.getType() == Type.IDENTIFIER,
 				"Expected valid identifier for instruction name.");
 		assertCode(!takenNames.contains(instName),
 				"Expected a unique instruction name (a name was repeated).");

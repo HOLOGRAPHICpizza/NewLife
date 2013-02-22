@@ -4,27 +4,27 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.peak15.newlife.types.Token;
-import org.peak15.newlife.types.Token.TokenType;
+import org.peak15.newlife.types.Token.Type;
 
 public final class TokenTest extends ValueTypeTest<Token> {
 	
 	@Override
 	protected Token A() {
-		return new Token(TokenType.COMMENT, "blarg");
+		return new Token(Type.COMMENT, "blarg");
 	}
 
 	@Override
 	protected Token D() {
-		return new Token(TokenType.IDENTIFIER, "blarg");
+		return new Token(Type.IDENTIFIER, "blarg");
 	}
 	
 	@Test
 	public void testGetType() {
-		assertEquals(TokenType.COMMENT, a.getType());
+		assertEquals(Type.COMMENT, a.getType());
 	}
 
 	@Test
 	public void testGetText() {
-		assertEquals(TokenType.COMMENT, a.getType());
+		assertEquals(Type.COMMENT, a.getType());
 	}
 }

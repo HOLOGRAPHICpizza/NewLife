@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * List of zero or more statements.
+ * 
+ * Immutable.
  */
 public final class BlockStatement implements Statement {
 	

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.peak15.newlife.types.Token;
-import org.peak15.newlife.types.Token.TokenType;
+import org.peak15.newlife.types.Token.Type;
 
 /**
  * Creates tagged tokens from an input stream.
@@ -83,17 +83,17 @@ public final class Tokenizer {
 		if(EOFReached) {
 			// does the buffer still have crap in it?
 			if(buffer.length() > 0) {
-				t = new Token(tokenType(bufferState, buffer.toString()), buffer.toString());
+				t = new Token(type(bufferState, buffer.toString()), buffer.toString());
 				buffer.setLength(0);
 			}
 			else {
-				t = new Token(TokenType.EOF_TOKEN, "");
+				t = new Token(Type.EOF_TOKEN, "");
 			}
 		}
 		else {
 			// the token is now all but the last char in the buffer
 			String tokenText = buffer.substring(0, buffer.length() - 1);
-			t = new Token(tokenType(bufferState, tokenText), tokenText);
+			t = new Token(type(bufferState, tokenText), tokenText);
 			
 			// set the new buffer and buffer state
 			buffer.delete(0, buffer.length() - 1);
@@ -166,8 +166,8 @@ public final class Tokenizer {
 	/**
 	 * @return the type of the token based on the given text and buffer state
 	 */
-	private static TokenType tokenType(BufferState bufferState, String tokenText) {
-		TokenType ret = TokenType.ERROR;
+	private static Type type(BufferState bufferState, String tokenText) {
+		Type ret = Type.ERROR;
 
 		switch (bufferState) {
 
@@ -176,7 +176,7 @@ public final class Tokenizer {
 			break;
 
 		case COMMENT_BS:
-			ret = TokenType.COMMENT;
+			ret = Type.COMMENT;
 			break;
 			
 		default:
@@ -186,13 +186,13 @@ public final class Tokenizer {
 		return ret;
 	}
 	
-	private static TokenType idKwOrCond(String t) {
-		TokenType result;
+	private static Type idKwOrCond(String t) {
+		Type result;
 
 		if (t.equals("IF") || t.equals("THEN") || t.equals("ELSE") || t.equals("END")
 				|| t.equals("WHILE") || t.equals("DO") || t.equals("INSTRUCTION")
 				|| t.equals("PROGRAM") || t.equals("BEGIN") || t.equals("IS")) {
-			result = TokenType.KEYWORD;
+			result = Type.KEYWORD;
 		}
 
 		else if (t.equals("true") || t.equals("random") || t.equals("next-is-empty")
@@ -200,11 +200,11 @@ public final class Tokenizer {
 				|| t.equals("next-is-not-wall") || t.equals("next-is-friend")
 				|| t.equals("next-is-not-friend") || t.equals("next-is-enemy")
 				|| t.equals("next-is-not-enemy")) {
-			result = TokenType.CONDITION;
+			result = Type.CONDITION;
 		}
 
 		else {
-			result = TokenType.IDENTIFIER;
+			result = Type.IDENTIFIER;
 		}
 
 		return result;

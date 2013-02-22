@@ -6,8 +6,15 @@ package org.peak15.newlife.types;
  * Immutable.
  */
 public final class Token {
-
-	public enum TokenType {
+	
+	/*
+	 * Though best practices deprecate "type" enums in favor of class hierarchies,
+	 * this is the simplest way to pair an item of text with its category.
+	 * A class hierarchy would unnecessarily complicate things.
+	 * I can think of no method that would accept only a single type of Token.
+	 */
+	
+	public enum Type {
 		KEYWORD,
 		IDENTIFIER,
 		CONDITION,
@@ -16,10 +23,10 @@ public final class Token {
 		EOF_TOKEN
 	}
 	
-	private final TokenType type;
+	private final Type type;
 	private final String text;
 	
-	public Token(TokenType type, String text) {
+	public Token(Type type, String text) {
 		if(type == null || text == null) {
 			throw new NullPointerException("No parameters may be null.");
 		}
@@ -31,7 +38,7 @@ public final class Token {
 	/**
 	 * @return the type of the token
 	 */
-	public TokenType getType() {
+	public Type getType() {
 		return type;
 	}
 
