@@ -3,24 +3,21 @@ package org.peak15.newlife.test.types;
 import static org.junit.Assert.*;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
+import org.peak15.newlife.types.BlockStatement;
+import org.peak15.newlife.types.CallStatement;
 import org.peak15.newlife.types.Program;
-import org.peak15.newlife.types.BlargStatement;
 
 public class ProgramTest extends ValueTypeTest<Program> {
 
-	private static final Map<String, BlargStatement> context;
-	private static final BlargStatement body = BlargStatement.makeBlock(
-			Collections.singletonList(BlargStatement.makeCall("explode")));
+	private static final BlockStatement body =
+			new BlockStatement.Builder().append(new CallStatement("explode")).build();
 	
-	static {
-		List<BlargStatement> explodeBody = Collections.singletonList(BlargStatement.makeCall("turnright"));
-		BlargStatement explode = BlargStatement.makeBlock(explodeBody);
-		context = Collections.singletonMap("explode", explode);
-	}
+	private static final Map<String, BlockStatement> context =
+			Collections.singletonMap(
+				"explode",
+				new BlockStatement.Builder().append(new CallStatement("turnright")).build());
 	
 	@Test
 	public void testGetName() {
@@ -44,9 +41,10 @@ public class ProgramTest extends ValueTypeTest<Program> {
 
 	@Override
 	protected Program D() {
-		BlargStatement body = BlargStatement.makeBlock(
-				Collections.singletonList(BlargStatement.makeCall("turnleft")));
-		return new Program("totheleft", Collections.<String, BlargStatement>emptyMap(), body);
+		return new Program(
+				"totheleft",
+				Collections.<String, BlockStatement>emptyMap(),
+				new BlockStatement.Builder().append(new CallStatement("turnleft")).build());
 	}
 
 }
