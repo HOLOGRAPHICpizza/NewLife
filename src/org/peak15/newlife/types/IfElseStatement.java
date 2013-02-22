@@ -12,7 +12,7 @@ public final class IfElseStatement implements Statement {
 	 * @param body block to execute when true.
 	 */
 	public IfElseStatement(Condition condition, BlockStatement body) {
-		this(condition, body, BlockStatement.EMPTY_BLOCK);
+		this(condition, body, BlockStatement.emptyBlock());
 	}
 	
 	/**
@@ -40,9 +40,6 @@ public final class IfElseStatement implements Statement {
 		return this.body;
 	}
 	
-	/**
-	 * @return else body, or null if none.
-	 */
 	public BlockStatement getElseBody() {
 		return this.elseBody;
 	}
@@ -59,14 +56,9 @@ public final class IfElseStatement implements Statement {
 		
 		IfElseStatement s = (IfElseStatement) obj;
 		
-		boolean elseBdysEqual =
-				s.getElseBody() == null ?
-					this.getElseBody() == null :
-					s.getElseBody().equals(this.getElseBody());
-		
 		return	s.getCondition().equals(this.getCondition()) &&
 				s.getBody().equals(this.getBody()) &&
-				elseBdysEqual;
+				s.getElseBody().equals(this.getElseBody());
 	}
 	
 	@Override
@@ -74,17 +66,14 @@ public final class IfElseStatement implements Statement {
 		int result = 9001;
 		result = 1327 * result + this.getCondition().hashCode();
 		result = 1327 * result + this.getBody().hashCode();
-		
-		result = 1327 * result +
-				(this.getElseBody() == null ? 0 : this.getElseBody().hashCode());
-		
+		result = 1327 * result + this.getElseBody().hashCode();
 		return result;
 	}
 	
 	@Override
 	public String toString() {
 		String elseDesc = "";
-		if(this.getElseBody() != null) {
+		if(this.getElseBody().size() > 0) {
 			elseDesc = ", ELSE: " + this.getElseBody().toString();
 		}
 		

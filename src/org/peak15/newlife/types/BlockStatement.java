@@ -11,7 +11,11 @@ public final class BlockStatement implements Statement {
 	
 	private final List<Statement> list;
 	
-	public static final BlockStatement EMPTY_BLOCK = new BlockStatement.Builder().build();
+	private static final BlockStatement EMPTY_BLOCK = new BlockStatement.Builder().build();
+	
+	public static BlockStatement emptyBlock() {
+		return EMPTY_BLOCK;
+	}
 	
 	/**
 	 * @param statements a list of zero or more statements.

@@ -2,6 +2,7 @@ package org.peak15.newlife.test.types;
 
 import static org.junit.Assert.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -37,6 +38,12 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	@Test
 	public void testSize() {
 		assertEquals(2, a.size());
+	}
+	
+	@Test
+	public void testEmptyBlock() {
+		assertEquals(0, BlockStatement.emptyBlock().size());
+		assertEquals(Collections.<Statement>emptyList(), BlockStatement.emptyBlock().getStatements());
 	}
 	
 	@Override
