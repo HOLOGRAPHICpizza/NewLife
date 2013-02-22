@@ -174,19 +174,6 @@ public final class Parser {
 	}
 	
 	/**
-	 * For use in passing pairs for the context.
-	 */
-	private final static class NamedBlockStatement {
-		public final String name;
-		public final BlockStatement statement;
-		
-		public NamedBlockStatement(String name, BlockStatement statement) {
-			this.name = name;
-			this.statement = statement;
-		}
-	}
-	
-	/**
 	 * @param t token to test
 	 * @return true if the blargStatement represented by the token is
 	 *         an instruction call, IF(ELSE), or WHILE blargStatement.
@@ -270,6 +257,19 @@ public final class Parser {
 		
 		if(!expectedTrueCond) {
 			throw new InvalidSyntaxException(failMsg);
+		}
+	}
+	
+	/**
+	 * For use in passing pairs for the context.
+	 */
+	private final static class NamedBlockStatement {
+		public final String name;
+		public final BlockStatement statement;
+		
+		public NamedBlockStatement(String name, BlockStatement statement) {
+			this.name = name;
+			this.statement = statement;
 		}
 	}
 	
