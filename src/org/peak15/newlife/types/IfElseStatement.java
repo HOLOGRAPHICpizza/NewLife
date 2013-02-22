@@ -40,7 +40,54 @@ public final class IfElseStatement implements Statement {
 		return this.body;
 	}
 	
+	/**
+	 * @return else body, or null if none.
+	 */
 	public BlockStatement getElseBody() {
 		return this.elseBody;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this) {
+			return true;
+		}
+		
+		if(!(obj instanceof IfElseStatement)) {
+			return false;
+		}
+		
+		IfElseStatement s = (IfElseStatement) obj;
+		
+		// both are null, or both are equal
+		boolean elseBdysEqual =
+				((s.getElseBody() == null) && (this.getElseBody() == null)) ||
+				(s.getElseBody().equals(this.getElseBody()));
+		
+		return	elseBdysEqual &&
+				s.getCondition().equals(this.getCondition()) &&
+				s.getBody().equals(this.getBody());
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 9001;
+		result = 1327 * result + this.getCondition().hashCode();
+		result = 1327 * result + this.getBody().hashCode();
+		
+		result = 1327 * result +
+				(this.getElseBody() == null ? 0 : this.getElseBody().hashCode());
+		
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		String elseDesc = "";
+		if(this.getElseBody() != null) {
+			elseDesc = ", ELSE: " + this.getElseBody().toString();
+		}
+		
+		return String.format("(IF %s: %s%s)", this.getCondition(), this.getBody(), elseDesc);
 	}
 }
