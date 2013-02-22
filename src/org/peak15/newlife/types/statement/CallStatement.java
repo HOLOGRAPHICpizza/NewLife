@@ -16,7 +16,10 @@ public final class CallStatement implements Statement {
 		this.call = callString;
 	}
 	
-	public String callString() {
+	/**
+	 * @return the name of the instruction called by this statement.
+	 */
+	public String instructionName() {
 		return call;
 	}
 	
@@ -32,18 +35,18 @@ public final class CallStatement implements Statement {
 		
 		CallStatement s = (CallStatement) obj;
 		
-		return s.callString().equals(this.callString());
+		return s.instructionName().equals(this.instructionName());
 	}
 	
 	@Override
 	public int hashCode() {
 		int result = 9001;
-		result = 1327 * result + this.callString().hashCode();
+		result = 1327 * result + this.instructionName().hashCode();
 		return result;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("(CALL: %s)", this.callString());
+		return String.format("(CALL: %s)", this.instructionName());
 	}
 }

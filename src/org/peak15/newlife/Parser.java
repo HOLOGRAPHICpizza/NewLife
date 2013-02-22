@@ -234,7 +234,8 @@ public final class Parser {
 	 * @return parsed IF(ELSE) blargStatement
 	 */
 	private static IfElseStatement parseIf(Token first, Tokenizer tokenizer) {
-		return null;
+		//TODO: Work starts here!
+		throw new UnsupportedOperationException("Not yet implemented!");
 	}
 	
 	/**
@@ -243,7 +244,7 @@ public final class Parser {
 	 * @return parsed WHILE statement
 	 */
 	private static WhileStatement parseWhile(Token first, Tokenizer tokenizer) {
-		return null;
+		throw new UnsupportedOperationException("Not yet implemented!");
 	}
 	
 	/**

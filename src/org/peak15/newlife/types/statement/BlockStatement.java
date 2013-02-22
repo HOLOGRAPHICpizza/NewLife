@@ -68,6 +68,14 @@ public final class BlockStatement implements Statement, Iterable<Statement> {
 		return list.size();
 	}
 	
+	/**
+	 * @param index the (zero indexed) index of the desired element
+	 * @return the element with the given index
+	 */
+	public Statement get(int index) {
+		return this.statementList().get(index);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == this) {
