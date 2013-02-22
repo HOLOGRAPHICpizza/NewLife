@@ -27,4 +27,33 @@ public final class WhileStatement implements Statement {
 	public BlockStatement getBody() {
 		return this.body;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this) {
+			return true;
+		}
+		
+		if(!(obj instanceof WhileStatement)) {
+			return false;
+		}
+		
+		WhileStatement s = (WhileStatement) obj;
+		
+		return	s.getCondition().equals(this.getCondition()) &&
+				s.getBody().equals(this.getBody());
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 9001;
+		result = 1327 * result + this.getCondition().hashCode();
+		result = 1327 * result + this.getBody().hashCode();
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("(WHILE %s: %s)", this.getCondition(), this.getBody());
+	}
 }
