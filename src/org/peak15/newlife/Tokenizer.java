@@ -68,7 +68,10 @@ public final class Tokenizer {
 	 */
 	public Token peekNextToken() throws IOException {
 		if(tokenBuffer == null) {
-			tokenBuffer = pullNextToken();
+			// avoid direct assignment to buffer
+			// so that a failure leaves the object untouched.
+			Token t = pullNextToken();
+			tokenBuffer = t;
 		}
 		
 		return tokenBuffer;
@@ -107,6 +110,8 @@ public final class Tokenizer {
 	}
 	
 	private void processNextChar() throws IOException {
+		// this is the only spot a read could fail,
+		// and as of now, the object has not been mutated before this call. 
 		int r = reader.read();
 		
 		// have we not reached EOF?
