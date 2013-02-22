@@ -11,6 +11,7 @@ import org.peak15.newlife.types.statement.BlockStatement;
 import org.peak15.newlife.types.statement.CallStatement;
 import org.peak15.newlife.types.statement.IfElseStatement;
 import org.peak15.newlife.types.statement.Statement;
+import org.peak15.newlife.types.statement.Statement.Condition;
 import org.peak15.newlife.types.statement.WhileStatement;
 
 /**
@@ -233,8 +234,19 @@ public final class Parser {
 	 * @param tokenizer to parse from
 	 * @return parsed IF(ELSE) blargStatement
 	 */
-	private static IfElseStatement parseIf(Token first, Tokenizer tokenizer) {
+	private static IfElseStatement parseIf(Token first, Tokenizer tokenizer)
+			throws IOException, InvalidSyntaxException {
 		//TODO: Work starts here!
+		
+		// condition
+		Token t = tokenizer.nextToken();
+		assertCode(t.type() == Type.CONDITION, "Expected condition after IF.");
+		
+		// this wont work the names are different use a map
+		Condition condition = Condition.valueOf(t.text());
+		
+		
+		
 		throw new UnsupportedOperationException("Not yet implemented!");
 	}
 	
