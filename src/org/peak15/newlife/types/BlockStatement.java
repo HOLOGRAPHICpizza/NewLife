@@ -20,7 +20,7 @@ public final class BlockStatement implements Statement {
 	/**
 	 * @param statements a list of zero or more statements.
 	 */
-	public BlockStatement(List<Statement> statements) {
+	public BlockStatement(List<? extends Statement> statements) {
 		if(statements == null) {
 			throw new NullPointerException("No parameters may be null.");
 		}

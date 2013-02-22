@@ -20,7 +20,11 @@ public final class Program {
 	 * @param context Map of instruction names to their body block statements. May be empty, but not null.
 	 * @param body The body block statement of the program.
 	 */
-	public Program(String name, Map<String, BlockStatement> context, BlockStatement body) {
+	public Program(
+			String name,
+			Map<? extends String, ? extends BlockStatement> context,
+			BlockStatement body) {
+		
 		if(name == null || context == null || body == null) {
 			throw new NullPointerException("No paramenters may be null.");
 		}
