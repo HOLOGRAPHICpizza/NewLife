@@ -11,6 +11,9 @@ public final class BlockStatement implements Statement {
 	
 	private final List<Statement> list;
 	
+	/**
+	 * @param statements a list of zero or more statements.
+	 */
 	public BlockStatement(List<Statement> statements) {
 		if(statements == null) {
 			throw new NullPointerException();

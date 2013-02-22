@@ -12,17 +12,24 @@ import java.util.Map;
  */
 public final class Program {
 	private final String name;
-	private final Map<String, BlargStatement> context;
-	private final BlargStatement body;
+	private final Map<String, BlockStatement> context;
+	private final BlockStatement body;
 	
 	/**
 	 * @param name of the program.
-	 * @param context Map of instruction names to their body BLOCK statements.
-	 * @param body The body BLOCK blargStatement of the program.
+	 * @param context Map of instruction names to their body block statements. May be empty, but not null.
+	 * @param body The body block statement of the program.
 	 */
-	public Program(String name, Map<String, BlargStatement> context, BlargStatement body) {
+	public Program(String name, Map<String, BlockStatement> context, BlockStatement body) {
+		if(name == null || context == null || body == null) {
+			throw new NullPointerException("No paramenters may be null.");
+		}
+		else if(name.length() < 1) {
+			throw new IllegalArgumentException("Program name may not be empty.");
+		}
+		
 		this.name = name;
-		this.context = new HashMap<String, BlargStatement>(context);
+		this.context = new HashMap<String, BlockStatement>(context);
 		this.body = body;
 	}
 
@@ -36,14 +43,14 @@ public final class Program {
 	/**
 	 * @return the context
 	 */
-	public Map<String, BlargStatement> getContext() {
+	public Map<String, BlockStatement> getContext() {
 		return Collections.unmodifiableMap(context);
 	}
 
 	/**
 	 * @return the body
 	 */
-	public BlargStatement getBody() {
+	public BlockStatement getBody() {
 		return body;
 	}
 	
