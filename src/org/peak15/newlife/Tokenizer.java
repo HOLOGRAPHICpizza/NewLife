@@ -36,6 +36,10 @@ public final class Tokenizer {
 	 * @param ins reader to read from
 	 */
 	public Tokenizer(Reader ins) {
+		if(ins == null) {
+			throw new NullPointerException("Given reader must not be null.");
+		}
+		
 		this.reader = ins;
 	}
 	

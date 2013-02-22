@@ -22,6 +22,8 @@ import org.peak15.newlife.types.statement.WhileStatement;
  */
 public final class Parser {
 	
+	private Parser() {}
+	
 	/**
 	 * Parse an instruction call, IF(ELSE), or WHILE statement.
 	 * Can not parse blocks.
