@@ -46,6 +46,15 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 		assertEquals(Collections.<Statement>emptyList(), BlockStatement.emptyBlock().getStatements());
 	}
 	
+	@Test
+	public void testIterator() {
+		List<Statement> list = a.getStatements();
+		int i = 0;
+		for(Statement s : a) {
+			assertEquals(list.get(i++), s);
+		}
+	}
+	
 	@Override
 	protected BlockStatement A() {
 		return compoundBlock();

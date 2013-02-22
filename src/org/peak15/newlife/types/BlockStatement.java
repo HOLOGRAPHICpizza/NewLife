@@ -1,15 +1,14 @@
 package org.peak15.newlife.types;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * List of zero or more statements.
- * 
- * Immutable.
  */
-public final class BlockStatement implements Statement {
+public final class BlockStatement implements Statement, Iterable<Statement> {
 	
 	private final List<Statement> list;
 	
@@ -90,5 +89,10 @@ public final class BlockStatement implements Statement {
 	@Override
 	public String toString() {
 		return String.format("<block: %d statements>", this.size());
+	}
+
+	@Override
+	public Iterator<Statement> iterator() {
+		return this.getStatements().iterator();
 	}
 }
