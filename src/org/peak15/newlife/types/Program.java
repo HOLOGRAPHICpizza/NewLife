@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.peak15.newlife.types.statement.BlockStatement;
+
 /**
  * One abstract program.
  * 

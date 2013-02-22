@@ -1,4 +1,4 @@
-package org.peak15.newlife.types;
+package org.peak15.newlife.types.statement;
 
 public interface Statement {
 	public enum Condition {

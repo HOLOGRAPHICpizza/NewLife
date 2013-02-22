@@ -1,4 +1,5 @@
-package org.peak15.newlife.types;
+package org.peak15.newlife.types.statement;
+
 
 public final class CallStatement implements Statement {
 	

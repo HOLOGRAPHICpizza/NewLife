@@ -1,9 +1,10 @@
-package org.peak15.newlife.types;
+package org.peak15.newlife.types.statement;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  * List of zero or more statements.
@@ -32,7 +33,7 @@ public final class BlockStatement implements Statement, Iterable<Statement> {
 		this.list = new LinkedList<>(statements);
 	}
 	
-	public static class Builder {
+	public final static class Builder {
 		
 		private List<Statement> list = new LinkedList<>();
 		

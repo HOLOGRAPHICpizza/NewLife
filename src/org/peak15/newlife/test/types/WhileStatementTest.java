@@ -3,8 +3,8 @@ package org.peak15.newlife.test.types;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.peak15.newlife.types.Statement.Condition;
-import org.peak15.newlife.types.WhileStatement;
+import org.peak15.newlife.types.statement.WhileStatement;
+import org.peak15.newlife.types.statement.Statement.Condition;
 
 public class WhileStatementTest extends ValueTypeTest<WhileStatement> {
 	

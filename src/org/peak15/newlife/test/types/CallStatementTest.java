@@ -3,7 +3,7 @@ package org.peak15.newlife.test.types;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.peak15.newlife.types.CallStatement;
+import org.peak15.newlife.types.statement.CallStatement;
 
 public class CallStatementTest extends ValueTypeTest<CallStatement> {
 	

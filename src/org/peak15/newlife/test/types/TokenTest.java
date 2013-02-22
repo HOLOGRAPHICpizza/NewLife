@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.Type;
 
-public final class TokenTest extends ValueTypeTest<Token> {
+public class TokenTest extends ValueTypeTest<Token> {
 	
 	@Override
 	protected Token A() {

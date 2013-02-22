@@ -4,19 +4,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.peak15.newlife.types.BlockStatement;
-import org.peak15.newlife.types.CallStatement;
-import org.peak15.newlife.types.IfElseStatement;
 import org.peak15.newlife.types.Program;
-import org.peak15.newlife.types.Statement;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.Type;
-import org.peak15.newlife.types.WhileStatement;
+import org.peak15.newlife.types.statement.BlockStatement;
+import org.peak15.newlife.types.statement.CallStatement;
+import org.peak15.newlife.types.statement.IfElseStatement;
+import org.peak15.newlife.types.statement.Statement;
+import org.peak15.newlife.types.statement.WhileStatement;
 
 /**
  * Parses tokens into abstract statements and programs.
  */
 public final class Parser {
+	
 	/**
 	 * Parse an instruction call, IF(ELSE), or WHILE statement.
 	 * Can not parse blocks.
@@ -25,9 +26,12 @@ public final class Parser {
 	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return the parsed statement
-	 * @throws NewLifeParserException upon encountering an error
+	 * @throws ParserException in the event of a parsing error.
+	 * @throws InvalidSyntaxException upon encountering invalid syntax.
 	 */
-	public static Statement parseStatement(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+	public static Statement parseStatement(Token first, Tokenizer tokenizer)
+			throws ParserException, InvalidSyntaxException {
+		
 		if(first == null || tokenizer == null) {
 			throw new NullPointerException("No paramenters may be null.");
 		}
@@ -60,9 +64,12 @@ public final class Parser {
 	 * @param first the first token of the block, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return the parsed block
-	 * @throws NewLifeParserException upon encountering an error
+	 * @throws ParserException in the event of a parsing error.
+	 * @throws InvalidSyntaxException upon encountering invalid syntax.
 	 */
-	public static BlockStatement parseBlock(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+	public static BlockStatement parseBlock(Token first, Tokenizer tokenizer)
+			throws ParserException, InvalidSyntaxException {
+		
 		if(first == null || tokenizer == null) {
 			throw new NullPointerException("No paramenters may be null.");
 		}
@@ -87,7 +94,7 @@ public final class Parser {
 			
 			s = bb.build();
 		} catch(IOException e) {
-			throw new NewLifeParserException("Read error while parsing block.", e);
+			throw new ParserException("Read error while parsing block.", e);
 		}
 		
 		return s;
@@ -102,7 +109,9 @@ public final class Parser {
 	 * @return the parsed program
 	 * @throws NewLifeParserException upon encountering an error
 	 */
-	public static Program parseProgram(Token first, Tokenizer tokenizer) throws NewLifeParserException {
+	public static Program parseProgram(Token first, Tokenizer tokenizer)
+			throws ParserException, InvalidSyntaxException {
+		
 		String name;
 		Map<String, BlockStatement> context = new HashMap<>();
 		BlockStatement body;
@@ -158,7 +167,7 @@ public final class Parser {
 					"Expected program name to follow entire program.");
 			
 		} catch(IOException e) {
-			throw new NewLifeParserException("Read error while parsing program.", e);
+			throw new ParserException("Read error while parsing program.", e);
 		}
 		
 		return new Program(name, context, body);
@@ -195,18 +204,14 @@ public final class Parser {
 	 * @param tokenizer to parse from
 	 * @param takenNames instruction names that have already been used.
 	 * @return pair of the name and the block of the parsed instruction
-	 * @throws IOException if the parser fails to read
-	 * @throws NewLifeParserException upon encountering a syntax error
 	 */
 	private static NamedBlockStatement parseInstruction (
 			Tokenizer tokenizer,
 			Set<String> takenNames)
-			throws IOException, NewLifeParserException {
-		
-		Token t;
+			throws IOException, ParserException, InvalidSyntaxException {
 		
 		// instruction name
-		t = tokenizer.nextToken();
+		Token t = tokenizer.nextToken();
 		String instName = t.getText();
 		assertCode(t.getType() == Type.IDENTIFIER,
 				"Expected valid identifier for instruction name.");
@@ -258,11 +263,51 @@ public final class Parser {
 	 * 
 	 * @param expectedTrueCond condition expected to be true
 	 * @param failMsg Message to print if the condition is false.
-	 * @throws NewLifeParserException If the condition is false.
+	 * @throws InvalidSyntaxException If the condition is false.
 	 */
 	private static void assertCode(boolean expectedTrueCond, String failMsg)
-			throws NewLifeParserException {
-		if(!expectedTrueCond)
-			throw new NewLifeParserException(failMsg);
+			throws InvalidSyntaxException {
+		
+		if(!expectedTrueCond) {
+			throw new InvalidSyntaxException(failMsg);
+		}
+	}
+	
+	/**
+	 * Thrown by the parser upon encountering general errors.
+	 */
+	public static class ParserException extends Exception {
+		private static final long serialVersionUID = -6370749099024552486L;
+
+		public ParserException(String message) {
+			super(message);
+		}
+		
+		public ParserException(String message, Throwable e) {
+			super(message, e);
+		}
+		
+		public ParserException(Throwable e) {
+			super(e);
+		}
+	}
+	
+	/**
+	 * Thrown by the parser upon encountering invalid syntax.
+	 */
+	public static class InvalidSyntaxException extends Exception {
+		private static final long serialVersionUID = 1755175877027285406L;
+
+		public InvalidSyntaxException(String message) {
+			super(message);
+		}
+		
+		public InvalidSyntaxException(String message, Throwable e) {
+			super(message, e);
+		}
+		
+		public InvalidSyntaxException(Throwable e) {
+			super(e);
+		}
 	}
 }

@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.util.Collections;
 import java.util.Map;
 import org.junit.Test;
-import org.peak15.newlife.types.BlockStatement;
-import org.peak15.newlife.types.CallStatement;
 import org.peak15.newlife.types.Program;
+import org.peak15.newlife.types.statement.BlockStatement;
+import org.peak15.newlife.types.statement.CallStatement;
 
 public class ProgramTest extends ValueTypeTest<Program> {
 

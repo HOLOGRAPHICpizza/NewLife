@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.peak15.newlife.types.BlockStatement;
-import org.peak15.newlife.types.CallStatement;
-import org.peak15.newlife.types.Statement;
+import org.peak15.newlife.types.statement.BlockStatement;
+import org.peak15.newlife.types.statement.CallStatement;
+import org.peak15.newlife.types.statement.Statement;
 
 public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	
