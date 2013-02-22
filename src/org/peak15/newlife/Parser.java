@@ -15,6 +15,10 @@ import org.peak15.newlife.types.statement.WhileStatement;
 
 /**
  * Parses tokens into abstract statements and programs.
+ * 
+ * @throws ParserException in the event of a parsing error.
+ * @throws InvalidSyntaxException upon encountering invalid syntax.
+ * @throws NullPointerException if null is passed for any parameter,
  */
 public final class Parser {
 	
@@ -26,8 +30,6 @@ public final class Parser {
 	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return the parsed statement
-	 * @throws ParserException in the event of a parsing error.
-	 * @throws InvalidSyntaxException upon encountering invalid syntax.
 	 */
 	public static Statement parseStatement(Token first, Tokenizer tokenizer)
 			throws ParserException, InvalidSyntaxException {
@@ -64,8 +66,6 @@ public final class Parser {
 	 * @param first the first token of the block, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return the parsed block
-	 * @throws ParserException in the event of a parsing error.
-	 * @throws InvalidSyntaxException upon encountering invalid syntax.
 	 */
 	public static BlockStatement parseBlock(Token first, Tokenizer tokenizer)
 			throws ParserException, InvalidSyntaxException {
@@ -107,7 +107,6 @@ public final class Parser {
 	 * @param first the first token of the program, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return the parsed program
-	 * @throws NewLifeParserException upon encountering an error
 	 */
 	public static Program parseProgram(Token first, Tokenizer tokenizer)
 			throws ParserException, InvalidSyntaxException {
