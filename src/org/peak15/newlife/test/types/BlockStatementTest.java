@@ -11,18 +11,27 @@ import org.peak15.newlife.types.Statement;
 
 public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	
-	private static final BlockStatement explodeBlock =
+	// All 3 example blocks are package-private
+	
+	static final BlockStatement EXPLODE_BLOCK =
 			new BlockStatement.Builder(new CallStatement("explode")).build();
 	
-	private static final BlockStatement emptyBlock =
-			new BlockStatement.Builder().build();
+	static final BlockStatement INFECT_BLOCK =
+			new BlockStatement.Builder(new CallStatement("infect")).build();
+	
+	static BlockStatement COMPOUND_BLOCK() {
+		return new BlockStatement.Builder()
+				.append(EXPLODE_BLOCK)
+				.append(INFECT_BLOCK)
+				.build();
+	}
 	
 	@Test
 	public void testGetStatements() {
 		List<Statement> list = a.getStatements();
 		assertEquals(2, list.size());
-		assertEquals(explodeBlock, list.get(0));
-		assertEquals(emptyBlock, list.get(1));
+		assertEquals(EXPLODE_BLOCK, list.get(0));
+		assertEquals(INFECT_BLOCK, list.get(1));
 	}
 	
 	@Test
@@ -32,10 +41,7 @@ public class BlockStatementTest extends ValueTypeTest<BlockStatement> {
 	
 	@Override
 	protected BlockStatement A() {
-		return new BlockStatement.Builder()
-				.append(explodeBlock)
-				.append(emptyBlock)
-				.build();
+		return COMPOUND_BLOCK();
 	}
 
 	@Override

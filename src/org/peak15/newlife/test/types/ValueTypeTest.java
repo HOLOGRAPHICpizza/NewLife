@@ -20,7 +20,6 @@ import org.junit.Test;
  */
 public abstract class ValueTypeTest<T> {
 
-	
 	protected final T a = A();
 	protected final T b = A();
 	protected final T c = A();

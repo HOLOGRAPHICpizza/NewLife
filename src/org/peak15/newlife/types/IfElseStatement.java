@@ -59,14 +59,14 @@ public final class IfElseStatement implements Statement {
 		
 		IfElseStatement s = (IfElseStatement) obj;
 		
-		// both are null, or both are equal
 		boolean elseBdysEqual =
-				((s.getElseBody() == null) && (this.getElseBody() == null)) ||
-				(s.getElseBody().equals(this.getElseBody()));
+				s.getElseBody() == null ?
+					this.getElseBody() == null :
+					s.getElseBody().equals(this.getElseBody());
 		
-		return	elseBdysEqual &&
-				s.getCondition().equals(this.getCondition()) &&
-				s.getBody().equals(this.getBody());
+		return	s.getCondition().equals(this.getCondition()) &&
+				s.getBody().equals(this.getBody()) &&
+				elseBdysEqual;
 	}
 	
 	@Override
