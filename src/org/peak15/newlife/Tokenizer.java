@@ -200,17 +200,13 @@ public final class Tokenizer {
 	private static Type idKwOrCond(String t) {
 		Type result;
 
-		if (t.equals("IF") || t.equals("THEN") || t.equals("ELSE") || t.equals("END")
+		if(t.equals("IF") || t.equals("THEN") || t.equals("ELSE") || t.equals("END")
 				|| t.equals("WHILE") || t.equals("DO") || t.equals("INSTRUCTION")
 				|| t.equals("PROGRAM") || t.equals("BEGIN") || t.equals("IS")) {
 			result = Type.KEYWORD;
 		}
 
-		else if (t.equals("true") || t.equals("random") || t.equals("next-is-empty")
-				|| t.equals("next-is-not-empty") || t.equals("next-is-wall")
-				|| t.equals("next-is-not-wall") || t.equals("next-is-friend")
-				|| t.equals("next-is-not-friend") || t.equals("next-is-enemy")
-				|| t.equals("next-is-not-enemy")) {
+		else if(Condition.isConditionString(t)) {
 			result = Type.CONDITION;
 		}
 
