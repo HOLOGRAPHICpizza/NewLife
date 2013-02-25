@@ -102,8 +102,8 @@ public final class Tokenizer {
 		Token t;
 		
 		if(EOFReached) {
-			// does the buffer still have crap in it?
-			if(buffer.length() > 0) {
+			// does the buffer still have crap (worthy to dispense) in it?
+			if(bufferState == BufferState.ID_KW_COND_BS && buffer.length() > 0) {
 				t = new Token(type(bufferState, buffer.toString()), buffer.toString());
 				buffer.setLength(0);
 			}
@@ -193,7 +193,9 @@ public final class Tokenizer {
 	 * @return the type of the token based on the given text and buffer state
 	 */
 	private static Type type(BufferState bufferState, String tokenText) {
-		assert bufferState == BufferState.ID_KW_COND_BS : "invalid buffer state";
+		if(!(bufferState == BufferState.ID_KW_COND_BS)) {
+			throw new IllegalArgumentException("bufferState must be ID_KW_COND_BS.");
+		}
 		
 		Type result;
 		

@@ -16,9 +16,9 @@ public class TokenizerTest {
 			+ "\t\tIF random THEN turnright END IF\n"
 			+ "!!&^%%%\n"
 			+ "# comment\n"
-			+ "\tEND blarg\n"
+			+ "\tEND blarg\r\n"
 			+ "BEGIN"
-			+ "\tblarg"
+			+ "\tblarg\n"
 			+ "END test";
 	private static final int TOKEN_COUNT = 20;
 	
@@ -37,6 +37,7 @@ public class TokenizerTest {
 		assertEquals("4 type:", Type.KEYWORD, tokens[3].type());
 		assertEquals("4 text:", "INSTRUCTION", tokens[3].text());
 		assertEquals("8:", Type.CONDITION, tokens[7].type());
+		assertEquals("blarg", tokens[15].text());
 		assertEquals("EOF:", Type.EOF_TOKEN, tokens[TOKEN_COUNT - 1].type());
 	}
 	
