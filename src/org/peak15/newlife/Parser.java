@@ -239,8 +239,7 @@ public final class Parser {
 	 * @return parsed IF(ELSE) blargStatement
 	 */
 	private static IfElseStatement parseIf(Token first, Tokenizer tokenizer)
-			throws IOException, InvalidSyntaxException {
-		//TODO: Work starts here!
+			throws IOException, InvalidSyntaxException, ParserException {
 		
 		// condition
 		Token t = tokenizer.nextToken();
@@ -248,9 +247,37 @@ public final class Parser {
 		
 		Condition condition = Condition.parseConditionString(t.text());
 		
+		// THEN
+		t = tokenizer.nextToken();
+		assertCode(t.text().equals("THEN"), "Expected \"THEN\" after IF condition.");
 		
+		// body
+		t = tokenizer.nextToken();
+		BlockStatement body = parseBlock(t, tokenizer);
 		
-		throw new UnsupportedOperationException("Not yet implemented!");
+		// END or ELSE
+		t = tokenizer.nextToken();
+		assertCode(t.text().equals("END") || t.text().equals("ELSE"), "Expected \"END\" or \"ELSE\" after IF body.");
+		
+		IfElseStatement ret;
+		if(t.text().equals("ELSE")) {
+			BlockStatement elseBody = parseBlock(t, tokenizer);
+			
+			// END
+			t = tokenizer.nextToken();
+			assertCode(t.text().equals("END"), "Expected \"END\" after ELSE body.");
+			
+			ret = new IfElseStatement(condition, body, elseBody);
+		}
+		else { // if END
+			ret = new IfElseStatement(condition, body);
+		}
+		
+		// IF
+		t = tokenizer.nextToken();
+		assertCode(t.text().equals("IF"), "Expected \"IF\" after END.");
+		
+		return ret;
 	}
 	
 	/**
