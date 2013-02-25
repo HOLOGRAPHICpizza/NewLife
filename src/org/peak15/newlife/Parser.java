@@ -261,6 +261,7 @@ public final class Parser {
 		
 		IfElseStatement ret;
 		if(t.text().equals("ELSE")) {
+			t = tokenizer.nextToken();
 			BlockStatement elseBody = parseBlock(t, tokenizer);
 			
 			// END
