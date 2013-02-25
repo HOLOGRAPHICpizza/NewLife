@@ -37,8 +37,6 @@ public class TokenizerTest {
 		assertEquals("4 type:", Type.KEYWORD, tokens[3].type());
 		assertEquals("4 text:", "INSTRUCTION", tokens[3].text());
 		assertEquals("8:", Type.CONDITION, tokens[7].type());
-		assertEquals("13:", Type.ERROR, tokens[12].type());
-		assertEquals("14:", Type.COMMENT, tokens[13].type());
 		assertEquals("EOF:", Type.EOF_TOKEN, tokens[TOKEN_COUNT - 1].type());
 	}
 	

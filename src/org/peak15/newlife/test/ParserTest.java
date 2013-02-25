@@ -12,6 +12,7 @@ import org.peak15.newlife.Parser;
 import org.peak15.newlife.Tokenizer;
 import org.peak15.newlife.Parser.InvalidSyntaxException;
 import org.peak15.newlife.Parser.ParserException;
+import org.peak15.newlife.types.Program;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.statement.BlockStatement;
 import org.peak15.newlife.types.statement.CallStatement;
@@ -28,11 +29,11 @@ public class ParserTest {
 			Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(testFile)));
 			
 			// prime the tokenizer
-			// we just pray this is a primitive statement. the real parser checks.
 			Token token = tokenizer.nextToken();
 			
 			// parse!
 			Statement s = Parser.parseStatement(token, tokenizer);
+			System.out.println(s);
 			
 			// check if-else statement from file
 			assertTrue(s instanceof IfElseStatement);
@@ -60,16 +61,15 @@ public class ParserTest {
 			Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(testFile)));
 			
 			// prime the tokenizer
-			// we just pray this is a primitive statement. the real parser checks.
 			Token token = tokenizer.nextToken();
 			
 			// parse!
-			BlockStatement s = Parser.parseBlock(token, tokenizer);
-			System.out.println(s);
+			BlockStatement b = Parser.parseBlock(token, tokenizer);
+			System.out.println(b);
 			
-			assertEquals(4, s.size());
+			assertEquals(4, b.size());
 			
-			assertTrue(s.get(2) instanceof WhileStatement);
+			assertTrue(b.get(2) instanceof WhileStatement);
 		}
 		catch(IOException | ParserException | InvalidSyntaxException e) {
 			e.printStackTrace();
@@ -79,7 +79,26 @@ public class ParserTest {
 
 	@Test
 	public void testParseProgram() {
-		fail("Not yet implemented");
+		try {
+			InputStream testFile = ParserTest.class.getResourceAsStream("test-program.nl");
+			Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(testFile)));
+			
+			// prime the tokenizer
+			Token token = tokenizer.nextToken();
+			
+			// parse!
+			Program p = Parser.parseProgram(token, tokenizer);
+			System.out.println(p);
+			
+			assertEquals("SteerClear", p.name());
+			
+			assertTrue(p.context().containsKey("StepAside"));
+			
+			assertEquals(1, p.body().size());
+		}
+		catch(IOException | ParserException | InvalidSyntaxException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
-
 }

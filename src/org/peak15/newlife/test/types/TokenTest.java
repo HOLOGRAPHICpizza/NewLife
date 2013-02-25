@@ -10,7 +10,7 @@ public class TokenTest extends ValueTypeTest<Token> {
 	
 	@Override
 	protected Token A() {
-		return new Token(Type.COMMENT, "blarg");
+		return new Token(Type.KEYWORD, "DO");
 	}
 
 	@Override
@@ -20,11 +20,11 @@ public class TokenTest extends ValueTypeTest<Token> {
 	
 	@Test
 	public void testGetType() {
-		assertEquals(Type.COMMENT, a.type());
+		assertEquals(Type.KEYWORD, a.type());
 	}
 
 	@Test
 	public void testGetText() {
-		assertEquals(Type.COMMENT, a.type());
+		assertEquals("DO", a.text());
 	}
 }

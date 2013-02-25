@@ -18,8 +18,6 @@ public final class Token {
 		KEYWORD,
 		IDENTIFIER,
 		CONDITION,
-		COMMENT,
-		ERROR,
 		EOF_TOKEN
 	}
 	

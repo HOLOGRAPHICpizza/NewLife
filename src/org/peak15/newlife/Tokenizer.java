@@ -2,6 +2,10 @@ package org.peak15.newlife;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.Type;
@@ -19,6 +23,14 @@ public final class Tokenizer {
 		WHITESPACE_BS,
 		COMMENT_BS,
 		ERROR_BS
+	}
+	
+	private static final Set<String> KEYWORDS;
+	
+	static {
+		KEYWORDS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
+				"IF", "THEN", "ELSE", "END", "WHILE", "DO",
+				"INSTRUCTION", "PROGRAM", "BEGIN", "IS")));
 	}
 	
 	private BufferState bufferState = BufferState.EMPTY_BS;
@@ -45,7 +57,7 @@ public final class Tokenizer {
 	
 	/**
 	 * Pulls the next token from the input stream,
-	 * whitespace is ignored, returns EOF_TOKEN on end of stream.
+	 * whitespace and comments are ignored, returns EOF_TOKEN on end of stream.
 	 * 
 	 * @return the next token from the input stream
 	 * @throws IOException in the event of an input error
@@ -142,7 +154,6 @@ public final class Tokenizer {
 				if(!Character.isWhitespace(c)) {
 					// flush the buffer, we kill all whitespace!!
 					// set the new buffer and buffer state
-					//TODO: Test this math.
 					buffer.delete(0, buffer.length() - 1);
 					bufferState = newBufferState(buffer.toString());
 				}
@@ -151,13 +162,17 @@ public final class Tokenizer {
 			case COMMENT_BS:
 				// if this is newline we have reached end
 				if(c == '\n')
-					tokenReady = true;
+					// flush the buffer, kill comments!
+					buffer.delete(0, buffer.length() - 1);
+					bufferState = newBufferState(buffer.toString());
 				break;
 
 			case ERROR_BS:
 				// if this is a valid starting char, end token
 				if(canStartToken(c))
-					tokenReady = true;
+					// flush the buffer, kill errors!
+					buffer.delete(0, buffer.length() - 1);
+					bufferState = newBufferState(buffer.toString());
 				break;	
 			}
 		}
@@ -178,38 +193,17 @@ public final class Tokenizer {
 	 * @return the type of the token based on the given text and buffer state
 	 */
 	private static Type type(BufferState bufferState, String tokenText) {
-		Type ret = Type.ERROR;
-
-		switch (bufferState) {
-
-		case ID_KW_COND_BS:
-			ret = idKwOrCond(tokenText);
-			break;
-
-		case COMMENT_BS:
-			ret = Type.COMMENT;
-			break;
-			
-		default:
-			break;
-		}
-
-		return ret;
-	}
-	
-	private static Type idKwOrCond(String t) {
+		assert bufferState == BufferState.ID_KW_COND_BS : "invalid buffer state";
+		
 		Type result;
-
-		if(t.equals("IF") || t.equals("THEN") || t.equals("ELSE") || t.equals("END")
-				|| t.equals("WHILE") || t.equals("DO") || t.equals("INSTRUCTION")
-				|| t.equals("PROGRAM") || t.equals("BEGIN") || t.equals("IS")) {
+		
+		
+		if(KEYWORDS.contains(tokenText)) {
 			result = Type.KEYWORD;
 		}
-
-		else if(Condition.isConditionString(t)) {
+		else if(Condition.isConditionString(tokenText)) {
 			result = Type.CONDITION;
 		}
-
 		else {
 			result = Type.IDENTIFIER;
 		}
