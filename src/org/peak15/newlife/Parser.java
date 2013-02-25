@@ -284,9 +284,33 @@ public final class Parser {
 	 * @param first the first token of the statement, already pulled out.
 	 * @param tokenizer to parse from
 	 * @return parsed WHILE statement
+	 * @throws InvalidSyntaxException 
+	 * @throws IOException 
+	 * @throws ParserException 
 	 */
-	private static WhileStatement parseWhile(Token first, Tokenizer tokenizer) {
-		throw new UnsupportedOperationException("Not yet implemented!");
+	private static WhileStatement parseWhile(Token first, Tokenizer tokenizer)
+			throws InvalidSyntaxException, IOException, ParserException {
+	
+			// condition
+			Token t = tokenizer.nextToken();
+			assertCode(t.type() == Type.CONDITION, "Expected condition after IF.");
+			
+			Condition condition = Condition.parseConditionString(t.text());
+			
+			// DO
+			t = tokenizer.nextToken();
+			assertCode(t.text().equals("DO"), "Expected \"DO\" after WHILE condition.");
+			
+			// body
+			t = tokenizer.nextToken();
+			BlockStatement body = parseBlock(t, tokenizer);
+			
+			// END WHILE
+			String e = tokenizer.nextToken().text();
+			String w = tokenizer.nextToken().text();
+			assertCode(e.equals("END") && w.equals("WHILE"), "Expected \"END WHILE\" after WHILE body.");
+			
+			return new WhileStatement(condition, body);
 	}
 	
 	/**
