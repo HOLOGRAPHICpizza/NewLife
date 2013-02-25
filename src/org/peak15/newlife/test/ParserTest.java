@@ -13,9 +13,11 @@ import org.peak15.newlife.Tokenizer;
 import org.peak15.newlife.Parser.InvalidSyntaxException;
 import org.peak15.newlife.Parser.ParserException;
 import org.peak15.newlife.types.Token;
+import org.peak15.newlife.types.statement.BlockStatement;
 import org.peak15.newlife.types.statement.CallStatement;
 import org.peak15.newlife.types.statement.IfElseStatement;
 import org.peak15.newlife.types.statement.Statement;
+import org.peak15.newlife.types.statement.WhileStatement;
 
 public class ParserTest {
 
@@ -53,7 +55,26 @@ public class ParserTest {
 
 	@Test
 	public void testParseBlock() {
-		fail("Not yet implemented");
+		try {
+			InputStream testFile = ParserTest.class.getResourceAsStream("test-block.nl");
+			Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(testFile)));
+			
+			// prime the tokenizer
+			// we just pray this is a primitive statement. the real parser checks.
+			Token token = tokenizer.nextToken();
+			
+			// parse!
+			BlockStatement s = Parser.parseBlock(token, tokenizer);
+			System.out.println(s);
+			
+			assertEquals(4, s.size());
+			
+			assertTrue(s.get(2) instanceof WhileStatement);
+		}
+		catch(IOException | ParserException | InvalidSyntaxException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	@Test
