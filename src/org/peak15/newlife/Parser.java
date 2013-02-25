@@ -43,20 +43,25 @@ public final class Parser {
 		
 		Statement s = null;
 		
-		if(first.type() == Type.IDENTIFIER) {
-			// CALL
-			s = new CallStatement(first.text());
+		try {
+			if(first.type() == Type.IDENTIFIER) {
+				// CALL
+				s = new CallStatement(first.text());
+			}
+			else if(first.text().equals("IF")) {
+				// IF(ELSE)
+				s = parseIf(first, tokenizer);
+			}
+			else if(first.text().equals("WHILE")) {
+				// WHILE
+				s = parseWhile(first, tokenizer);
+			}
+			else {
+				assertCode(false, "Expected instruction call, IF, or WHILE.");
+			}
 		}
-		else if(first.text().equals("IF")) {
-			// IF(ELSE)
-			s = parseIf(first, tokenizer);
-		}
-		else if(first.text().equals("WHILE")) {
-			// WHILE
-			s = parseWhile(first, tokenizer);
-		}
-		else {
-			assertCode(false, "Expected instruction call, IF, or WHILE.");
+		catch(IOException e) {
+			throw new ParserException("Read error while parsing statement.", e);
 		}
 		
 		return s;
@@ -242,8 +247,7 @@ public final class Parser {
 		Token t = tokenizer.nextToken();
 		assertCode(t.type() == Type.CONDITION, "Expected condition after IF.");
 		
-		// this wont work the names are different use a map
-		Condition condition = Condition.valueOf(t.text());
+		Condition condition = Condition.parseConditionString(t.text());
 		
 		
 		

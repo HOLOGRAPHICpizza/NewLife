@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 		CallStatementTest.class,
 		IfElseStatementTest.class,
 		ProgramTest.class,
+		StaticBiMapTest.class,
 		TokenTest.class,
 		WhileStatementTest.class})
 public class TypeTests {}
