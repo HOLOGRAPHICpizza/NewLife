@@ -113,8 +113,8 @@ public final class StaticBiMap<K, V> {
 			return this;
 		}
 		
-		public Builder<K, V> appendAll(Map<K, V> map) {
-			for(Entry<K, V> e : map.entrySet()) {
+		public Builder<K, V> appendAll(Map<? extends K, ? extends V> map) {
+			for(Entry<? extends K, ? extends V> e : map.entrySet()) {
 				this.append(e.getKey(), e.getValue());
 			}
 			
