@@ -11,7 +11,6 @@ import org.peak15.newlife.types.statement.BlockStatement;
 import org.peak15.newlife.types.statement.CallStatement;
 import org.peak15.newlife.types.statement.IfElseStatement;
 import org.peak15.newlife.types.statement.Statement;
-import org.peak15.newlife.types.statement.Statement.Condition;
 import org.peak15.newlife.types.statement.WhileStatement;
 
 /**

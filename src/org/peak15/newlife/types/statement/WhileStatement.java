@@ -1,5 +1,7 @@
 package org.peak15.newlife.types.statement;
 
+import org.peak15.newlife.Condition;
+
 public final class WhileStatement implements Statement {
 
 	private final Condition condition;

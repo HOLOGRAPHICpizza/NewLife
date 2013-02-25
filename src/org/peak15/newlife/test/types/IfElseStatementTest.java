@@ -3,8 +3,8 @@ package org.peak15.newlife.test.types;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.peak15.newlife.Condition;
 import org.peak15.newlife.types.statement.IfElseStatement;
-import org.peak15.newlife.types.statement.Statement.Condition;
 
 public class IfElseStatementTest extends ValueTypeTest<IfElseStatement> {
 	

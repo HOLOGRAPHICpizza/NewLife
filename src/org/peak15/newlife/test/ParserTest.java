@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.junit.Test;
+import org.peak15.newlife.Condition;
 import org.peak15.newlife.Parser;
 import org.peak15.newlife.Tokenizer;
 import org.peak15.newlife.Parser.InvalidSyntaxException;
@@ -15,7 +16,6 @@ import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.statement.CallStatement;
 import org.peak15.newlife.types.statement.IfElseStatement;
 import org.peak15.newlife.types.statement.Statement;
-import org.peak15.newlife.types.statement.Statement.Condition;
 
 public class ParserTest {
 
