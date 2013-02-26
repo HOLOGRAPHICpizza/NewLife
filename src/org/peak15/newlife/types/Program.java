@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.peak15.newlife.types.statement.BlockStatement;
+import org.peak15.newlife.types.statement.Statement;
 
 /**
  * One abstract program.
@@ -14,8 +13,8 @@ import org.peak15.newlife.types.statement.BlockStatement;
  */
 public final class Program {
 	private final String name;
-	private final Map<String, BlockStatement> context;
-	private final BlockStatement body;
+	private final Map<String, Sequence<Statement>> context;
+	private final Sequence<Statement> body;
 	
 	/**
 	 * @param name of the program.
@@ -24,8 +23,8 @@ public final class Program {
 	 */
 	public Program(
 			String name,
-			Map<? extends String, ? extends BlockStatement> context,
-			BlockStatement body) {
+			Map<String, Sequence<Statement>> context,
+			Sequence<Statement> body) {
 		
 		if(name == null || context == null || body == null) {
 			throw new NullPointerException("No paramenters may be null.");
@@ -35,7 +34,7 @@ public final class Program {
 		}
 		
 		this.name = name;
-		this.context = new HashMap<String, BlockStatement>(context);
+		this.context = new HashMap<>(context);
 		this.body = body;
 	}
 
@@ -49,14 +48,14 @@ public final class Program {
 	/**
 	 * @return the context
 	 */
-	public Map<String, BlockStatement> context() {
+	public Map<String, Sequence<Statement>> context() {
 		return Collections.unmodifiableMap(context);
 	}
 
 	/**
 	 * @return the body
 	 */
-	public BlockStatement body() {
+	public Sequence<Statement> body() {
 		return body;
 	}
 	

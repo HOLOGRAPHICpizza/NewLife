@@ -7,7 +7,7 @@ import java.util.Set;
 import org.peak15.newlife.types.Program;
 import org.peak15.newlife.types.Token;
 import org.peak15.newlife.types.Token.Type;
-import org.peak15.newlife.types.statement.BlockStatement;
+import org.peak15.newlife.types.Sequence;
 import org.peak15.newlife.types.statement.CallStatement;
 import org.peak15.newlife.types.statement.IfElseStatement;
 import org.peak15.newlife.types.statement.Statement;
@@ -74,18 +74,18 @@ public final class Parser {
 	 * @param tokenizer to parse from
 	 * @return the parsed block
 	 */
-	public static BlockStatement parseBlock(Token first, Tokenizer tokenizer)
+	public static Sequence<Statement> parseBlock(Token first, Tokenizer tokenizer)
 			throws ParserException, InvalidSyntaxException {
 		
 		if(first == null || tokenizer == null) {
 			throw new NullPointerException("No paramenters may be null.");
 		}
 		
-		BlockStatement s;
+		Sequence<Statement> s;
 		
 		try {
 			Token t = first;
-			BlockStatement.Builder bb = new BlockStatement.Builder();
+			Sequence.Builder<Statement> bb = new Sequence.Builder<>();
 			
 			while(isPrimitiveStatement(t)) {
 				bb.append(parseStatement(t, tokenizer));
@@ -119,8 +119,8 @@ public final class Parser {
 			throws ParserException, InvalidSyntaxException {
 		
 		String name;
-		Map<String, BlockStatement> context = new HashMap<>();
-		BlockStatement body;
+		Map<String, Sequence<Statement>> context = new HashMap<>();
+		Sequence<Statement> body;
 		Token t = first;
 		
 		try {
@@ -146,8 +146,8 @@ public final class Parser {
 			while(!t.text().equals("BEGIN")) {
 				assertCode(t.text().equals("INSTRUCTION"), "Malformed instruction definition.");
 				
-				NamedBlockStatement pair = parseInstruction(tokenizer, context.keySet());
-				context.put(pair.name, pair.statement);
+				NamedStatementSequence pair = parseInstruction(tokenizer, context.keySet());
+				context.put(pair.name, pair.seq);
 				
 				// get next token (next instruction or BEGIN)
 				t = tokenizer.nextToken();
@@ -198,7 +198,7 @@ public final class Parser {
 	 * @param takenNames instruction names that have already been used.
 	 * @return pair of the name and the block of the parsed instruction
 	 */
-	private static NamedBlockStatement parseInstruction (
+	private static NamedStatementSequence parseInstruction (
 			Tokenizer tokenizer,
 			Set<String> takenNames)
 			throws IOException, ParserException, InvalidSyntaxException {
@@ -218,7 +218,7 @@ public final class Parser {
 		
 		// body
 		t = tokenizer.nextToken();
-		BlockStatement s = parseBlock(t, tokenizer);
+		Sequence<Statement> s = parseBlock(t, tokenizer);
 		
 		// END
 		t = tokenizer.nextToken();
@@ -230,7 +230,7 @@ public final class Parser {
 		assertCode(t.text().equals(instName),
 				"Expected instruction name to follow instruction definition.");
 		
-		return new NamedBlockStatement(instName, s);
+		return new NamedStatementSequence(instName, s);
 	}
 
 	/**
@@ -253,7 +253,7 @@ public final class Parser {
 		
 		// body
 		t = tokenizer.nextToken();
-		BlockStatement body = parseBlock(t, tokenizer);
+		Sequence<Statement> body = parseBlock(t, tokenizer);
 		
 		// END or ELSE
 		t = tokenizer.nextToken();
@@ -262,7 +262,7 @@ public final class Parser {
 		IfElseStatement ret;
 		if(t.text().equals("ELSE")) {
 			t = tokenizer.nextToken();
-			BlockStatement elseBody = parseBlock(t, tokenizer);
+			Sequence<Statement> elseBody = parseBlock(t, tokenizer);
 			
 			// END
 			t = tokenizer.nextToken();
@@ -304,7 +304,7 @@ public final class Parser {
 			
 			// body
 			t = tokenizer.nextToken();
-			BlockStatement body = parseBlock(t, tokenizer);
+			Sequence<Statement> body = parseBlock(t, tokenizer);
 			
 			// END WHILE
 			String e = tokenizer.nextToken().text();
@@ -332,13 +332,13 @@ public final class Parser {
 	/**
 	 * For use in passing pairs for the context.
 	 */
-	private final static class NamedBlockStatement {
+	private final static class NamedStatementSequence {
 		public final String name;
-		public final BlockStatement statement;
+		public final Sequence<Statement> seq;
 		
-		public NamedBlockStatement(String name, BlockStatement statement) {
+		public NamedStatementSequence(String name, Sequence<Statement> seq) {
 			this.name = name;
-			this.statement = statement;
+			this.seq = seq;
 		}
 	}
 	

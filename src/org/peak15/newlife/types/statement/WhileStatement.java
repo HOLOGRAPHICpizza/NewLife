@@ -1,11 +1,12 @@
 package org.peak15.newlife.types.statement;
 
 import org.peak15.newlife.Condition;
+import org.peak15.newlife.types.Sequence;
 
 public final class WhileStatement implements Statement {
 
 	private final Condition condition;
-	private final BlockStatement body;
+	private final Sequence<Statement> body;
 	
 	/**
 	 * Construct a while statement.
@@ -13,7 +14,7 @@ public final class WhileStatement implements Statement {
 	 * @param condition to execute body while true.
 	 * @param body block to execute while true.
 	 */
-	public WhileStatement(Condition condition, BlockStatement body) {
+	public WhileStatement(Condition condition, Sequence<Statement> body) {
 		if(condition == null || body == null) {
 			throw new NullPointerException("No parameters may be null.");
 		}
@@ -26,7 +27,7 @@ public final class WhileStatement implements Statement {
 		return this.condition;
 	}
 	
-	public BlockStatement body() {
+	public Sequence<Statement> body() {
 		return this.body;
 	}
 	

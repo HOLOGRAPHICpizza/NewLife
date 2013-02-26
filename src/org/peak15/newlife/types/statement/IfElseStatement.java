@@ -1,11 +1,12 @@
 package org.peak15.newlife.types.statement;
 
 import org.peak15.newlife.Condition;
+import org.peak15.newlife.types.Sequence;
 
 public final class IfElseStatement implements Statement {
 
 	private final Condition condition;
-	private final BlockStatement body, elseBody;
+	private final Sequence<Statement> body, elseBody;
 	
 	/**
 	 * Construct an if statement.
@@ -13,8 +14,8 @@ public final class IfElseStatement implements Statement {
 	 * @param condition to execute body when true
 	 * @param body block to execute when true.
 	 */
-	public IfElseStatement(Condition condition, BlockStatement body) {
-		this(condition, body, BlockStatement.emptyBlock());
+	public IfElseStatement(Condition condition, Sequence<Statement> body) {
+		this(condition, body, Sequence.<Statement>emptySequence());
 	}
 	
 	/**
@@ -24,7 +25,7 @@ public final class IfElseStatement implements Statement {
 	 * @param body block to execute when true.
 	 * @param elseBody block to execute when false.
 	 */
-	public IfElseStatement(Condition condition, BlockStatement body, BlockStatement elseBody) {
+	public IfElseStatement(Condition condition, Sequence<Statement> body, Sequence<Statement> elseBody) {
 		if(condition == null || body == null || elseBody == null) {
 			throw new NullPointerException("No paramaters may be null.");
 		}
@@ -38,11 +39,11 @@ public final class IfElseStatement implements Statement {
 		return this.condition;
 	}
 	
-	public BlockStatement body() {
+	public Sequence<Statement> body() {
 		return this.body;
 	}
 	
-	public BlockStatement elseBody() {
+	public Sequence<Statement> elseBody() {
 		return this.elseBody;
 	}
 	
